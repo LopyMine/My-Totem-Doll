@@ -1,0 +1,14 @@
+{
+  "modmenu.descriptionTranslation.mossy": "Шаблонный Fabric мод с несколькими дополнительными фишками для моих проектов.",
+
+  "mossy.modmenu.title": "§lКлиенские настройки Mossy мода",
+  "mossy.modmenu.no_config_library_screen.message": "Вам нужно установить §6§lYet Another Config Lib [YACL]§f, чтобы открыть экран настроек Mossy клиента\n\n§a§lОткрыть страницу §6§lYACL §a§lна Modrinth?",
+
+  "mossy.modmenu.mossy_group": "§lМшистый",
+  "mossy.modmenu.mossy_group.description": "Пример мшистого описания группы.",
+  "mossy.modmenu.mossy_group.option.mossy_option": "Мох",
+  "mossy.modmenu.mossy_group.option.mossy_option.description": "Пример мшистого описания опции.",
+
+  "mossy.modmenu.formatter.enable_or_disable.true": "Включено",
+  "mossy.modmenu.formatter.enable_or_disable.false": "Отключено"
+}

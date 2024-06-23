@@ -1,0 +1,14 @@
+{
+  "modmenu.descriptionTranslation.mossy": "Template Fabric mod with some additional tweaks for my projects.",
+
+  "mossy.modmenu.title": "§lMossy Client-side Configuration",
+  "mossy.modmenu.no_config_library_screen.message": "You need to install §6§lYet Another Config Lib [YACL]§f to open Mossy Client Configuration Screen\n\n§a§lOpen §6§lYACL §a§lModrinth page?",
+
+  "mossy.modmenu.mossy_group": "§lMossy Group",
+  "mossy.modmenu.mossy_group.description": "Example Mossy Group Description.",
+  "mossy.modmenu.mossy_group.option.mossy_option": "Mossy Option",
+  "mossy.modmenu.mossy_group.option.mossy_option.description": "Example Mossy Option Description. ",
+
+  "mossy.modmenu.formatter.enable_or_disable.true": "Enabled",
+  "mossy.modmenu.formatter.enable_or_disable.false": "Disabled"
+}
