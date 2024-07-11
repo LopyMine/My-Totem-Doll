@@ -1,0 +1,7 @@
+accessWidener v2 named
+# 1.21 AW
+
+accessible field net/minecraft/client/gui/screen/Screen textRenderer Lnet/minecraft/client/font/TextRenderer;
+accessible field net/minecraft/client/gui/screen/Screen client Lnet/minecraft/client/MinecraftClient;
+
+accessible field net/minecraft/client/gui/screen/Screen narrator Lnet/minecraft/client/gui/screen/narration/ScreenNarrator;

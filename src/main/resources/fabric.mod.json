@@ -16,23 +16,24 @@
     "environment": "*",
     "entrypoints": {
         "main": [
-            "net.lopymine.mossy.Mossy"
+            "net.lopymine.mtd.MyTotemDoll"
         ],
         "client": [
-            "net.lopymine.mossy.client.MossyClient"
+            "net.lopymine.mtd.client.MyTotemDollClient"
         ],
         "modmenu": [
-            "net.lopymine.mossy.modmenu.ModMenuIntegration"
+            "net.lopymine.mtd.modmenu.ModMenuIntegration"
         ]
     },
     "depends": {
         "fabricloader": ">=${fabric_loader}",
-        "minecraft": ">=${minecraft}",
+        "minecraft": "${minecraft}",
         "java": ">=${java}",
         "fabric-api": ">=${fabric_api}"
     },
     "accessWidener": "aws/${minecraft}.accesswidener",
     "mixins": [
-        "mixins/${minecraft}-${mod_id}.mixins.json"
+        "mixins/${minecraft}-${mod_id}.mixins.json",
+	    "mixins/yacl/${minecraft}-${mod_id}-yacl.mixins.json"
     ]
 }
