@@ -1,7 +1,6 @@
 <img src="src/main/resources/icon/icon.png" align="right" width="190px" alt="mod logo"/>
 
-[![Discord link to the "LopyMine's Project" discrod server](https://cdn.modrinth.com/data/cached_images/219842bdb5bbef9c2038ec2cc67a350a3fa092fd.png)](https://discord.gg/NZzxdkrV4s)
-
+[![Discord link to the "LopyMine's Project" discrod server](img/discord_banner.png)](https://discord.gg/NZzxdkrV4s)
 
 ## My Totem Doll
 ### Description
@@ -31,3 +30,7 @@ My Totem Doll also has some commands for refreshing the totem skins:
 You can also see other players' totems! **Without mod on the server.**
 
 ![Demonstration of how player "Lime_Krip_" holds a totem with the player nickname "_MrDragon_"](img/multiplayer.png)
+
+## FAQ
+1) *Does the mod just download the skin from NameMC?*
+- Nope, mod downloads last skin using Mojang API, not from NameMC.
