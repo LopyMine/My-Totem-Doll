@@ -1,8 +1,8 @@
-<img src="src/main/resources/icon/icon.png" align="right" width="190px" alt="mod logo"/>
+<img src="src/main/resources/icon/icon.png" align="right" width="130px" alt="mod logo"/>
 
 [![Discord link to the "LopyMine's Project" discrod server](img/discord_banner.png)](https://discord.gg/NZzxdkrV4s)
 
-## My Totem Doll
+# My Totem Doll
 ### Description
 
 My Totem Doll — Simple Client-Side Fabric mod which replaces all totems with player dolls. You can rename your totem to player's nickname to use it's skin. Also supports capes!
