@@ -1,6 +1,6 @@
 <img src="src/main/resources/icon/icon.png" align="right" width="130px" alt="mod logo"/>
 
-[![Discord link to the "LopyMine's Project" discrod server](img/discord_banner.png)](https://discord.gg/NZzxdkrV4s)
+[![Discord link to the "LopyMine's Project" discord server](img/discord_banner.png)](https://discord.gg/NZzxdkrV4s)
 
 # My Totem Doll
 ### Description
