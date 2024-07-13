@@ -34,3 +34,5 @@ You can also see other players' totems! **Without mod on the server.**
 ## FAQ
 1) *Does the mod just download the skin from NameMC?*
 - Nope, mod downloads last skin using Mojang API, not from NameMC.
+2) *Can I upload this mode somewhere?*
+- Nope, only mod authors can upload this mod on other sites.
