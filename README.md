@@ -1,6 +1,8 @@
 <img src="src/main/resources/icon/icon.png" align="right" width="130px" alt="mod logo"/>
 
-[![Discord link to the "LopyMine's Project" discord server](img/discord_banner.png)](https://discord.gg/NZzxdkrV4s)
+[![Discord link to the "LopyMine's Project" discord server](https://cdn.modrinth.com/data/cached_images/21f178aff2b64844fefeaf94a3a3a418440fd43f.png)](https://discord.gg/NZzxdkrV4s) [![Github Link-Banner](https://cdn.modrinth.com/data/cached_images/d87060a9e4522786e45b4b54d10853a1b4a91b10.png)](https://github.com/LopyMine/my-totem-doll) 
+
+[![CurseForge Link-Banner](https://cdn.modrinth.com/data/cached_images/c39affcb732c8b1a4fe189e79898c686da3d63e2.png)](https://www.curseforge.com/minecraft/mc-mods/my_totem_doll) [![Modrinth Link-Banner](https://cdn.modrinth.com/data/cached_images/9991553f6a20e5105b9b153b8d817bc3630c18a8.png)](https://modrinth.com/mod/my_totem_doll) 
 
 # My Totem Doll
 ### Description
