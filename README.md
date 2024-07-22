@@ -9,13 +9,13 @@ My Totem Doll — Simple Client-Side Fabric mod which replaces all totems with p
 
 **!! Rename !! your totem to player's nickname to use it's skin.** Also supports capes!
 
-![Dolls](https://cdn.modrinth.com/data/cached_images/0ad77a56463f23bd9f744358dbc8cc63b97fa1ec.png)
+![Dolls](img/dolls.png)
 
 ## Configuration
 
 You can configure the rendering of totems in first person. Open My Totem Doll configuration screen from Mod Menu and go to the `Rendering` tab, there you will find options for configruing the left and right hand:
 
-![Showcase](https://cdn.modrinth.com/data/cached_images/fa1d5f9338a22035f81940f1438fb8c0ee2f4da5.png)
+![Showcase](img/configuration.png)
 
 ## Refresh Player Skins
 
@@ -25,13 +25,13 @@ My Totem Doll also has some commands for refreshing the totem skins:
 
 `/my-totem-doll refresh player [<NICKNAME>]` - To refresh skin for specific player.
 
-![Showcase](https://cdn.modrinth.com/data/cached_images/32f60b7bd4955aedd491390c2ca955e3a9e71e62.webp)
+![Showcase](img/refreshing_skins.webp)
 
 ## Multiplayer Support
 
 You can also see other players' totems! **Without mod on the server.**
 
-![Demonstration of how player "Lime_Krip_" holds a totem with the player nickname "_MrDragon_"](https://cdn.modrinth.com/data/cached_images/42afb7b8df54a3d445a5c9fb2259516e9f5bb671.png)
+![Showcase](img/multiplayer.png)
 
 ## FAQ
 *Does the mod just download the skin from NameMC?*
