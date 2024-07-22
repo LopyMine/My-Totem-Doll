@@ -1,6 +1,6 @@
 <img src="src/main/resources/icon/icon.png" align="right" width="130px" alt="mod logo"/>
 
-[![Discord link to the "LopyMine's Project" discord server](img/discord_banner.png)](https://discord.gg/NZzxdkrV4s)
+[![Discord link to the "LopyMine's Project" discord server](https://cdn.modrinth.com/data/cached_images/825c182c1f9e2e0b33cbd38a28f4fc5ab986a08d.png)](https://discord.gg/NZzxdkrV4s) [![CurseForge Link-Banner](https://cdn.modrinth.com/data/cached_images/e456a64ded70732647f8d2ba0bd8b735f2fedfe7.png)](https://www.curseforge.com/minecraft/mc-mods/my_totem_doll) [![Github Link-Banner](https://cdn.modrinth.com/data/cached_images/0c7f305df60005c0e9b1dedb01b02c2f69cad419.png)](https://github.com/LopyMine/my-totem-doll) [![Modrinth Link-Banner](https://cdn.modrinth.com/data/cached_images/101b68839e2effbb725d25aef21cc64d1bd37efc.png)](https://modrinth.com/mod/my_totem_doll) *curseforge soon*
 
 # My Totem Doll
 ### Description
@@ -34,3 +34,5 @@ You can also see other players' totems! **Without mod on the server.**
 ## FAQ
 1) *Does the mod just download the skin from NameMC?*
 - Nope, mod downloads last skin using Mojang API, not from NameMC.
+2) *Can I upload this mode somewhere?*
+- Nope, only mod authors can upload this mod on other sites.
