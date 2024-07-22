@@ -1,0 +1,30 @@
+{
+    "required": true,
+    "package": "${mod_group}.mixin",
+    "refmap": "${mod_id}.refmap.json",
+    "compatibilityLevel": "JAVA_${java}",
+	"plugin": "net.lopymine.mtd.compat.yacl.YACLCompatPlugin",
+    "mixins": [
+        
+    ],
+    "client": [
+	    "yacl.ScreenMixin",
+	    "yacl.YACLScreenMixin",
+	    "yacl.YetAnotherConfigLibImplBuilderMixin",
+	    "yacl.YetAnotherConfigLibImplMixin",
+
+	    "yacl.category.HeldItemRendererMixin",
+	    "yacl.category.CategoryTabMixin",
+	    "yacl.category.EntryListWidgetMixin",
+	    "yacl.category.TabButtonWidgetMixin",
+	    "yacl.category.TabNavigationWidgetMixin",
+	    "yacl.category.ConfigCategoryImplBuilderImplMixin",
+
+	    "yacl.widget.PressableWidgetMixin",
+	    "yacl.widget.AbstractWidgetMixin",
+	    "yacl.widget.TextFieldWidgetMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    }
+}

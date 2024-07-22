@@ -6,14 +6,14 @@ import net.minecraft.util.Identifier;
 
 import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.client.command.reload.ReloadAction;
-import net.lopymine.mtd.http.*;
+import net.lopymine.mtd.api.*;
 
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.*;
 import org.jetbrains.annotations.*;
 
-//? if >=1.20.2 {
+//? if >=1.20.2{
 import net.minecraft.client.util.SkinTextures;
 import net.minecraft.client.util.SkinTextures.Model;
 //?} else {
@@ -24,6 +24,7 @@ import net.lopymine.mtd.utils.SkinTextures.Model;
 public class CachedSkinsManager {
 
 	public static final String MINECRAFT_NICKNAME_REGEX = "^[a-zA-Z0-9_]{2,16}$";
+	//public static final String NAMEMC_SKIN_REGEX = "(?i)namemc\\s*\\|\\s*([a-z0-9]{16})$";
 	public static final SkinTextures DEFAULT_DOLL_TEXTURES = new SkinTextures(Identifier.of("minecraft","textures/entity/player/wide/steve.png"), null, null, null, Model.WIDE, true);
 
 	private static final Map<String, SkinTextures> CACHE = new ConcurrentHashMap<>();
@@ -50,7 +51,7 @@ public class CachedSkinsManager {
 			}
 		}
 
-		return CompletableFuture.supplyAsync(() -> {
+		return CompletableFuture.runAsync(() -> {
 			try {
 				long waitMs = 1000;
 
@@ -58,7 +59,7 @@ public class CachedSkinsManager {
 					Response<SkinTextures> response = MojangAPI.getSkinTextures(nickname);
 					if (response.isEmpty() && response.statusCode() == 429) {
 						Thread.sleep(waitMs);
-						waitMs += 500;
+						waitMs += 350;
 					} else if (!response.isEmpty()) {
 						SkinTextures skinTextures = response.value();
 						CACHE.put(nickname.toLowerCase(), skinTextures);
@@ -72,7 +73,6 @@ public class CachedSkinsManager {
 			} finally {
 				PLAYER_LOADING_SKINS.remove(nickname);
 			}
-			return null;
 		});
 	}
 
@@ -89,6 +89,17 @@ public class CachedSkinsManager {
 		return skinTextures;
 	}
 
+//	private static CompletableFuture<Void> loadSkinFromNameMC(String nickname) {
+//		String[] split = nickname.split("\\|");
+//		if (split.length != 2) {
+//			return CompletableFuture.completedFuture(null);
+//		}
+//		String skinId = split[1].trim();
+//		return CompletableFuture.runAsync(() -> {
+//			Response<SkinTextures> response = NameMcAPI.loadSkin(skinId);
+//		});
+//	}
+
 	public static Set<String> getLoadedPlayers() {
 		return CACHE.keySet();
 	}
@@ -103,7 +114,6 @@ public class CachedSkinsManager {
 			SkinTextures skinTextures = entry.getValue();
 			CACHE.put(nickname.toLowerCase(), DEFAULT_DOLL_TEXTURES);
 			destroyTexture(skinTextures);
-			CACHE.remove(nickname);
 
 			list.add(loadSkin(nickname, true));
 		}

@@ -19,13 +19,27 @@ import net.lopymine.mtd.modmenu.yacl.*;
 @Mixin(EntryListWidget.class)
 public abstract class EntryListWidgetMixin /*? >=1.20.3 {*/ extends ClickableWidget /*?}*/ {
 
-	//? if >=1.20.3 {
+	//? >=1.20.3 {
 	public EntryListWidgetMixin(int x, int y, int width, int height, Text message) {
 		super(x, y, width, height, message);
 	}
 	//?}
 
-	//? if >=1.20.5 {
+	//? <=1.20.2 {
+	/*@Shadow
+	protected int bottom;
+	@Shadow
+	protected int top;
+	@Shadow
+	protected int width;
+	@Shadow
+	protected int height;
+	*///?}
+
+	@Unique
+	private static final String RENDER_METHOD = /*? >=1.20.3 {*/ "renderWidget" /*?} else {*/ /*"render" *//*?}*/;
+
+	//? >=1.20.5 {
 
 	@Dynamic
 	@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIII)V", ordinal = 0), method = "renderWidget")
@@ -49,27 +63,23 @@ public abstract class EntryListWidgetMixin /*? >=1.20.3 {*/ extends ClickableWid
 
 	//?} else {
 
-	/*@Unique
-	private static final String RENDER_METHOD = /^? >=1.20.3 {^/ "renderWidget" /^?} else {^/ "render" /^?}^/;
-
-	//? <=1.20.2 {
-	@Shadow
-	protected int bottom;
-	@Shadow
-	protected int top;
-	@Shadow
-	protected int width;
-	@Shadow
-	protected int height;
-
-	//?}
-
-	@Shadow
+	/*@Shadow
 	protected abstract int getScrollbarPositionX();
 
-	//? if <=1.20.1 {
-
 	@Dynamic
+	@ModifyExpressionValue(at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/widget/EntryListWidget;renderBackground:Z"), method = RENDER_METHOD)
+	private boolean disableBackgroundRendering(boolean original) {
+		if (YACLConfigurationScreen.notOpen(MinecraftClient.getInstance().currentScreen)) {
+			return original;
+		}
+		return false;
+	}
+
+	*///?}
+
+	//? <=1.20.1 {
+
+	/*@Dynamic
 	@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;fill(IIIII)V", ordinal = 0), method = "render")
 	private void renderTransparencyScrollerBackground1(DrawContext context, int x1, int y1, int x2, int y2, int color, Operation<Void> original) {
 		if (YACLConfigurationScreen.notOpen(MinecraftClient.getInstance().currentScreen)) {
@@ -100,9 +110,9 @@ public abstract class EntryListWidgetMixin /*? >=1.20.3 {*/ extends ClickableWid
 		return YACLConfigurationScreen.notOpen(MinecraftClient.getInstance().currentScreen);
 	}
 
-	//?} else {
+	*///?} elif <=1.20.4 {
 
-	@Dynamic
+	/*@Dynamic
 	@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;fill(IIIII)V", ordinal = 0), method = RENDER_METHOD)
 	private void renderTransparencyScrollerBackground(DrawContext context, int x1, int y1, int x2, int y2, int color, Operation<Void> original) {
 		if (YACLConfigurationScreen.notOpen(MinecraftClient.getInstance().currentScreen)) {
@@ -127,20 +137,11 @@ public abstract class EntryListWidgetMixin /*? >=1.20.3 {*/ extends ClickableWid
 		RenderSystem.disableDepthTest();
 	}
 
-	//?}
+	*///?}
 
-	@Dynamic
-	@ModifyExpressionValue(at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/widget/EntryListWidget;renderBackground:Z"), method = RENDER_METHOD)
-	private boolean disableBackgroundRendering(boolean original) {
-		if (YACLConfigurationScreen.notOpen(MinecraftClient.getInstance().currentScreen)) {
-			return original;
-		}
-		return false;
-	}
+	//? <=1.20.1 {
 
-	//? if <=1.20.1 {
-
-	@Dynamic
+	/*@Dynamic
 	@ModifyExpressionValue(at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/widget/EntryListWidget;renderHorizontalShadows:Z"), method = "render")
 	private boolean disableShadows(boolean original) {
 		if (YACLConfigurationScreen.notOpen(MinecraftClient.getInstance().currentScreen)) {
@@ -148,8 +149,6 @@ public abstract class EntryListWidgetMixin /*? >=1.20.3 {*/ extends ClickableWid
 		}
 		return false;
 	}
-
-	//?}
 
 	*///?}
 }

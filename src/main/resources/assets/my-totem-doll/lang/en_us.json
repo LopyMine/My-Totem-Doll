@@ -1,0 +1,36 @@
+{
+	"modmenu.descriptionTranslation.my_totem_doll": "Simple Fabric mod which replaces all totems with player dolls.",
+	"my-totem-doll.modmenu.title": "§lMy Totem Doll",
+	"my-totem-doll.modmenu.no_config_library_screen.message": "You need to install §6§lYet Another Config Lib [YACL]§f to open My Totem Doll Configuration Screen\n\n§a§lOpen §6§lYACL §a§lModrinth page?",
+	"my-totem-doll.modmenu.old_config_library_screen.message": "Your §6§lYet Another Config Lib [YACL]§f with version %s is outdated for configuration My Totem Doll. Please update §6§lYACL§f with version %s or higher.\n\n§a§lOpen §6§lYACL §a§lModrinth page?",
+
+	"my-totem-doll.modmenu.category.general.name": "§lGeneral",
+	"my-totem-doll.modmenu.option.mod_enabled.name": "Mod Enabled",
+	"my-totem-doll.modmenu.option.mod_enabled.description": "If enabled, all totems will be replaced with player dolls; if disabled, won't.",
+	"my-totem-doll.modmenu.option.debug_log_enabled.name": "§6Debug Log Enabled",
+	"my-totem-doll.modmenu.option.debug_log_enabled.description": "If enabled, additional info will be logged to console for debugging; if disabled, won't.",
+
+	"my-totem-doll.modmenu.category.rendering.name": "§lRendering",
+	"my-totem-doll.modmenu.group.right_hand.name": "§lRight Hand",
+	"my-totem-doll.modmenu.group.left_hand.name": "§lLeft Hand",
+	"my-totem-doll.modmenu.option.scale.name": "Scale",
+	"my-totem-doll.modmenu.option.rotation_x.name": "Rotation X",
+	"my-totem-doll.modmenu.option.rotation_y.name": "Rotation Y",
+	"my-totem-doll.modmenu.option.rotation_z.name": "Rotation Z",
+	"my-totem-doll.modmenu.option.offset_x.name": "Offset X",
+	"my-totem-doll.modmenu.option.offset_y.name": "Offset Y",
+	"my-totem-doll.modmenu.option.offset_z.name": "Offset Z",
+	"my-totem-doll.modmenu.option.copy_right_hand_settings.name": "§eCopy Right Hand Settings",
+	"my-totem-doll.modmenu.option.copy_left_hand_settings.name": "§eCopy Left Hand Settings",
+
+	"my-totem-doll.command.id": "[§lMy Totem Doll§r]",
+
+	"my-totem-doll.command.refresh.all.start": "§6Started refreshing all skin textures",
+	"my-totem-doll.command.refresh.all.end": "§aRefreshed all skin textures in §f%s§a seconds",
+
+	"my-totem-doll.command.refresh.player.start": "§6Start refreshing skin textures for player §f%s§6",
+	"my-totem-doll.command.refresh.player.end": "§aRefreshed skin textures for §f%s§a in §f%s§a seconds",
+
+	"my-totem-doll.modmenu.formatter.enabled_or_disabled.true": "Enabled",
+	"my-totem-doll.modmenu.formatter.enabled_or_disabled.false": "Disabled"
+}

@@ -1,0 +1,19 @@
+{
+    "required": true,
+    "package": "${mod_group}.mixin",
+    "refmap": "${mod_id}.refmap.json",
+    "compatibilityLevel": "JAVA_${java}",
+    "mixins": [
+        
+    ],
+    "client": [
+	    "ItemRendererMixin",
+	    "GameRendererMixin",
+
+	    "accessor.ItemRendererAccessor",
+	    "accessor.BuiltinModelItemRendererAccessor"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    }
+}

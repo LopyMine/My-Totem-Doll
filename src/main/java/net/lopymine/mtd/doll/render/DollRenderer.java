@@ -1,15 +1,17 @@
 package net.lopymine.mtd.doll.render;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.model.*;
+import net.minecraft.client.render.item.ItemModels;
 import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.json.ModelTransformationMode;
+import net.minecraft.client.render.model.json.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.*;
-import net.minecraft.util.math.RotationAxis;
+import net.minecraft.util.math.*;
 import org.joml.Vector3f;
 
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -34,6 +36,7 @@ import net.minecraft.client.util.SkinTextures.Model;
 //?} else {
 /*import net.lopymine.mtd.utils.SkinTextures;
 import net.lopymine.mtd.utils.SkinTextures.Model;
+import java.util.stream.IntStream;
 *///?}
 
 public class DollRenderer {
@@ -54,7 +57,10 @@ public class DollRenderer {
 
 	public static void renderDoll(MatrixStack matrices, EntityModelLoader entityModelLoader, ItemStack stack, ModelTransformationMode renderMode, boolean leftHanded, VertexConsumerProvider vertexConsumers, int light, int overlay, BakedModel model) {
 		matrices.push();
-		model.getTransformation().getTransformation(renderMode).apply(leftHanded, matrices);
+
+		Transformation transformation = model.getTransformation().getTransformation(renderMode);
+
+		transformation.apply(leftHanded, matrices);
 		matrices.translate(-0.5F, -0.5F, -0.5F);
 
 		Pair<String, SkinTextures> skinTextures = DollRenderer.parseSkinTextures(stack);
@@ -184,11 +190,6 @@ public class DollRenderer {
 	}
 
 	private static void renderAsFloating(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, DollModel dollModel, Pair<String, SkinTextures> skinTextures) {
-		Vector3f vec = (new Vector3f(0.0F, 0.0F, 0.5f)).normalize();
-		Vector3f vec2 = (new Vector3f(0.0F, 0.0F, 0.5f)).normalize();
-
-		RenderSystem.setShaderLights(vec, vec2);
-
 		matrices.push();
 
 		matrices.translate(0.5F, 0.5F, 0.5F);
@@ -196,7 +197,6 @@ public class DollRenderer {
 		matrices.translate(-0.5F, -0.5F, -0.5F);
 		matrices.scale(0.8F, 0.8F, 0.8F);
 		matrices.translate(0.1F, 0.0F, 0.0F);
-
 		DollRenderer.render(matrices, vertexConsumers, light, overlay, dollModel, skinTextures);
 
 		matrices.pop();
@@ -206,7 +206,7 @@ public class DollRenderer {
 		SkinTextures textures = skinTextures.getRight();
 		String nickname = skinTextures.getLeft();
 
-		if (nickname != null && nickname.equals("dinnerbone")) {
+		if (nickname != null && (nickname.equals("dinnerbone") || nickname.equals("grumm"))) {
 			matrices.translate(0.5F, 0.5F, 0.5F);
 			matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180));
 			matrices.translate(-0.5F, -0.5F, -0.5F);

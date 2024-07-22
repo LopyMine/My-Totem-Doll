@@ -1,6 +1,7 @@
 package net.lopymine.mtd.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.*;
+import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.*;
@@ -32,9 +33,11 @@ public class GameRendererMixin {
 	@Shadow @Final private MinecraftClient client;
 
 	@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;draw(Ljava/lang/Runnable;)V"), method = "renderFloatingItem")
-	private void renderFloatingDoll(DrawContext drawContext, Runnable drawCallback, Operation<Void> original) {
+	private void renderFloatingDoll(DrawContext drawContext, Runnable drawCallback, Operation<Void> original, @Local MatrixStack matrices) {
 		if (MyTotemDollClient.getConfig().isModEnabled() && this.floatingItem != null && this.floatingItem.isOf(Items.TOTEM_OF_UNDYING)) {
-			DollRenderer.renderFloatingDoll(drawContext.getMatrices(), ((BuiltinModelItemRendererAccessor) ((ItemRendererAccessor) this.client.getItemRenderer()).getBuiltinModelItemRenderer()).getEntityModelLoader(), this.floatingItem, drawContext.getVertexConsumers(), 15728880, OverlayTexture.DEFAULT_UV);
+			drawContext.draw(() -> {
+				DollRenderer.renderFloatingDoll(matrices, ((BuiltinModelItemRendererAccessor) ((ItemRendererAccessor) this.client.getItemRenderer()).getBuiltinModelItemRenderer()).getEntityModelLoader(), this.floatingItem, drawContext.getVertexConsumers(), 15728880, OverlayTexture.DEFAULT_UV);
+			});
 		} else {
 			original.call(drawContext, drawCallback);
 		}

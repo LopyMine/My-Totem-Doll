@@ -9,7 +9,7 @@
     ],
     "contact": {
         "homepage": "https://modrinth.com/mod/${mod_id}",
-        "issues": "https://github.com/LopyMine/${mod_id}"
+        "issues": "https://github.com/LopyMine/${mod_id}/issues"
     },
     "license": "${mod_license}",
     "icon": "icon/icon.png",
@@ -27,9 +27,9 @@
     },
     "depends": {
         "fabricloader": ">=${fabric_loader}",
-        "minecraft": "${minecraft}",
+        "minecraft": ">=${minecraft}",
         "java": ">=${java}",
-        "fabric-api": ">=${fabric_api}"
+        "${fabric_api_id}": ">=${fabric_api}"
     },
     "accessWidener": "aws/${minecraft}.accesswidener",
     "mixins": [

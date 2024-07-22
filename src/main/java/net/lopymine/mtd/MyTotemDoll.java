@@ -9,7 +9,7 @@ import net.fabricmc.api.ModInitializer;
 public class MyTotemDoll implements ModInitializer {
 
 	public static final String MOD_NAME = /*$ mod_name*/ "My Totem Doll";
-	public static final String MOD_ID = /*$ mod_id*/ "my_totem_doll";
+	public static final String MOD_ID = /*$ mod_id*/ "my-totem-doll";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);
 	public static final String YACL_DEPEND_VERSION = /*$ yacl_version*/ "3.5.0";
 

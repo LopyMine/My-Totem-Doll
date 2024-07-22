@@ -1,0 +1,36 @@
+{
+	"modmenu.descriptionTranslation.my_totem_doll": "Простой Fabric мод который заменяет все тотемы на куклы игроков!",
+	"my-totem-doll.modmenu.title": "§lMy Totem Doll",
+	"my-totem-doll.modmenu.no_config_library_screen.message": "Вам нужно установить §6§lYet Another Config Lib [YACL]§f, чтобы открыть экран настроек My Totem Doll\n\n§a§lОткрыть страницу §6§lYACL §a§lна Modrinth?",
+	"my-totem-doll.modmenu.old_config_library_screen.message": "Ваш §6§lYet Another Config Lib [YACL]§f версии %s устарел для конфигурации My Totem Doll. Пожалуйста обновите §6§lYACL§f до версии %s или выше.\n\n§a§lОткрыть страницу §6§lYACL §a§lна Modrinth?",
+
+	"my-totem-doll.modmenu.category.general.name": "§lОсновное",
+	"my-totem-doll.modmenu.option.mod_enabled.name": "Включить мод",
+	"my-totem-doll.modmenu.option.mod_enabled.description": "Если включено, все тотемы будут заменены куклами игроков; если отключено, не будут.",
+	"my-totem-doll.modmenu.option.debug_log_enabled.name": "§6Включить дополнительный журнал откладки мода",
+	"my-totem-doll.modmenu.option.debug_log_enabled.description": "Если включено, в консоль игры будет выведена допольнительная информация о моде; если отключено, не будет.",
+
+	"my-totem-doll.modmenu.category.rendering.name": "§lОтображение",
+	"my-totem-doll.modmenu.group.right_hand.name": "§lПравая рука",
+	"my-totem-doll.modmenu.group.left_hand.name": "§lЛевая рука",
+	"my-totem-doll.modmenu.option.scale.name": "Размер",
+	"my-totem-doll.modmenu.option.rotation_x.name": "Поворот по X",
+	"my-totem-doll.modmenu.option.rotation_y.name": "Поворот по Y",
+	"my-totem-doll.modmenu.option.rotation_z.name": "Поворот по Z",
+	"my-totem-doll.modmenu.option.offset_x.name": "Смещение по X",
+	"my-totem-doll.modmenu.option.offset_y.name": "Смещение по Y",
+	"my-totem-doll.modmenu.option.offset_z.name": "Смещение по Z",
+	"my-totem-doll.modmenu.option.copy_right_hand_settings.name": "§eИспользовать настройки правой руки",
+	"my-totem-doll.modmenu.option.copy_left_hand_settings.name": "§eИспользовать настройки левой руки",
+
+	"my-totem-doll.command.id": "[§lMy Totem Doll§r]",
+
+	"my-totem-doll.command.refresh.all.start": "§6Началась перезагрузка всех загруженных скинов",
+	"my-totem-doll.command.refresh.all.end": "§aБыли перезагружены все скины за §f%s§a секунд",
+
+	"my-totem-doll.command.refresh.player.start": "§6Началась перезагрузка скина игрока §f%s§6",
+	"my-totem-doll.command.refresh.player.end": "§aБыл перезагружен скин для игрока §f%s§a за §f%s§a секунд",
+
+	"my-totem-doll.modmenu.formatter.enabled_or_disabled.true": "Включено",
+	"my-totem-doll.modmenu.formatter.enabled_or_disabled.false": "Отключено"
+}
