@@ -2,7 +2,7 @@
 	"modmenu.descriptionTranslation.my_totem_doll": "Simple Fabric mod which replaces all totems with player dolls.",
 	"my-totem-doll.modmenu.title": "§lMy Totem Doll",
 	"my-totem-doll.modmenu.no_config_library_screen.message": "You need to install §6§lYet Another Config Lib [YACL]§f to open My Totem Doll Configuration Screen\n\n§a§lOpen §6§lYACL §a§lModrinth page?",
-	"my-totem-doll.modmenu.old_config_library_screen.message": "Your §6§lYet Another Config Lib [YACL]§f with version %s is outdated for configuration My Totem Doll. Please update §6§lYACL§f with version %s or higher.\n\n§a§lOpen §6§lYACL §a§lModrinth page?",
+	"my-totem-doll.modmenu.old_config_library_screen.message": "Your §6§lYet Another Config Lib [YACL]§f with version %s is outdated for My Totem Doll Configuration. Please update §6§lYACL§f to version %s or higher.\n\n§a§lOpen §6§lYACL §a§lModrinth page?",
 
 	"my-totem-doll.modmenu.category.general.name": "§lGeneral",
 	"my-totem-doll.modmenu.option.mod_enabled.name": "Mod Enabled",
