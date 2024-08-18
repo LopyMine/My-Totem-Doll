@@ -1,0 +1,36 @@
+{
+	"modmenu.descriptionTranslation.my_totem_doll": "Барлык тотемнар уенчы курчаклары белән алыштырыла торган гади Fabric моды.",
+	"my-totem-doll.modmenu.title": "§lMy Totem Doll",
+	"my-totem-doll.modmenu.no_config_library_screen.message": "My Totem Doll көйләүләре экранын ачу өчен Сезгә §6§lYet Another Config Lib [YACL]§f утыртырга кирәк\n\n§6§lYACL §a§lModrinth битен ачаргамы?",
+	"my-totem-doll.modmenu.old_config_library_screen.message": "My Totem Doll көйләнү өчен Сезнең %s версиясендәге §6§lYet Another Config Lib [YACL]§f искергән. §6§lYACL§f %s версиясенә яки югарырак яңартыгызчы.\n\n§6§lYACL §a§lModrinth битен ачаргамы?",
+
+	"my-totem-doll.modmenu.category.general.name": "§lТөп",
+	"my-totem-doll.modmenu.option.mod_enabled.name": "Модны кушу",
+	"my-totem-doll.modmenu.option.mod_enabled.description": "Кушылса, барлык тотемнар уенчы курчаклары белән алыштырылачак; сүндерелсә, алыштырылмаячак.",
+	"my-totem-doll.modmenu.option.debug_log_enabled.name": "§6Төзәтү журналын кушу",
+	"my-totem-doll.modmenu.option.debug_log_enabled.description": "Кушылса, төзәтү өчен өстәмә мәгълүмат консольгә язылачак; сүндерелсә, язылмаячак.",
+
+	"my-totem-doll.modmenu.category.rendering.name": "§lКүрсәтелү",
+	"my-totem-doll.modmenu.group.right_hand.name": "§lУң кул",
+	"my-totem-doll.modmenu.group.left_hand.name": "§lСул кул",
+	"my-totem-doll.modmenu.option.scale.name": "Зурлык",
+	"my-totem-doll.modmenu.option.rotation_x.name": "Янтаю",
+	"my-totem-doll.modmenu.option.rotation_y.name": "Борылу",
+	"my-totem-doll.modmenu.option.rotation_z.name": "Тангаж",
+	"my-totem-doll.modmenu.option.offset_x.name": "X буенча күчерү",
+	"my-totem-doll.modmenu.option.offset_y.name": "Y буенча күчерү",
+	"my-totem-doll.modmenu.option.offset_z.name": "Z буенча күчерү",
+	"my-totem-doll.modmenu.option.copy_right_hand_settings.name": "§eУң кул көйләүләрен күчереп алу",
+	"my-totem-doll.modmenu.option.copy_left_hand_settings.name": "§eСул кул көйләүләрен күчереп алу",
+
+	"my-totem-doll.command.id": "[§lMy Totem Doll§r]",
+
+	"my-totem-doll.command.refresh.all.start": "§6Барлык кыяфәт текстуралары яңартып башланды",
+	"my-totem-doll.command.refresh.all.end": "§aБарлык кыяфәт текстуралары §f%s§a секундтан соң яңартылды",
+
+	"my-totem-doll.command.refresh.player.start": "§f%s§6 уенчысы өчен кыяфәт текстуралары яңартып башланды",
+	"my-totem-doll.command.refresh.player.end": "§f%s§a өчен кыяфәт текстуралары §f%s§a секундтан соң яңартылды",
+
+	"my-totem-doll.modmenu.formatter.enabled_or_disabled.true": "Кушык",
+	"my-totem-doll.modmenu.formatter.enabled_or_disabled.false": "Сүнек"
+}
