@@ -18,7 +18,7 @@
 	"my-totem-doll.modmenu.group.parallel_tasks.name": "&lПаралельні завдання",
 	"my-totem-doll.modmenu.group.parallel_tasks.description": "Налаштування паралельних завдань, які можуть вплинути на продуктивність!",
 	"my-totem-doll.modmenu.option.parallel_tasks_count.name": "Кількість паралельних завдань",
-	"my-totem-doll.modmenu.option.parallel_tasks_count.description": "Визначає, скільки паралельних завдань можна запускатися модом, таких як паралельне завантаження скінів.",
+	"my-totem-doll.modmenu.option.parallel_tasks_count.description": "Визначає, скільки паралельних завдань можуть запускатися модом, таких як паралельне завантаження скінів.",
 
 	"my-totem-doll.modmenu.category.rendering.name": "&lПромальовування",
 	"my-totem-doll.modmenu.group.right_hand.name": "&lПрава рука",
