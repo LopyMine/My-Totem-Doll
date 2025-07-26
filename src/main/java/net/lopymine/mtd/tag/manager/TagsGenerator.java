@@ -13,7 +13,7 @@ public class TagsGenerator implements Iterator<Character> {
 	@SuppressWarnings("unused")
 	private static final String MOD_CHARS_FOR_MODELS = "jklmnopqrstuvwxyz";
 	@SuppressWarnings("unused")
-	private static final String UNUSED_MOD_CHARS_FOR_MODELS = "mnopqrstuvwxyz";
+	private static final String UNUSED_MOD_CHARS_FOR_MODELS = "uvwxyz";
 
 	private static final String AVAILABLE_CHARS =
 			"ABCDEFGHIJKLMNOPQRSTUV" +

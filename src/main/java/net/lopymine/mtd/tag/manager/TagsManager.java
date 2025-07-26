@@ -97,6 +97,14 @@ public class TagsManager {
 		registerBuiltinCustomModel('j', "2d_doll");
 		registerBuiltinCustomModel('k', "3d_doll");
 		registerBuiltinCustomModel('l', "3d_funko");
+		registerBuiltinCustomModel('m', "gnom");
+		registerBuiltinCustomModel('n', "mini_3d");
+		registerBuiltinCustomModel('o', "parrot");
+		registerBuiltinCustomModel('p', "player_bucket");
+		registerBuiltinCustomModel('q', "pots");
+		registerBuiltinCustomModel('r', "rat");
+		registerBuiltinCustomModel('s', "stairs");
+		registerBuiltinCustomModel('t', "wheelchair");
 	}
 
 	private static void registerBuiltinCustomModel(char ch, String modelName) {
