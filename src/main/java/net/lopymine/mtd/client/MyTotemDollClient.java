@@ -1,6 +1,7 @@
 package net.lopymine.mtd.client;
 
 import lombok.*;
+import net.lopymine.mtd.atlas.TotemDollAtlasReloadListener;
 import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
 import org.slf4j.*;

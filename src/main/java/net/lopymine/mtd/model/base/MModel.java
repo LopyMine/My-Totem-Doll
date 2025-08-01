@@ -2,9 +2,11 @@ package net.lopymine.mtd.model.base;
 
 import lombok.*;
 import lombok.experimental.ExtensionMethod;
+import net.lopymine.mtd.atlas.MyTotemDollAtlasManager;
 import net.minecraft.client.model.*;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.model.json.*;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
@@ -41,13 +43,14 @@ public class MModel extends ModelPart {
 	@Nullable
 	private Identifier builtinTexture;
 
-	public MModel(List<MCuboid> mCuboids, Map<String, MModel> mChildren, ModelState state, String name) {
+	public MModel(List<MCuboid> mCuboids, Map<String, MModel> mChildren, ModelState state, String name, @Nullable Identifier builtinTexture) {
 		super(mCuboids.stream().map(MCuboid::asCuboid).toList(), mChildren.entrySet().stream().collect(Collectors.toMap(Entry::getKey, e -> e.getValue().asModelPart())));
 		this.state     = state;
 		this.name      = name;
 		this.mChildren = mChildren;
 		this.mCuboids  = mCuboids;
 		this.mChildren.values().forEach((mmodel) -> mmodel.setParent(this));
+		this.builtinTexture = builtinTexture;
 	}
 
 	public MModel initAfterBuild(BBModel model) {
@@ -58,26 +61,7 @@ public class MModel extends ModelPart {
 
 	public void setLocation(@NotNull Identifier location) {
 		this.location = location;
-
-		String name = this.getName();
-		try {
-			if (name.endsWith(".png")) {
-				if (name.contains(":")) {
-					String[] split = name.split(":");
-					boolean namespaceValid = Identifier.isNamespaceValid(split[0]);
-					boolean pathValid = Identifier.isPathValid(split[1]);
-					if (namespaceValid && pathValid) {
-						this.builtinTexture = Identifier.of(/*? if <1.21 {*/ /*"minecraft", *//*?}*/ name);
-					}
-				} else {
-					this.builtinTexture = location.getFolderId().withSuffixedPath(this.getName());
-				}
-			}
-
-			this.mChildren.forEach((modelName, model) -> model.setLocation(location));
-		} catch (Exception e) {
-			MyTotemDollClient.LOGGER.error("Failed to set builtinTexture for model \"%s\": ".formatted(name), e);
-		}
+		this.mChildren.forEach((modelName, model) -> model.setLocation(location));
 	}
 
 	@Override
@@ -109,7 +93,6 @@ public class MModel extends ModelPart {
 	}
 
 	public void draw(MatrixStack matrices, VertexConsumerProvider provider, Function<Identifier, RenderLayer> layerFunction, Identifier mainTexture, Map<String, Supplier<Identifier>> partsTextures, Set<String> requestedParts, int light, int overlay, /*? if >=1.21 {*/int color/*?} else {*//*float red, float green, float blue, float alpha *//*?}*/) {
-		// TODO Optimize
 		if (this.skipRendering && !requestedParts.contains(this.getName())) {
 			return;
 		}
@@ -130,7 +113,8 @@ public class MModel extends ModelPart {
 		matrices.push();
 		this./*? if <=1.21.4 {*//*rotate*//*?} else {*/ applyTransform /*?}*/(matrices);
 		if (!this.hidden && !this.mCuboids.isEmpty()) {
-			VertexConsumer consumer = provider.getBuffer(layerFunction.apply(texture));
+			Sprite sprite = MyTotemDollAtlasManager.getSprite(texture);
+			VertexConsumer consumer = sprite.getTextureSpecificVertexConsumer(provider.getBuffer(layerFunction.apply(sprite.getAtlasId())));
 			this.renderCuboids(matrices.peek(), consumer, light, overlay, /*? if >=1.21 {*/ color/*?} else {*/ /*red, green, blue, alpha *//*?}*/);
 		}
 

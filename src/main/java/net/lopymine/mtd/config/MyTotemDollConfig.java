@@ -4,6 +4,8 @@ import com.google.gson.*;
 import lombok.*;
 
 
+import net.lopymine.mtd.atlas.MyTotemDollAtlasManager;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.util.Identifier;
 import org.slf4j.*;
 import com.mojang.serialization.*;
@@ -115,6 +117,13 @@ public class MyTotemDollConfig {
 	}
 
 	public void save() {
+		try {
+			SpriteAtlasTexture atlasTexture = MyTotemDollAtlasManager.getAtlasTexture();
+			atlasTexture.save(atlasTexture.getId(), FabricLoader.getInstance().getConfigDir());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		MyTotemDollClient.setConfig(this);
 		CompletableFuture.runAsync(() -> {
 			try (FileWriter writer = new FileWriter(CONFIG_FILE, StandardCharsets.UTF_8)) {

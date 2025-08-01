@@ -1,6 +1,7 @@
 package net.lopymine.mtd.utils.texture;
 
 import lombok.experimental.ExtensionMethod;
+import net.lopymine.mtd.atlas.MyTotemDollAtlasManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.*;
 import net.minecraft.resource.*;
@@ -26,13 +27,13 @@ public class PlayerSkinUtils {
 
 	public static void downloadSkin(@NotNull String textureUrl, @NotNull Identifier textureId, @Nullable SuccessAction onSuccessRegistration, @Nullable FailedAction onFailedRegistration, boolean cape, Path cachedTexturePath) {
 		try {
-			Supplier<AbstractTexture> supplier = PlayerSkinUtils.download(cachedTexturePath, textureUrl, cape, textureId); // DO NOT CLOSE
+			Supplier<NativeImage> supplier = PlayerSkinUtils.download(cachedTexturePath, textureUrl, cape, textureId); // DO NOT CLOSE
 
 			MinecraftClient.getInstance().send(() -> {
-				AbstractTexture abstractTexture = supplier.get();
+				NativeImage image = supplier.get();
 
 				//? <=1.21.3 {
-				/*if (abstractTexture instanceof PlayerSkinTexture playerSkinTexture) {
+				/*if (image instanceof PlayerSkinTexture playerSkinTexture) {
 					playerSkinTexture.setOnSuccessAction(onSuccessRegistration);
 					playerSkinTexture.setOnFailedAction(onFailedRegistration);
 					if (cape) {
@@ -41,7 +42,8 @@ public class PlayerSkinUtils {
 				}
 				*///?}
 
-				MinecraftClient.getInstance().getTextureManager().registerTexture(textureId, abstractTexture);
+				MyTotemDollAtlasManager.registerSprite(textureId, image);
+				//MinecraftClient.getInstance().getTextureManager().registerTexture(textureId, image);
 				//? >=1.21.4 {
 				if (onSuccessRegistration != null) {
 					onSuccessRegistration.onSuccess();
@@ -56,7 +58,7 @@ public class PlayerSkinUtils {
 		}
 	}
 
-	private static Supplier<AbstractTexture> download(Path path, String uri, boolean cape, Identifier id) throws IOException {
+	private static Supplier<NativeImage> download(Path path, String uri, boolean cape, Identifier id) throws IOException {
 		//? >=1.21.4 {
 		NativeImage download = PlayerSkinTextureDownloader.download(path, uri);
 		if (cape) {
@@ -64,8 +66,8 @@ public class PlayerSkinUtils {
 		} else {
 			download = PlayerSkinTextureDownloader.remapTexture(download, uri);
 		}
-		NativeImage image = download;
-		return () -> new NativeImageBackedTexture(/*? if >=1.21.5 {*/ id::toString, /*?}*/ image);
+		NativeImage finalDownload = download;
+		return () -> finalDownload;
 		//?} else {
 		/*return () -> new PlayerSkinTexture(path.toFile(), uri, DefaultSkinHelper.getTexture(), cape, () -> {
 			try {

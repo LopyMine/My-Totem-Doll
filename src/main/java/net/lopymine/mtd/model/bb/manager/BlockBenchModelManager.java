@@ -2,6 +2,7 @@ package net.lopymine.mtd.model.bb.manager;
 
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
+import net.lopymine.mtd.atlas.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.ModelTransform;
 import net.minecraft.client.render.model.json.*;
@@ -173,10 +174,12 @@ public class BlockBenchModelManager {
 		MModelBuilder builder = MModelBuilder.builder(ModelState.ROOT);
 
 		for (BBGroup group : model.getGroups()) {
-			builder.addChild(group.getName(), transformGroupsAndCubes(group, model));
+			builder.addChild(group.getName(), transformGroupsAndCubes(group, model), model.getLocation());
 		}
 
 		BBModelResolution resolution = model.getResolution();
+
+		MyTotemDollAtlasManager.MODEL_TEXTURES.addAll(builder.collectAllBuiltinTextures());
 
 		Supplier<MModel> supplier = () -> builder
 				.withTransform(ModelTransform./*? if <=1.21.4 {*/ /*pivot *//*?} else {*/ origin /*?}*/(-16.0F, -8.0F, 0.0F))
@@ -214,12 +217,12 @@ public class BlockBenchModelManager {
 				if (!get.isVisible()) {
 					continue;
 				}
-				builder.addChild(get.getName(), transformGroupsAndCubes(get, model));
+				builder.addChild(get.getName(), transformGroupsAndCubes(get, model), model.getLocation());
 			} else if (right.isPresent()) {
 				UUID uuid = right.get();
 				BBCube cube = model.getCube(uuid);
 				if (cube != null && cube.isVisible()) {
-					builder.addChild(cube.getUuid().toString(), getChildCube(cube));
+					builder.addChild(cube.getUuid().toString(), getChildCube(cube), model.getLocation());
 				}
 			}
 		}
