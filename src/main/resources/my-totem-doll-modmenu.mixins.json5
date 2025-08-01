@@ -1,0 +1,15 @@
+{
+    "required": true,
+    "package": "net.lopymine.mtd.mixin.modmenu",
+    "refmap": "${mod_id}.refmap.json",
+    "compatibilityLevel": "JAVA_${java}",
+	"plugin": "net.lopymine.mtd.compat.modmenu.ModMenuCompatPlugin",
+    "mixins": [
+    ],
+	"client": [
+		"FabricModMixin"
+	],
+    "injectors": {
+        "defaultRequire": 1
+    }
+}

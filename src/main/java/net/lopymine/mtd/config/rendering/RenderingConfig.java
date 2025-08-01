@@ -1,17 +1,20 @@
 package net.lopymine.mtd.config.rendering;
 
+import java.util.function.Supplier;
 import lombok.*;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.lopymine.mtd.utils.CodecUtils;
+import static net.lopymine.mtd.utils.CodecUtils.option;
 
 @Getter
 @Setter
 public class RenderingConfig {
 
 	public static final Codec<RenderingConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			HandRenderingConfig.CODEC.fieldOf("right_hand").forGetter(RenderingConfig::getRightHandConfig),
-			HandRenderingConfig.CODEC.fieldOf("left_hand").forGetter(RenderingConfig::getLeftHandConfig)
+			option("right_hand", HandRenderingConfig.getNewInstance(), HandRenderingConfig.CODEC, RenderingConfig::getRightHandConfig),
+			option("left_hand", HandRenderingConfig.getNewInstance(), HandRenderingConfig.CODEC, RenderingConfig::getRightHandConfig)
 	).apply(instance, RenderingConfig::new));
 
 	private HandRenderingConfig rightHandConfig;
@@ -22,9 +25,8 @@ public class RenderingConfig {
 		this.leftHandConfig  = leftHandConfig;
 	}
 
-	public static RenderingConfig getDefault() {
-		return new RenderingConfig(HandRenderingConfig.getDefault(), HandRenderingConfig.getDefault());
+	public static Supplier<RenderingConfig> getNewInstance() {
+		return () -> CodecUtils.parseNewInstanceHacky(CODEC);
 	}
-
 
 }

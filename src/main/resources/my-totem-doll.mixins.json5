@@ -4,6 +4,7 @@
     "refmap": "${mod_id}.refmap.json",
     "compatibilityLevel": "JAVA_${java}",
     "mixins": [
+	    "modmenu.FabricModMixin"
     ],
     "client": [
 	    //? if <=1.21.3 {

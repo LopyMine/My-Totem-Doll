@@ -1,22 +1,25 @@
 package net.lopymine.mtd.config.rendering;
 
+import java.util.function.Supplier;
 import lombok.*;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.lopymine.mtd.utils.CodecUtils;
+import static net.lopymine.mtd.utils.CodecUtils.option;
 
 @Getter
 @Setter
 public class HandRenderingConfig {
 
 	public static final Codec<HandRenderingConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			Codec.DOUBLE.fieldOf("scale").forGetter(HandRenderingConfig::getScale),
-			Codec.DOUBLE.fieldOf("offsetX").forGetter(HandRenderingConfig::getOffsetX),
-			Codec.DOUBLE.fieldOf("offsetY").forGetter(HandRenderingConfig::getOffsetY),
-			Codec.DOUBLE.fieldOf("offsetZ").forGetter(HandRenderingConfig::getOffsetZ),
-			Codec.DOUBLE.fieldOf("rotationX").forGetter(HandRenderingConfig::getRotationX),
-			Codec.DOUBLE.fieldOf("rotationY").forGetter(HandRenderingConfig::getRotationY),
-			Codec.DOUBLE.fieldOf("rotationZ").forGetter(HandRenderingConfig::getRotationZ)
+			option("scale", 1.0D, Codec.DOUBLE, HandRenderingConfig::getScale),
+			option("offsetX", 0.0D, Codec.DOUBLE, HandRenderingConfig::getOffsetX),
+			option("offsetY", 0.0D, Codec.DOUBLE, HandRenderingConfig::getOffsetY),
+			option("offsetZ", 0.0D, Codec.DOUBLE, HandRenderingConfig::getOffsetZ),
+			option("rotationX", 0.0D, Codec.DOUBLE, HandRenderingConfig::getRotationX),
+			option("rotationY", 0.0D, Codec.DOUBLE, HandRenderingConfig::getRotationY),
+			option("rotationZ", 0.0D, Codec.DOUBLE, HandRenderingConfig::getRotationZ)
 	).apply(instance, HandRenderingConfig::new));
 
 	private double scale;
@@ -37,8 +40,8 @@ public class HandRenderingConfig {
 		this.rotationZ = rotationZ;
 	}
 
-	public static HandRenderingConfig getDefault() {
-		return new HandRenderingConfig(1.0D, 0.0D, 0.0D, 0.0D, 0.0D, 0.0D, 0.0D);
+	public static Supplier<HandRenderingConfig> getNewInstance() {
+		return () -> CodecUtils.parseNewInstanceHacky(CODEC);
 	}
 
 	public void copy(HandRenderingConfig anotherHandConfig) {

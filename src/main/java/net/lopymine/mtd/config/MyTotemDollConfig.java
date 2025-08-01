@@ -22,7 +22,6 @@ import java.util.concurrent.CompletableFuture;
 import org.jetbrains.annotations.NotNull;
 
 import static net.lopymine.mtd.utils.CodecUtils.option;
-import static net.lopymine.mtd.utils.CodecUtils.optional;
 
 @Getter
 @Setter
@@ -30,24 +29,22 @@ import static net.lopymine.mtd.utils.CodecUtils.optional;
 public class MyTotemDollConfig {
 
 	public static final Codec<MyTotemDollConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			option("mod_enabled", Codec.BOOL, MyTotemDollConfig::isModEnabled),
-			option("debug_log_enabled", Codec.BOOL, MyTotemDollConfig::isDebugLogEnabled),
-			option("rendering_config", RenderingConfig.CODEC, MyTotemDollConfig::getRenderingConfig),
-			optional("standard_doll_skin_data", "", Codec.STRING, MyTotemDollConfig::getStandardTotemDollSkinValue),
-			optional("standard_doll_skin_type", TotemDollSkinType.STEVE, TotemDollSkinType.CODEC, MyTotemDollConfig::getStandardTotemDollSkinType),
-			optional("standard_doll_model_data", TotemDollModel.TWO_D_MODEL_ID, Identifier.CODEC, MyTotemDollConfig::getStandardTotemDollModelValue),
-			optional("standard_doll_model_arms_type", TotemDollArmsType.WIDE, TotemDollArmsType.CODEC, MyTotemDollConfig::getStandardTotemDollArmsType),
-			optional("tag_button_pos", new Vec2i(155, 48), Vec2i.CODEC, MyTotemDollConfig::getTagButtonPos),
-			optional("use_vanilla_totem_model", false, Codec.BOOL, MyTotemDollConfig::isUseVanillaTotemModel),
-
+			option("mod_enabled", true, Codec.BOOL, MyTotemDollConfig::isModEnabled),
+			option("debug_log_enabled", false, Codec.BOOL, MyTotemDollConfig::isDebugLogEnabled),
+			option("rendering_config", RenderingConfig.getNewInstance(), RenderingConfig.CODEC, MyTotemDollConfig::getRenderingConfig),
+			option("standard_doll_skin_data", "", Codec.STRING, MyTotemDollConfig::getStandardTotemDollSkinValue),
+			option("standard_doll_skin_type", TotemDollSkinType.STEVE, TotemDollSkinType.CODEC, MyTotemDollConfig::getStandardTotemDollSkinType),
+			option("standard_doll_model_data", TotemDollModel.TWO_D_MODEL_ID, Identifier.CODEC, MyTotemDollConfig::getStandardTotemDollModelValue),
+			option("standard_doll_model_arms_type", TotemDollArmsType.WIDE, TotemDollArmsType.CODEC, MyTotemDollConfig::getStandardTotemDollArmsType),
+			option("tag_button_pos", new Vec2i(155, 48), Vec2i.CODEC, MyTotemDollConfig::getTagButtonPos),
+			option("use_vanilla_totem_model", false, Codec.BOOL, MyTotemDollConfig::isUseVanillaTotemModel),
 			Codec.INT.optionalFieldOf("better_tag_menu_tooltip_size")
 					.xmap(o -> o.orElse(60), Optional::of)
 					.forGetter(MyTotemDollConfig::getBetterTagMenuTooltipSize),
-
-			optional("tag_menu_tooltip_model_scale", 1.0F, Codec.FLOAT, MyTotemDollConfig::getTagMenuTooltipModelScale),
-			optional("executor_threads_count", 6, Codec.INT, MyTotemDollConfig::getParallelTasksCount),
-			optional("first_run", true, Codec.BOOL, MyTotemDollConfig::isFirstRun),
-			optional("support_other_mods_totems", true, Codec.BOOL, MyTotemDollConfig::isSupportOtherModsTotems)
+			option("tag_menu_tooltip_model_scale", 1.0F, Codec.FLOAT, MyTotemDollConfig::getTagMenuTooltipModelScale),
+			option("executor_threads_count", 6, Codec.INT, MyTotemDollConfig::getParallelTasksCount),
+			option("first_run", true, Codec.BOOL, MyTotemDollConfig::isFirstRun),
+			option("support_other_mods_totems", true, Codec.BOOL, MyTotemDollConfig::isSupportOtherModsTotems)
 	).apply(instance, MyTotemDollConfig::new));
 
 	private static final File CONFIG_FILE = FabricLoader.getInstance().getConfigDir().resolve(MyTotemDoll.MOD_ID + ".json5").toFile();
@@ -72,7 +69,7 @@ public class MyTotemDollConfig {
 	public MyTotemDollConfig() {
 		this.modEnabled                  = true;
 		this.debugLogEnabled             = false;
-		this.renderingConfig             = RenderingConfig.getDefault();
+		this.renderingConfig             = RenderingConfig.getNewInstance().get();
 		this.standardTotemDollSkinValue  = "";
 		this.standardTotemDollSkinType   = TotemDollSkinType.STEVE;
 		this.standardTotemDollModelValue = TotemDollModel.TWO_D_MODEL_ID;

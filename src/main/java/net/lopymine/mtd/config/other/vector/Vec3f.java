@@ -32,4 +32,8 @@ public class Vec3f extends Vector3f {
 		this.y = vector3f.y();
 		this.z = vector3f.z();
 	}
+
+	public Vec3f copy() {
+		return new Vec3f(this.x(), this.y(), this.z());
+	}
 }

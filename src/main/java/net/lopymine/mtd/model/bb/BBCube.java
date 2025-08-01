@@ -16,7 +16,7 @@ import java.util.*;
 import org.jetbrains.annotations.NotNull;
 
 import static net.lopymine.mtd.utils.CodecUtils.option;
-import static net.lopymine.mtd.utils.CodecUtils.optional;
+
 
 @Getter
 @Setter
@@ -31,12 +31,12 @@ public class BBCube {
 			option("from", Vec3f.CODEC, BBCube::getFrom),
 			option("to", Vec3f.CODEC, BBCube::getTo),
 			option("origin", Vec3f.CODEC, BBCube::getOrigin),
-			optional("rotation", new Vec3f(), Vec3f.CODEC, BBCube::getRotation),
-			optional("inflate", Dilation.NONE, DILATION_CODEC, BBCube::getInflate),
+			option("rotation", new Vec3f(), Vec3f.CODEC, BBCube::getRotation),
+			option("inflate", Dilation.NONE, DILATION_CODEC, BBCube::getInflate),
 			option("autouv", Codec.INT, BBCube::getAutoUV),
 			option("faces", BBCubeFaces.CODEC, BBCube::getFaces),
 			option("uuid", Uuids.CODEC, BBCube::getUuid),
-			optional("visibility", true, Codec.BOOL, BBCube::isVisible)
+			option("visibility", true, Codec.BOOL, BBCube::isVisible)
 	).apply(inst, BBCube::new));
 
 	private String name;
@@ -95,7 +95,7 @@ public class BBCube {
 
 		public static final Codec<BBCubeFace> CODEC = RecordCodecBuilder.create(inst -> inst.group(
 				option("uv", UV.CODEC, BBCubeFace::getUv),
-				optional("rotation",0, Codec.INT, BBCubeFace::getRotation)
+				option("rotation",0, Codec.INT, BBCubeFace::getRotation)
 		).apply(inst, BBCubeFace::new));
 
 		private UV uv;

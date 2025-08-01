@@ -1,5 +1,3 @@
-- Ported to 1.21.6–7 (screw them with their new render caching, but in some ways I like it)
-- Reworked rendering shenanigans for 1.21.6 support, this also (probably) means better arms handling, when doll should use slim or wide arms
-- Fixed elytra model for 3d doll
-- Dolls on Welcome Screen now have your current skin
-- Fixed issue with crashing after resource reloading
+- Added new models: gnom, mini_3d, parrot, player_bucket, pots, rat, stairs, wheelchair by Kreo_gen
+(you can do the same by suggesting it in us Discord! `Mod Suggestions` → `my-totem-doll`)
+- Fixed main config options, now it's all optional
