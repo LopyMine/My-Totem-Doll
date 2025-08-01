@@ -24,7 +24,7 @@ public final class CodecUtils {
 
 	public static <A> A parseNewInstanceHacky(Codec<A> codec) {
 		try {
-			return codec.decode(JsonOps.INSTANCE, /*? <=1.17.1 {*//*new JsonParser().parse("{}")*//*?} else {*/JsonParser.parseString("{}")/*?}*/)/*? if >=1.20.5 {*/.getOrThrow()/*?} else {*//*.getOrThrow(false, MyTotemDollClient.LOGGER::error)*//*?}*/.getFirst();
+			return codec.decode(JsonOps.INSTANCE, /*? <=1.17.1 {*//*new JsonParser().parse("{}")*//*?} else {*/JsonParser.parseString("{}")/*?}*/)/*? if >=1.20.5 {*/.getOrThrow()/*?} else {*//*.getOrThrow(false, MyTotemDoll.LOGGER::error)*//*?}*/.getFirst();
 		} catch (Exception e) {
 			throw new IllegalArgumentException("Failed to create new instance of config in the %s mod".formatted(MyTotemDoll.MOD_NAME), e);
 		}
