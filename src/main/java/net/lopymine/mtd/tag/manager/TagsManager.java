@@ -58,6 +58,7 @@ public class TagsManager {
 						.build()
 		);
 
+
 	}
 
 	public static void reloadCustomModelIdsTags() {
@@ -113,6 +114,7 @@ public class TagsManager {
 				.setAction((data) -> data.setFrameMModel(modelId))
 				.build();
 		CUSTOM_MODEL_IDS_TAGS.put(ch, tag);
+		TotemDollModelFinder.getBuiltinTotemModels().add(modelId); // todo make it work in proper way
 	}
 
 	public static void registerPostprocessorTag(Tag tag) {

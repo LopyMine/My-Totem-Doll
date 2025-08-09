@@ -44,16 +44,6 @@ public class TotemDollModelFinder {
 		}
 	}
 
-	public static void registerBuiltinModels() {
-	    registerBuiltinModel("2d_doll");
-	    registerBuiltinModel("3d_doll");
-	    registerBuiltinModel("3d_funko");
-	}
-
-	private static void registerBuiltinModel(String name) {
-		BUILTIN_TOTEM_MODELS.add(MyTotemDoll.getDollModelId(name));
-	}
-
 	private static boolean isModelPath(Identifier id) {
 		return id.getPath().endsWith(".bbmodel");
 	}

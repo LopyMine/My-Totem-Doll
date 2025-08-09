@@ -14,7 +14,7 @@ import net.lopymine.mtd.utils.CodecUtils;
 import java.util.*;
 
 import static net.lopymine.mtd.utils.CodecUtils.option;
-import static net.lopymine.mtd.utils.CodecUtils.optional;
+
 
 
 @Setter
@@ -27,9 +27,9 @@ public class BBGroup {
 					RecordCodecBuilder.create(inst -> inst.group(
 							option("name", Codec.STRING, BBGroup::getName),
 							option("origin", Vec3f.CODEC, BBGroup::getOrigin),
-							optional("rotation", new Vec3f(), Vec3f.CODEC, BBGroup::getRotation),
+							option("rotation", new Vec3f(), Vec3f.CODEC, BBGroup::getRotation),
 							option("autouv", Codec.INT, BBGroup::getAutoUV),
-							optional("visibility", true, Codec.BOOL, BBGroup::isVisible),
+							option("visibility", true, Codec.BOOL, BBGroup::isVisible),
 							option("uuid", Uuids.CODEC, BBGroup::getUuid),
 							option("children", Codec.either(codec, Uuids.CODEC).listOf(), BBGroup::getChildren)
 					).apply(inst, BBGroup::new))

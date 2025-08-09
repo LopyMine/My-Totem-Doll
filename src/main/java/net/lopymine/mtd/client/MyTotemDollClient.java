@@ -36,7 +36,6 @@ public class MyTotemDollClient implements ClientModInitializer {
 		MyTotemDollEvents.register();
 		MyTotemDollReloadListener.register();
 		TotemDollPlugin.register();
-		TotemDollModelFinder.registerBuiltinModels();
 		//? if >=1.21.6 {
 		net.fabricmc.fabric.api.client.rendering.v1.SpecialGuiElementRegistry.register(
 				context -> new net.lopymine.mtd.doll.renderer.special.ItemGuiElementRenderer(context.vertexConsumers()));
