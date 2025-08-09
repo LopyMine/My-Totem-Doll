@@ -74,7 +74,7 @@ public class TotemDollRenderProperties {
 		this.enabledParts = created;
 	}
 
-	public void refresh(TotemDollTextures textures) {
+	public void refresh(TotemDollSprites textures) {
 		this.enabledParts = new String[0];
 		this.disabledParts = new String[0];
 		this.slim        = textures.getArmsType().isSlim();

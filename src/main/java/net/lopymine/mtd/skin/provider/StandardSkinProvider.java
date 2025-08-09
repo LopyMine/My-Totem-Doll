@@ -1,13 +1,9 @@
 package net.lopymine.mtd.skin.provider;
 
 import lombok.*;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.texture.*;
+import net.lopymine.mtd.atlas.manager.*;
 import net.minecraft.util.Identifier;
-import org.apache.commons.io.FileUtils;
 
-
-import net.fabricmc.loader.api.FabricLoader;
 
 import net.lopymine.mtd.api.Response;
 import net.lopymine.mtd.client.MyTotemDollClient;
@@ -20,7 +16,6 @@ import net.lopymine.mtd.skin.data.ParsedSkinData;
 import net.lopymine.mtd.thread.MyTotemDollTaskExecutor;
 import net.lopymine.mtd.utils.texture.*;
 
-import java.io.*;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.*;
@@ -76,7 +71,7 @@ public abstract class StandardSkinProvider implements SkinProvider {
 			int waitTime = 0;
 
 			while (true) {
-				TotemDollTextures textures = totemDollData.getTextures();
+				TotemDollSprites textures = totemDollData.getTextures();
 				textures.setState(LoadingState.DOWNLOADING);
 
 				Response<ParsedSkinData> response = this.loadDollFromAPI(value);
@@ -121,8 +116,9 @@ public abstract class StandardSkinProvider implements SkinProvider {
 					MyTotemDollClient.LOGGER.warn(text, objects);
 					return true;
 				};
-				SuccessAction onSuccess = () -> {
-					textures.setSkinTexture(skinId);
+
+				SuccessAction onSuccess = (sprite) -> {
+					textures.setSkinSprite(sprite);
 					textures.setState(LoadingState.DOWNLOADED);
 				};
 
@@ -130,16 +126,12 @@ public abstract class StandardSkinProvider implements SkinProvider {
 
 				if (parsedSkinData.getCapeUrl() != null) {
 					Identifier capeId = this.getCapeId(value);
-					TextureUtils.registerUrlTexture(parsedSkinData.getCapeUrl(), capeId, () -> {
-						textures.setCapeTexture(capeId);
-					}, null, true);
+					TextureUtils.registerUrlTexture(parsedSkinData.getCapeUrl(), capeId, textures::setCapeSprite, null, true);
 				}
 
 				if (parsedSkinData.getElytraUrl() != null) {
 					Identifier elytraId = this.getElytraId(value);
-					TextureUtils.registerUrlTexture(parsedSkinData.getElytraUrl(), elytraId, () -> {
-						textures.setElytraTexture(elytraId);
-					}, null, false);
+					TextureUtils.registerUrlTexture(parsedSkinData.getElytraUrl(), elytraId, textures::setElytraSprite, null, false);
 				}
 
 				break;
@@ -173,7 +165,7 @@ public abstract class StandardSkinProvider implements SkinProvider {
 		for (Entry<String, TotemDollData> entry : this.cache.entrySet()) {
 
 			TotemDollData value = entry.getValue();
-			TotemDollTextures textures = value.getTextures();
+			TotemDollSprites textures = value.getTextures();
 			textures.destroy();
 
 			list.add(loadDoll(entry.getKey(), false, value));
@@ -189,7 +181,7 @@ public abstract class StandardSkinProvider implements SkinProvider {
 			return CompletableFuture.completedFuture(null);
 		}
 
-		TotemDollTextures textures = totemDollData.getTextures();
+		TotemDollSprites textures = totemDollData.getTextures();
 		textures.destroy();
 
 		return loadDoll(value, false, totemDollData);

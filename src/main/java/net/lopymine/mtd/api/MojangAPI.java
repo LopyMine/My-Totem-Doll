@@ -1,6 +1,7 @@
 package net.lopymine.mtd.api;
 
 import com.google.gson.*;
+import net.minecraft.client.MinecraftClient;
 import org.apache.http.client.HttpResponseException;
 import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.skin.data.ParsedSkinData;
@@ -34,6 +35,14 @@ public class MojangAPI {
 		boolean debugLogEnabled = MyTotemDollClient.getConfig().isDebugLogEnabled();
 		int statusCode = -1;
 		String responseBody = "Not reached";
+
+		if (true) {
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e);
+			}
+		}
 
 		try {
 			HttpClient httpClient = HttpClient.newHttpClient();

@@ -1,6 +1,7 @@
 package net.lopymine.mtd.doll.renderer;
 
 import lombok.experimental.ExtensionMethod;
+import net.lopymine.mtd.atlas.AtlasSprite;
 import net.lopymine.mtd.extension.*;
 import net.lopymine.mtd.utils.*;
 import net.minecraft.client.MinecraftClient;
@@ -27,7 +28,6 @@ import net.minecraft.util.math.*;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.*;
 import org.jetbrains.annotations.*;
-import org.joml.Quaternionf;
 
 
 @ExtensionMethod({ItemStackExtension.class, DrawContextExtension.class})
@@ -174,9 +174,10 @@ public class TotemDollRenderer {
 	}
 
 	public static void render(MatrixStack matrices, VertexConsumerProvider provider, int light, int overlay, TotemDollData totemDollData) {
-		TotemDollTextures textures = totemDollData.getTexturesToRender();
-		Identifier capeTexture = textures.getCapeTexture();
-		Identifier skinTexture = textures.getSkinTexture();
+		TotemDollSprites textures = totemDollData.getTexturesToRender();
+		AtlasSprite skinSprite = textures.getSkinSprite();
+		AtlasSprite capeSprite = textures.getCapeSprite();
+		AtlasSprite elytraSprite = textures.getElytraSprite();
 		TotemDollModel model = totemDollData.getModelToRender();
 
 		String nickname = totemDollData.getNickname();
@@ -189,25 +190,22 @@ public class TotemDollRenderer {
 
 		matrices.push();
 		matrices.translate(0.5F, 0.5F, 0.5F);
-		matrices.scale(-1.0F, -1.0F, 1.0F); // 0 - -
+		matrices.scale(-1.0F, -1.0F, 1.0F); // - - 0
 		matrices.translate(-0.5F, -0.5F, -0.5F);
 
 		Drawer drawer = model.getDrawer();
 
 		if (nickname != null && nickname.equals("deadmau5")) {
-			drawer.texture("ears", skinTexture);
-			drawer.requestDrawingPart("ears");
+			drawer.requestDrawingPartWithTexture("ears", skinSprite);
 		}
 
-		if (capeTexture != null) {
-			drawer.texture("cape", textures::getCapeTexture);
-			drawer.requestDrawingPart("cape");
+		if (capeSprite != null && capeSprite.isUploaded()) {
+			drawer.requestDrawingPartWithTexture("cape", capeSprite);
 		}
 
-		drawer.texture("elytra", textures::getElytraTexture);
-		drawer.requestDrawingPart("elytra");
+		drawer.requestDrawingPartWithTexture("elytra", elytraSprite);
 
-		drawer.draw(matrices, provider, skinTexture, light, overlay, /*? if >=1.21 {*/ -1 /*?} else {*/ /*1.0F, 1.0F, 1.0F, 1.0F *//*?}*/);
+		drawer.draw(matrices, provider, skinSprite, light, overlay, /*? if >=1.21 {*/ -1 /*?} else {*/ /*1.0F, 1.0F, 1.0F, 1.0F *//*?}*/);
 
 		matrices.pop();
 	}
@@ -215,7 +213,7 @@ public class TotemDollRenderer {
 	private static void prepareStandardDollForRendering(ItemStack stack, TotemDollData totemDollData) {
 		AbstractClientPlayerEntity playerEntity = stack.getPlayerEntity();
 		if (playerEntity != null && MyTotemDollClient.getConfig().getStandardTotemDollSkinType() == TotemDollSkinType.HOLDING_PLAYER) {
-			totemDollData.setFrameTextures(TotemDollTextures.of(playerEntity));
+			totemDollData.setFrameTextures(TotemDollSprites.of(playerEntity));
 		}
 	}
 

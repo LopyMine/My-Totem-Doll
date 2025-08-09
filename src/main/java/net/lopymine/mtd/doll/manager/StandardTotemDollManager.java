@@ -1,6 +1,7 @@
 package net.lopymine.mtd.doll.manager;
 
-import net.minecraft.client.MinecraftClient;
+import net.lopymine.mtd.atlas.AtlasSprite;
+import net.lopymine.mtd.atlas.manager.MyTotemDollAtlasSpriteManager;
 import net.minecraft.client.texture.*;
 import net.minecraft.util.Identifier;
 import net.lopymine.mtd.MyTotemDoll;
@@ -76,22 +77,20 @@ public class StandardTotemDollManager {
 
 	public static TotemDollData loadFileSkin(@NotNull String data) {
 		TotemDollData totemDollData = TotemDollData.create(null);
-		TotemDollTextures textures = totemDollData.getTextures();
+		TotemDollSprites textures = totemDollData.getTextures();
 		textures.setState(LoadingState.DOWNLOADING);
 
 		CompletableFuture.runAsync(() -> {
 			Identifier id = MyTotemDoll.getDollTextureId("file/%s".formatted(Math.abs(data.hashCode())));
-			TextureManager textureManager = MinecraftClient.getInstance().getTextureManager();
 
 			try (InputStream inputStream = Files.newInputStream(Path.of(data))) {
 				NativeImage nativeImage = NativeImage.read(inputStream);
-				MinecraftClient.getInstance().send(() -> {
-					NativeImageBackedTexture texture = new NativeImageBackedTexture(/*? if >=1.21.5 {*/ id::toString, /*?}*/nativeImage);
-					textureManager.registerTexture(id, texture);
+
+				MyTotemDollAtlasSpriteManager.registerSkinSprite(id, nativeImage, (sprite) -> {
+					textures.setSkinSprite(sprite);
+					textures.setState(LoadingState.DOWNLOADED);
 				});
 
-				textures.setSkinTexture(id);
-				textures.setState(LoadingState.DOWNLOADED);
 			} catch (NoSuchFileException e) {
 				textures.setState(LoadingState.CRITICAL_ERROR);
 			} catch (Exception e) {
@@ -105,7 +104,7 @@ public class StandardTotemDollManager {
 
 	public static TotemDollData loadUrlSkin(@NotNull String data) {
 		TotemDollData totemDollData = TotemDollData.create(null);
-		TotemDollTextures textures = totemDollData.getTextures();
+		TotemDollSprites textures = totemDollData.getTextures();
 		textures.setState(LoadingState.DOWNLOADING);
 
 		CompletableFuture.runAsync(() -> {
@@ -118,8 +117,8 @@ public class StandardTotemDollManager {
 				return true;
 			};
 
-			SuccessAction onSuccess = () -> {
-				textures.setSkinTexture(id);
+			SuccessAction onSuccess = (sprite) -> {
+				textures.setSkinSprite(sprite);
 				textures.setState(LoadingState.DOWNLOADED);
 			};
 

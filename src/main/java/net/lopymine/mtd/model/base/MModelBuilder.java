@@ -2,6 +2,7 @@ package net.lopymine.mtd.model.base;
 
 import lombok.*;
 import lombok.experimental.ExtensionMethod;
+import net.lopymine.mtd.atlas.AtlasSprite;
 import net.minecraft.client.model.ModelTransform;
 
 
@@ -29,7 +30,7 @@ public class MModelBuilder {
 	@Nullable
 	private String name;
 	@Nullable
-	private Identifier builtinTexture;
+	private AtlasSprite builtinTexture;
 	private float xScale = 1.0F;
 	private float yScale = 1.0F;
 	private float zScale = 1.0F;
@@ -102,10 +103,10 @@ public class MModelBuilder {
 				boolean namespaceValid = Identifier.isNamespaceValid(split[0]);
 				boolean pathValid = Identifier.isPathValid(split[1]);
 				if (namespaceValid && pathValid) {
-					this.builtinTexture = Identifier.of(name);
+					this.builtinTexture = AtlasSprite.of(Identifier.of(name));
 				}
 			} else {
-				this.builtinTexture = location.getFolderId().withSuffixedPath(this.getName());
+				this.builtinTexture = AtlasSprite.of(location.getFolderId().withSuffixedPath(this.getName()));
 			}
 		}
 	}
@@ -115,8 +116,8 @@ public class MModelBuilder {
 		return this.name == null ? UUID.randomUUID().toString() : this.name;
 	}
 
-	public Collection<Identifier> collectAllBuiltinTextures() {
-		List<Identifier> textures = new LinkedList<>();
+	public Collection<AtlasSprite> collectAllBuiltinTextures() {
+		List<AtlasSprite> textures = new LinkedList<>();
 		if (this.builtinTexture != null) {
 			textures.add(this.builtinTexture);
 		}

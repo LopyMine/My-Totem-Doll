@@ -2,7 +2,7 @@ package net.lopymine.mtd.model.bb.manager;
 
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
-import net.lopymine.mtd.atlas.*;
+import net.lopymine.mtd.atlas.manager.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.ModelTransform;
 import net.minecraft.client.render.model.json.*;
@@ -179,7 +179,8 @@ public class BlockBenchModelManager {
 
 		BBModelResolution resolution = model.getResolution();
 
-		MyTotemDollAtlasManager.MODEL_TEXTURES.addAll(builder.collectAllBuiltinTextures());
+		builder.collectAllBuiltinTextures().forEach((id) -> MyTotemDollAtlasSpriteManager.registerSprite(id, null));
+		MyTotemDollAtlasManager.stitchAndUpdate(MyTotemDollAtlasSpriteManager.getSprites(), null);
 
 		Supplier<MModel> supplier = () -> builder
 				.withTransform(ModelTransform./*? if <=1.21.4 {*/ /*pivot *//*?} else {*/ origin /*?}*/(-16.0F, -8.0F, 0.0F))

@@ -22,21 +22,21 @@ public class TotemDollData {
 	private TotemDollModel frameModel;
 
 	@NotNull
-	private TotemDollTextures textures;
+	private TotemDollSprites textures;
 	@Nullable
-	private TotemDollTextures frameTextures;
+	private TotemDollSprites frameTextures;
 
 	@NotNull
 	private TotemDollRenderProperties renderProperties = new TotemDollRenderProperties();
 
-	public TotemDollData(@Nullable String nickname, @NotNull TotemDollTextures textures) {
+	public TotemDollData(@Nullable String nickname, @NotNull TotemDollSprites textures) {
 		this.renderProperties.refresh(textures);
 		this.renderProperties.setNickname(nickname);
 		this.textures = textures;
 	}
 
 	public static TotemDollData create(@Nullable String nickname) {
-		return new TotemDollData(nickname, TotemDollTextures.create());
+		return new TotemDollData(nickname, TotemDollSprites.create());
 	}
 
 	public String getNickname() {
@@ -95,7 +95,7 @@ public class TotemDollData {
 		return this.standardModel;
 	}
 
-	public TotemDollTextures getTexturesToRender() {
+	public TotemDollSprites getTexturesToRender() {
 		return this.frameTextures == null ? this.textures : this.frameTextures;
 	}
 
@@ -103,7 +103,7 @@ public class TotemDollData {
 		return new TotemDollData(this.renderProperties.getNickname(), this.textures.copy());
 	}
 
-	public void setTextures(@NotNull TotemDollTextures textures) {
+	public void setTextures(@NotNull TotemDollSprites textures) {
 		this.textures = textures;
 		if (this.standardModel == null) {
 			return;
@@ -111,7 +111,7 @@ public class TotemDollData {
 		this.standardModel.setSlim(textures.getArmsType().isSlim());
 	}
 
-	public void setFrameTextures(@Nullable TotemDollTextures frameTextures) {
+	public void setFrameTextures(@Nullable TotemDollSprites frameTextures) {
 		this.frameTextures = frameTextures;
 		if (frameTextures == null) {
 			return;

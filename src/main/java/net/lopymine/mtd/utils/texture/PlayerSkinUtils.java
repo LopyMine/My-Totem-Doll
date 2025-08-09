@@ -1,20 +1,17 @@
 package net.lopymine.mtd.utils.texture;
 
 import lombok.experimental.ExtensionMethod;
-import net.lopymine.mtd.atlas.MyTotemDollAtlasManager;
+import net.lopymine.mtd.atlas.AtlasSprite;
+import net.lopymine.mtd.atlas.manager.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.*;
-import net.minecraft.resource.*;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
 
-import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.extension.PlayerSkinTextureExtension;
 
 import java.io.*;
 import java.nio.file.*;
-import java.util.Optional;
 import java.util.function.Supplier;
 import org.jetbrains.annotations.*;
 
@@ -42,13 +39,11 @@ public class PlayerSkinUtils {
 				}
 				*///?}
 
-				MyTotemDollAtlasManager.registerSprite(textureId, image);
-				//MinecraftClient.getInstance().getTextureManager().registerTexture(textureId, image);
-				//? >=1.21.4 {
-				if (onSuccessRegistration != null) {
-					onSuccessRegistration.onSuccess();
-				}
-				//?}
+				MyTotemDollAtlasSpriteManager.registerSkinSprite(textureId, image, (sprite) -> {
+					if (onSuccessRegistration != null) {
+						onSuccessRegistration.onSuccess(sprite);
+					}
+				});
 			});
 		} catch (Exception e) {
 			MyTotemDollClient.LOGGER.error("Failed to download skin texture with id \"%s\": ".formatted(textureId), e.getMessage());
@@ -86,61 +81,6 @@ public class PlayerSkinUtils {
 			}
 		});
 		*///?}
-	}
-
-	@Nullable
-	public static Identifier remapTextureIfRequired(@Nullable Identifier id) {
-		if (id == null) {
-			return null;
-		}
-		TextureManager textureManager = MinecraftClient.getInstance().getTextureManager();
-		Identifier identifier = MyTotemDoll.id("remapped_textures/%s.png".formatted(MathHelper.abs(id.toString().hashCode())));
-		AbstractTexture remappedTexture = null;
-		try {
-			remappedTexture = textureManager.getTexture(identifier);
-		} catch (Exception ignored) {
-		}
-		if (remappedTexture instanceof NativeImageBackedTexture) {
-			return identifier;
-		}
-		AbstractTexture texture = textureManager.getTexture(id);
-		NativeImage image = null;
-		if (texture instanceof NativeImageBackedTexture backedTexture) {
-			image = backedTexture.getImage();
-		}
-		//? if <=1.21.3 {
-		/*if (texture instanceof PlayerSkinTexture skinTexture) {
-			if (skinTexture.cacheFile != null && skinTexture.cacheFile.exists()) {
-				try {
-					InputStream open = new FileInputStream(skinTexture.cacheFile);
-					image = NativeImage.read(open);
-				} catch (Exception e) {
-					if (MyTotemDollClient.getConfig().isDebugLogEnabled()) {
-						MyTotemDollClient.LOGGER.error("Failed to read player skin texture with id \"%s\"".formatted(id.toString()), e);
-					}
-					return id;
-				}
-			}
-		} else
-		*///?}
-		 if (texture instanceof ResourceTexture) {
-			ResourceManager resourceManager = MinecraftClient.getInstance().getResourceManager();
-			try {
-				InputStream open = resourceManager.open(id);
-				image = NativeImage.read(open);
-			} catch (Exception e) {
-				if (MyTotemDollClient.getConfig().isDebugLogEnabled()) {
-					MyTotemDollClient.LOGGER.error("Failed to read resource texture with id \"%s\"".formatted(id.toString()), e);
-				}
-				return id;
-			}
-		}
-		if (image == null || (image.getWidth() == 64 && image.getHeight() == 64)) {
-			return id;
-		}
-		NativeImage remapped = remapTextureToStandardSize(image, false);
-		textureManager.registerTexture(identifier, new NativeImageBackedTexture(/*? if >=1.21.5 {*/ identifier::toString, /*?}*/ remapped));
-		return identifier;
 	}
 
 	public static @NotNull NativeImage remapTextureToStandardSize(NativeImage image, boolean close) {
