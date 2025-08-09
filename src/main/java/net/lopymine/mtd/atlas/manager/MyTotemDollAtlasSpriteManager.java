@@ -66,6 +66,7 @@ public class MyTotemDollAtlasSpriteManager {
 
 		Resource resource = MinecraftClient.getInstance().getResourceManager().getResource(resourceId).orElse(null);
 		if (resource == null) {
+			sprite.setSpriteId(resourceId);
 			return null;
 		}
 
@@ -105,6 +106,8 @@ public class MyTotemDollAtlasSpriteManager {
 
 		if (stitchAndUpdate && onSpriteUploaded != null) {
 			MyTotemDollAtlasManager.stitchAndUpdate(ATLAS_SPRITES, () -> onSpriteUploaded.onUploaded(sprite));
+		} else {
+			sprite.setUploadAction(onSpriteUploaded);
 		}
 	}
 

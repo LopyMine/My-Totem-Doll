@@ -203,7 +203,9 @@ public class TotemDollRenderer {
 			drawer.requestDrawingPartWithTexture("cape", capeSprite);
 		}
 
-		drawer.requestDrawingPartWithTexture("elytra", elytraSprite);
+		if (elytraSprite.isUploaded()) {
+			drawer.requestDrawingPartWithTexture("elytra", elytraSprite);
+		}
 
 		drawer.draw(matrices, provider, skinSprite, light, overlay, /*? if >=1.21 {*/ -1 /*?} else {*/ /*1.0F, 1.0F, 1.0F, 1.0F *//*?}*/);
 

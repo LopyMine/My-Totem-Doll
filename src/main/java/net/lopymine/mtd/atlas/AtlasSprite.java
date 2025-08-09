@@ -2,6 +2,7 @@ package net.lopymine.mtd.atlas;
 
 import java.util.Objects;
 import lombok.*;
+import net.lopymine.mtd.atlas.stitch.OnSpriteUploaded;
 import net.minecraft.client.texture.*;
 import net.minecraft.resource.metadata.ResourceMetadata;
 import net.minecraft.util.Identifier;
@@ -19,6 +20,7 @@ public class AtlasSprite {
 	private SpriteContents contents;
 	@Nullable
 	private Runnable unregisterAction;
+	private OnSpriteUploaded uploadAction;
 	private volatile boolean uploaded;
 	private long cachedId = -1;
 
@@ -94,6 +96,9 @@ public class AtlasSprite {
 
 	public void markUploaded() {
 		this.uploaded = true;
+		if (this.uploadAction != null) {
+			this.uploadAction.onUploaded(this);
+		}
 	}
 
 	public void copyFrom(AtlasSprite registeredSprite) {
