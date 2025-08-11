@@ -7,7 +7,6 @@ import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.*;
 import net.minecraft.util.*;
 
-import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.tag.manager.TagsManager;
 import net.lopymine.mtd.utils.DrawUtils;
 
@@ -19,11 +18,9 @@ public class TagsTooltipComponent implements TooltipComponent {
 	private final Map<Identifier, Text> rows = new HashMap<>();
 
 	public TagsTooltipComponent(String tags) {
-		TagsManager.getTagsStream(tags).forEach((character) -> {
-			if (!TagsManager.hasTag(character)) {
-				return;
-			}
-			this.rows.put(TagsManager.getTagIcon(character), TagsManager.getAppliedTagDescription(character));
+		TagsManager.getRegisteredTags(tags).forEach((i) -> {
+			char c = (char) i;
+			this.rows.put(TagsManager.getTagIcon(c), TagsManager.getAppliedTagDescription(c));
 		});
 	}
 

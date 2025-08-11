@@ -12,8 +12,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.*;
 import net.minecraft.util.*;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.extension.ItemStackExtension;
 import net.lopymine.mtd.gui.widget.list.ListWithStaticHeaderWidget;
@@ -34,7 +32,7 @@ public class TagMenuWidget extends ListWithStaticHeaderWidget<TagRow> {
 	public TagMenuWidget(int x, int y, NameApplier nameApplier) {
 		super(x, y, 50, 156, 16, 35);
 
-		List<Tag> list = TagsManager.getTags().values().stream().toList();
+		List<Tag> list = TagsManager.getRegisteredTags().values().stream().toList();
 		for (int i = 0; i < list.size(); i += 2) {
 			List<Tag> tags = getRangeOfList(list, i);
 			List<TagButtonWidget> widgets = new ArrayList<>();

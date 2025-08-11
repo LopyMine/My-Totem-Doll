@@ -3,7 +3,6 @@ package net.lopymine.mtd.model.base;
 import lombok.*;
 import lombok.experimental.ExtensionMethod;
 import net.lopymine.mtd.atlas.*;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.*;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.model.json.*;
@@ -17,7 +16,6 @@ import net.lopymine.mtd.model.bb.*;
 
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.function.*;
 import java.util.stream.Collectors;
 import org.jetbrains.annotations.*;
 import org.slf4j.Logger;
@@ -30,6 +28,7 @@ public class MModel extends ModelPart {
 	@Setter(AccessLevel.PRIVATE)
 	private ModelTransformation transformation = ModelTransformation.NONE;
 	private final Map<String, MModel> mChildren;
+	private final List<MModel> mChildrenModels;
 	private final List<MCuboid> mCuboids;
 	private final ModelState state;
 	private final String name;
@@ -48,8 +47,9 @@ public class MModel extends ModelPart {
 		this.state     = state;
 		this.name      = name;
 		this.mChildren = mChildren;
+		this.mChildrenModels = new ArrayList<>(mChildren.values());
+		this.mChildrenModels.forEach((mmodel) -> mmodel.setParent(this));
 		this.mCuboids  = mCuboids;
-		this.mChildren.values().forEach((mmodel) -> mmodel.setParent(this));
 		this.builtinTexture = builtinTexture;
 	}
 
@@ -81,7 +81,7 @@ public class MModel extends ModelPart {
 			list.add(model);
 		}
 
-		for (MModel value : this.mChildren.values()) {
+		for (MModel value : this.mChildrenModels) {
 			list.addAll(value.findModels(suffix).getModels());
 		}
 
@@ -112,7 +112,7 @@ public class MModel extends ModelPart {
 			this.renderCuboids(matrices.peek(), consumer, light, overlay, /*? if >=1.21 {*/ color /*?} else {*/ /*red, green, blue, alpha *//*?}*/);
 		}
 
-		for (MModel model : this.mChildren.values()) {
+		for (MModel model : this.mChildrenModels) {
 			model.draw(matrices, provider, atlas, atlasRenderLayer, currentSpriteId, requestedParts, light, overlay, /*? if >=1.21 {*/ color /*?} else {*/ /*red, green, blue, alpha *//*?}*/);
 		}
 
@@ -162,7 +162,7 @@ public class MModel extends ModelPart {
 			logger.info(cuboidDilation);
 		}
 
-		for (MModel value : this.mChildren.values()) {
+		for (MModel value : this.mChildrenModels) {
 			value.logHierarchy(logger);
 		}
 	}

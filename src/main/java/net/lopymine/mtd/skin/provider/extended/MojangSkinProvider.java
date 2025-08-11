@@ -15,8 +15,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class MojangSkinProvider extends StandardSkinProvider {
 
-	public static final Pattern MINECRAFT_NICKNAME_REGEX = Pattern.compile("^[a-zA-Z0-9_]{2,16}$");
-
 	private static final MojangSkinProvider INSTANCE = new MojangSkinProvider();
 
 	private MojangSkinProvider() {
@@ -59,6 +57,23 @@ public class MojangSkinProvider extends StandardSkinProvider {
 
 	@Override
 	public boolean canProcess(String value) {
-		return MINECRAFT_NICKNAME_REGEX.matcher(value).matches();
+		if (value == null) {
+			return false;
+		}
+
+		int length = value.length();
+		if (length < 2 || length > 16) {
+			return false;
+		}
+
+		for (int i = 0; i < length; i++) {
+			char c = value.charAt(i);
+			if ((c == '_') || (c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) {
+				continue;
+			}
+			return false;
+		}
+
+		return true;
 	}
 }

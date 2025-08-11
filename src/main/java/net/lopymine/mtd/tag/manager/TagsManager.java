@@ -1,5 +1,6 @@
 package net.lopymine.mtd.tag.manager;
 
+import it.unimi.dsi.fastutil.chars.*;
 import net.minecraft.text.Text;
 import net.minecraft.util.*;
 
@@ -14,12 +15,12 @@ import org.jetbrains.annotations.*;
 
 public class TagsManager {
 
-	private static final Map<Character, CustomModelTag> CUSTOM_MODEL_IDS_TAGS = new LinkedHashMap<>();
-	private static final Map<Character, Tag> PREPROCESSOR_TAGS = new LinkedHashMap<>();
-	private static final Map<Character, Tag> POSTPROCESSOR_TAGS = new LinkedHashMap<>();
+	private static final Char2ObjectMap<CustomModelTag> CUSTOM_MODEL_IDS_TAGS = new Char2ObjectArrayMap<>();
+	private static final Char2ObjectMap<Tag> PREPROCESSOR_TAGS = new Char2ObjectArrayMap<>();
+	private static final Char2ObjectMap<Tag> POSTPROCESSOR_TAGS = new Char2ObjectArrayMap<>();
 
-	public static Map<Character, Tag> getTags() {
-		Map<Character, Tag> tags = new LinkedHashMap<>(PREPROCESSOR_TAGS);
+	public static Char2ObjectMap<Tag> getRegisteredTags() {
+		Char2ObjectMap<Tag> tags = new Char2ObjectLinkedOpenHashMap<>(PREPROCESSOR_TAGS);
 		tags.putAll(POSTPROCESSOR_TAGS);
 		return tags;
 	}
@@ -63,7 +64,7 @@ public class TagsManager {
 
 	public static void reloadCustomModelIdsTags() {
 		Collection<Set<Identifier>> values = TotemDollModelFinder.getFoundedTotemModels().values();
-		Set<Character> characters = getTags().keySet();
+		Set<Character> characters = getRegisteredTags().keySet();
 		TagsGenerator generator = new TagsGenerator();
 
 		CUSTOM_MODEL_IDS_TAGS.clear();
@@ -85,7 +86,7 @@ public class TagsManager {
 					return;
 				}
 
-				CUSTOM_MODEL_IDS_TAGS.put(next,
+				CUSTOM_MODEL_IDS_TAGS.put(next.charValue(),
 						CustomModelTag.startBuilder(next, id)
 								.setAction((data) -> data.setFrameMModel(id))
 								.build()
@@ -166,9 +167,9 @@ public class TagsManager {
 		processTags(tags, data, POSTPROCESSOR_TAGS);
 	}
 
-	public static <E extends Tag> void processTags(String tags, @NotNull TotemDollData data, Map<Character, E> map) {
-		getTagsStream(tags).forEach((character) -> {
-			Tag tag = map.get(character);
+	public static <E extends Tag> void processTags(String tags, @NotNull TotemDollData data, Char2ObjectMap<E> map) {
+		getTags(tags).forEach((i) -> {
+			Tag tag = map.get((char) i);
 			if (tag == null) {
 				return;
 			}
@@ -176,8 +177,15 @@ public class TagsManager {
 		});
 	}
 
-	public static Stream<Character> getTagsStream(String tags) {
-		return tags.trim().chars().mapToObj(i -> (char) i).distinct();
+	@NotNull
+	public static IntStream getRegisteredTags(String tags) {
+		Char2ObjectMap<Tag> registeredTags = getRegisteredTags();
+		return tags.trim().chars().filter((i) -> hasRegisteredTag(registeredTags, (char) i));
+	}
+
+	@NotNull
+	public static IntStream getTags(String tags) {
+		return tags.trim().chars();
 	}
 
 	public static String addTag(String string, Character tag) {
@@ -193,7 +201,7 @@ public class TagsManager {
 	}
 
 	private static String sortTags(String unsortedTags) {
-		return getTagsStream(unsortedTags).sorted().map(String::valueOf).collect(Collectors.joining());
+		return getTags(unsortedTags).sorted().mapToObj((i) -> String.valueOf((char) i)).collect(Collectors.joining());
 	}
 
 	private static String joinData(String... data) {
@@ -214,27 +222,27 @@ public class TagsManager {
 		return joinData(data);
 	}
 
-	public static Identifier getTagIcon(Character character) {
-		if (hasTag(CUSTOM_MODEL_IDS_TAGS, character)) {
+	public static Identifier getTagIcon(char c) {
+		if (hasRegisteredTag(CUSTOM_MODEL_IDS_TAGS, c)) {
 			return MyTotemDoll.id("textures/gui/tags/unknown.png");
 		}
-		return MyTotemDoll.id("textures/gui/tags/%s.png".formatted(character));
+		return MyTotemDoll.id("textures/gui/tags/%s.png".formatted(c));
 	}
 
 	public static Text getTagDescription(Character character) {
 		return MyTotemDoll.text("tags.%s".formatted(character));
 	}
 
-	public static Text getAppliedTagDescription(Character character) {
-		return MyTotemDoll.text("tags.%s.applied".formatted(character));
+	public static Text getAppliedTagDescription(char c) {
+		return MyTotemDoll.text("tags.%s.applied".formatted(c));
 	}
 
-	public static boolean hasTag(Character character) {
-		return hasTag(getTags(), character);
+	@SuppressWarnings("all")
+	public static boolean hasAnyTag(String tags) {
+		return getRegisteredTags(tags).findFirst().isPresent();
 	}
 
-	public static <E extends Tag> boolean hasTag(Map<Character, E> tags, Character character) {
-		return tags.containsKey(character);
+	public static <E extends Tag> boolean hasRegisteredTag(Char2ObjectMap<E> registeredTags, char c) {
+		return registeredTags.containsKey(c);
 	}
-
 }

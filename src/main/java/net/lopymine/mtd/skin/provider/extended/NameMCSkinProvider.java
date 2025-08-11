@@ -10,8 +10,6 @@ import net.lopymine.mtd.skin.provider.StandardSkinProvider;
 
 public class NameMCSkinProvider extends StandardSkinProvider {
 
-	public static final String NAME_MC_SKIN_REGEX = "([a-z0-9]{16})$";
-
 	private static final NameMCSkinProvider INSTANCE = new NameMCSkinProvider();
 
 	private NameMCSkinProvider() {
@@ -39,6 +37,18 @@ public class NameMCSkinProvider extends StandardSkinProvider {
 
 	@Override
 	public boolean canProcess(String value) {
-		return value.matches(NAME_MC_SKIN_REGEX);
+		if (value == null || value.length() != 16){
+			return false;
+		}
+
+		for (int i = 0; i < 16; i++) {
+			char c = value.charAt(i);
+			if ((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')) {
+				continue;
+			}
+			return false;
+		}
+
+		return true;
 	}
 }
