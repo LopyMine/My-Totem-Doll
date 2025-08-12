@@ -13,7 +13,6 @@ import net.lopymine.mtd.doll.data.TotemDollSprites;
 import net.lopymine.mtd.model.base.*;
 import net.lopymine.mtd.model.bb.manager.BlockBenchModelManager;
 import java.util.*;
-import java.util.function.*;
 import org.jetbrains.annotations.Nullable;
 
 @Getter
@@ -171,12 +170,10 @@ public class TotemDollModel extends Model {
 
 		private final Map<String, AtlasSprite> textures = new HashMap<>();
 
-		private final Function<Identifier, RenderLayer> layerFunction;
 		private final TotemDollModel model;
 
 		public Drawer(TotemDollModel model) {
 			this.model         = model;
-			this.layerFunction = model::getLayer;
 		}
 
 		public void requestDrawingPartWithTexture(String part, AtlasSprite sprite) {
@@ -191,10 +188,10 @@ public class TotemDollModel extends Model {
 			enableIfPresent(rightArm);
 
 			LockableAtlasTexture atlasTexture = MyTotemDollAtlasManager.getAtlasTexture();
-			RenderLayer atlasRenderLayer = this.layerFunction.apply(atlasTexture.getAtlas().getId());
+			RenderLayer renderLayer = MyTotemDollAtlasManager.getRenderLayer();
 
 			atlasTexture.setLocked(true);
-			this.model.getMain().draw(matrices, provider, atlasTexture.getAtlas(), atlasRenderLayer, mainTexture, this.textures, light, overlay, /*? if >=1.21 {*/color/*?} else {*/ /*red, green, blue, alpha*//*?}*/);
+			this.model.getMain().draw(matrices, provider, atlasTexture.getAtlas(), renderLayer, mainTexture, this.textures, light, overlay, /*? if >=1.21 {*/color/*?} else {*/ /*red, green, blue, alpha*//*?}*/);
 			atlasTexture.setLocked(false);
 
 			disableIfPresent(leftArm);

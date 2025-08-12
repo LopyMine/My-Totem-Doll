@@ -19,7 +19,7 @@ public class MyTotemDollTaskExecutor {
 		}
 	}
 
-	public static void stop() {
+	public static void close() {
 		MAIN_EXECUTOR.shutdown();
 	}
 

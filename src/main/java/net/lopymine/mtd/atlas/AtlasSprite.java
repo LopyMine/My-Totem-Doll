@@ -84,6 +84,14 @@ public class AtlasSprite {
 		}
 	}
 
+	public void closeAnyway() {
+		this.uploaded = false;
+		if (this.contents != null) {
+			this.contents.close();
+			this.contents = null;
+		}
+	}
+
 	public void closeAndUnregisterAnyway() {
 		this.uploaded = false;
 		if (this.contents != null) {

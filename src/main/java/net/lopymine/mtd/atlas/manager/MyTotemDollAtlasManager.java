@@ -9,6 +9,7 @@ import net.lopymine.mtd.atlas.stitch.*;
 import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.thread.MyTotemDollTaskExecutor;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.texture.*;
 import net.minecraft.client.texture.SpriteLoader.StitchResult;
 import net.minecraft.resource.*;
@@ -19,12 +20,18 @@ public class MyTotemDollAtlasManager {
 
 	private static final StitchHooksManager STITCH_HOOKS_MANAGER = new StitchHooksManager();
 	private static final AtomicInteger LATEST_ATLAS_VERSION = new AtomicInteger();
+	public static final Identifier ATLAS_ID = MyTotemDoll.id("main_atlas.png");
+	public static final RenderLayer ATLAS_RENDER_LAYER = RenderLayer.getEntityTranslucent(ATLAS_ID);
 	@Nullable
 	private static LockableAtlasTexture ATLAS_TEXTURE;
 
 	@NotNull
 	public static SpriteAtlasTexture createNotRegisteredInstance() {
-		return new SpriteAtlasTexture(MyTotemDoll.id("main_atlas.png"));
+		return new SpriteAtlasTexture(ATLAS_ID);
+	}
+
+	public static RenderLayer getRenderLayer() {
+		return ATLAS_RENDER_LAYER;
 	}
 
 	@NotNull
@@ -53,11 +60,6 @@ public class MyTotemDollAtlasManager {
 		return ATLAS_TEXTURE;
 	}
 
-	@NotNull
-	public static Sprite getSprite(Identifier id) {
-		return getAtlasTexture().getAtlas().getSprite(id);
-	}
-
 	public static void stitchAndUpdate(List<AtlasSprite> sprites, @Nullable OnAtlasStitched onAtlasStitched) {
 		stitchAndUpdate(sprites, MyTotemDollTaskExecutor.MAIN_EXECUTOR, onAtlasStitched);
 	}
@@ -83,6 +85,13 @@ public class MyTotemDollAtlasManager {
 
 		AtlasStitchingContext stitchingContext = new AtlasStitchingContext(currentId, atlasTexture, sprites);
 		future.thenAcceptAsync(stitchingContext::upload, applyExecutor);
+	}
+
+	public static void close() {
+		if (ATLAS_TEXTURE == null) {
+			return;
+		}
+		ATLAS_TEXTURE.getAtlas().close();
 	}
 
 	private record AtlasStitchingContext(int version, SpriteAtlasTexture atlas, List<AtlasSprite> atlasSprites) {

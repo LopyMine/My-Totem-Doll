@@ -90,6 +90,7 @@ public class MyTotemDollAtlasSpriteManager {
 			if (onSpriteUploaded != null) {
 				onSpriteUploaded.onUploaded(alreadyRegisteredSprite);
 			}
+			image.close();
 			return;
 		}
 
@@ -101,7 +102,11 @@ public class MyTotemDollAtlasSpriteManager {
 			specialSprites.remove(spriteUniqueId);
 			ATLAS_SPRITES.remove(sprite);
 		});
-		specialSprites.put(spriteUniqueId, sprite);
+		AtlasSprite oldValue = specialSprites.put(spriteUniqueId, sprite);
+		if (oldValue != null) {
+			oldValue.closeAnyway();
+			ATLAS_SPRITES.remove(oldValue);
+		}
 		ATLAS_SPRITES.add(sprite);
 
 		if (stitchAndUpdate && onSpriteUploaded != null) {
@@ -111,13 +116,13 @@ public class MyTotemDollAtlasSpriteManager {
 		}
 	}
 
-	public static void clear() {
-		ATLAS_SPRITES.forEach(AtlasSprite::close);
-		ATLAS_SPRITES.clear();
+	public static void close() {
+		ATLAS_SPRITES.forEach(AtlasSprite::closeAnyway);
 	}
 
 	public static void reload() {
-		MyTotemDollAtlasSpriteManager.clear();
+		ATLAS_SPRITES.forEach(AtlasSprite::close);
+		ATLAS_SPRITES.clear();
 		ATLAS_SPRITES.add(AtlasSprite.of(MissingSprite.createSpriteContents()));
 		ATLAS_SPRITES.addAll(CACHED_SPECIAL_SKIN_SPRITES.values());
 		ATLAS_SPRITES.addAll(CACHED_SPECIAL_REMAPPED_SPRITES.values());
