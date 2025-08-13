@@ -44,7 +44,8 @@
 	    "ItemStackMixin",
 	    "HandledScreenMixin",
 	    "MinecraftClientMixin",
-	    "TextureManagerMixin"
+	    "TextureManagerMixin",
+	    "GameRendererQueueMixin"
     ],
     "injectors": {
         "defaultRequire": 1
