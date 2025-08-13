@@ -1,7 +1,6 @@
 package net.lopymine.mtd.utils.texture;
 
 import lombok.experimental.ExtensionMethod;
-import net.lopymine.mtd.atlas.AtlasSprite;
 import net.lopymine.mtd.atlas.manager.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.*;
@@ -39,7 +38,7 @@ public class PlayerSkinUtils {
 				}
 				*///?}
 
-				MyTotemDollAtlasSpriteManager.registerSkinSprite(textureId, image, (sprite) -> {
+				MyTotemDollAtlasSpriteManager.registerSpecialSkinSprite(textureId, image, true, (sprite) -> {
 					if (onSuccessRegistration != null) {
 						onSuccessRegistration.onSuccess(sprite);
 					}

@@ -12,17 +12,18 @@ import org.jetbrains.annotations.*;
 @Getter
 public class AtlasSprite {
 
-	private boolean closable = true;
-
 	@NotNull
 	private Identifier spriteId;
 	@Nullable
 	private SpriteContents contents;
+
+	private long cachedId = -1;
+	private boolean closable = true;
 	@Nullable
 	private Runnable unregisterAction;
 	private OnSpriteUploaded uploadAction;
+
 	private volatile boolean uploaded;
-	private long cachedId = -1;
 
 	private AtlasSprite(@NotNull Identifier spriteId) {
 		this.spriteId = spriteId;
@@ -51,6 +52,12 @@ public class AtlasSprite {
 		AtlasSprite atlasSprite = new AtlasSprite(spriteId);
 		atlasSprite.setContents(contents);
 		return atlasSprite;
+	}
+
+	public static void updateContents(AtlasSprite sprite, NativeImage image) {
+		SpriteDimensions dimensions = new SpriteDimensions(image.getWidth(), image.getHeight());
+		SpriteContents contents = new SpriteContents(sprite.getSpriteId(), dimensions, image, ResourceMetadata.NONE);
+		sprite.setContents(contents);
 	}
 
 	public static long generateUniqueIdByContent(NativeImage image) {

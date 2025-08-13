@@ -224,7 +224,7 @@ public class TotemDollRenderer {
 
 	private static void prepareStandardDollForRendering(AbstractClientPlayerEntity playerEntity, TotemDollData totemDollData) {
 		if (playerEntity != null && MyTotemDollClient.getConfig().getStandardTotemDollSkinType() == TotemDollSkinType.HOLDING_PLAYER) {
-			totemDollData.setFrameTextures(TotemDollSprites.of(playerEntity));
+			totemDollData.setFrameTextures(playerEntity);
 		}
 	}
 

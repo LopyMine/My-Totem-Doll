@@ -86,7 +86,7 @@ public class WelcomeScreen extends Screen {
 			}
 			net.minecraft.client.util.SkinTextures skinTextures = optional.get();
 			//?}
-			widget.getData().setTextures(TotemDollSprites.of(skinTextures, true));
+			widget.getData().setTextures(TotemDollSprites.of(skinTextures));
 		});
 		//?} else {
 

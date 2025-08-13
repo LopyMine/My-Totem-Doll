@@ -1,18 +1,21 @@
 package net.lopymine.mtd.atlas.manager;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import io.netty.util.collection.*;
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Consumer;
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.atlas.*;
 import net.lopymine.mtd.atlas.stitch.*;
 import net.lopymine.mtd.client.MyTotemDollClient;
+import net.lopymine.mtd.config.totem.TotemDollArmsType;
 import net.lopymine.mtd.doll.data.TotemDollSprites;
 import net.lopymine.mtd.utils.texture.PlayerSkinUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.*;
+import net.minecraft.client.util.SkinTextures;
 import net.minecraft.resource.Resource;
-import net.minecraft.resource.metadata.ResourceMetadata;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.*;
@@ -28,59 +31,39 @@ public class MyTotemDollAtlasSpriteManager {
 		return ATLAS_SPRITES;
 	}
 
-	public static void registerSprite(AtlasSprite id, @Nullable OnAtlasStitched onAtlasStitched) {
-		Resource resource = MinecraftClient.getInstance().getResourceManager().getResource(id.getSpriteId()).orElse(null);
-		if (resource == null) {
-			return;
-		}
-		try {
-			registerSprite(id, NativeImage.read(resource.getInputStream()), onAtlasStitched); // Don't close. Thanks.
-		} catch (IOException e) {
-			MyTotemDollClient.LOGGER.error("Failed to register mod's texture as a sprite in atlas!", e);
-		}
+	public static void registerSprite(AtlasSprite id, boolean stitchAndUpdate, @Nullable OnAtlasStitched onAtlasStitched) {
+		loadFromResource(id.getSpriteId(), (image) -> registerSprite(id, image, stitchAndUpdate, onAtlasStitched));
 	}
 
-	public static void registerSprite(AtlasSprite id, NativeImage image, @Nullable OnAtlasStitched onAtlasStitched) {
-		SpriteDimensions dimensions = new SpriteDimensions(image.getWidth(), image.getHeight());
-		SpriteContents contents = new SpriteContents(id.getSpriteId(), dimensions, image, ResourceMetadata.NONE);
-		id.setContents(contents);
-		ATLAS_SPRITES.add(id);
-		if (onAtlasStitched != null) {
+	public static void registerSprite(AtlasSprite sprite, NativeImage image, boolean stitchAndUpdate, @Nullable OnAtlasStitched onAtlasStitched) {
+		AtlasSprite.updateContents(sprite, image);
+		ATLAS_SPRITES.add(sprite);
+		if (stitchAndUpdate) {
 			MyTotemDollAtlasManager.stitchAndUpdate(ATLAS_SPRITES, onAtlasStitched);
 		}
 	}
 
-	public static void registerSkinSprite(Identifier id, NativeImage image, @Nullable OnSpriteUploaded onSpriteUploaded) {
-		registerSpecialSprite(image, id, CACHED_SPECIAL_SKIN_SPRITES, true, onSpriteUploaded);
+	public static void registerSpecialSkinSprite(Identifier id, boolean stitchAndUpdate, @Nullable OnSpriteUploaded onSpriteUploaded) {
+		loadFromResource(id, (image) -> registerSpecialSkinSprite(id, image, stitchAndUpdate, onSpriteUploaded));
 	}
 
-	@Nullable
-	public static AtlasSprite registerRemappedSprite(AtlasSprite sprite) {
+	public static void registerSpecialSkinSprite(Identifier id, NativeImage image, boolean stitchAndUpdate, @Nullable OnSpriteUploaded onSpriteUploaded) {
+		registerSpecialSprite(image, id, CACHED_SPECIAL_SKIN_SPRITES, stitchAndUpdate, onSpriteUploaded);
+	}
+
+	public static void registerSpecialRemappedSprite(AtlasSprite sprite) {
 		long cachedId = sprite.getCachedId();
 		if (cachedId != -1 && CACHED_SPECIAL_REMAPPED_SPRITES.containsKey(cachedId)) {
-			return sprite;
+			return;
 		}
 
 		Identifier resourceId = sprite.getSpriteId();
 		sprite.setSpriteId(MyTotemDoll.id("remapped_sprites/%s.png".formatted(MathHelper.abs(resourceId.toString().hashCode()))));
 
-		Resource resource = MinecraftClient.getInstance().getResourceManager().getResource(resourceId).orElse(null);
-		if (resource == null) {
-			sprite.setSpriteId(resourceId);
-			return null;
-		}
-
-		try {
-			NativeImage image = NativeImage.read(resource.getInputStream());
+		loadFromResource(resourceId, (image) -> {
 			NativeImage remapped = PlayerSkinUtils.remapTextureToStandardSize(image, true);
-
 			registerSpecialSprite(remapped, resourceId, CACHED_SPECIAL_REMAPPED_SPRITES, false, sprite::copyFrom);
-			return sprite;
-		} catch (IOException e) {
-			MyTotemDollClient.LOGGER.error("Failed to remap texture as a sprite in atlas!", e);
-		}
-
-		return null;
+		});
 	}
 
 	private static void registerSpecialSprite(NativeImage image, Identifier id, LongObjectMap<AtlasSprite> specialSprites, boolean stitchAndUpdate, @Nullable OnSpriteUploaded onSpriteUploaded) {
@@ -116,6 +99,32 @@ public class MyTotemDollAtlasSpriteManager {
 		}
 	}
 
+
+	private static void loadFromResource(Identifier id, Consumer<NativeImage> consumer) {
+		Resource resource = MinecraftClient.getInstance().getResourceManager().getResource(id).orElse(null);
+		if (resource == null) {
+			AbstractTexture texture = MinecraftClient.getInstance().getTextureManager().textures.get(id);
+			if (!(texture instanceof NativeImageBackedTexture backedTexture)) {
+				MyTotemDollClient.LOGGER.error("Failed to register mod's texture as a sprite in atlas! Failed to find texture even from TextureManager!");
+				return;
+			}
+			NativeImage image = backedTexture.getImage();
+			if (image == null) {
+				MyTotemDollClient.LOGGER.error("Failed to register mod's texture as a sprite in atlas! Found image in TextureManager, but it's null somehow!?");
+				return;
+			}
+			NativeImage nativeImage = new NativeImage(image.getWidth(), image.getWidth(), true);
+			nativeImage.copyFrom(image);
+			consumer.accept(nativeImage);
+			return;
+		}
+		try {
+			consumer.accept(NativeImage.read(resource.getInputStream()));
+		} catch (IOException e) {
+			MyTotemDollClient.LOGGER.error("Failed to load resource for mod's atlas:", e);
+		}
+	}
+
 	public static void close() {
 		ATLAS_SPRITES.forEach(AtlasSprite::closeAnyway);
 	}
@@ -126,7 +135,7 @@ public class MyTotemDollAtlasSpriteManager {
 		ATLAS_SPRITES.add(AtlasSprite.of(MissingSprite.createSpriteContents()));
 		ATLAS_SPRITES.addAll(CACHED_SPECIAL_SKIN_SPRITES.values());
 		ATLAS_SPRITES.addAll(CACHED_SPECIAL_REMAPPED_SPRITES.values());
-		registerSprite(TotemDollSprites.STEVE_SKIN_SPRITE, null);
-		registerRemappedSprite(TotemDollSprites.ELYTRA_SPRITE);
+		registerSprite(TotemDollSprites.STEVE_SKIN_SPRITE, false, null);
+		registerSpecialRemappedSprite(TotemDollSprites.ELYTRA_SPRITE);
 	}
 }

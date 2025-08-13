@@ -1,8 +1,12 @@
 package net.lopymine.mtd.doll.data;
 
+import java.util.Objects;
 import lombok.*;
 import net.lopymine.mtd.model.bb.manager.BlockBenchModelManager;
+import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumerProvider.Immediate;
+import net.minecraft.client.util.SkinTextures;
+import net.minecraft.client.util.SkinTextures.Model;
 import net.minecraft.util.Identifier;
 
 import net.lopymine.mtd.doll.model.TotemDollModel;
@@ -117,6 +121,25 @@ public class TotemDollData {
 			return;
 		}
 		this.getModelToRender().setSlim(frameTextures.getArmsType().isSlim());
+	}
+
+	public void setFrameTextures(@Nullable AbstractClientPlayerEntity playerEntity) {
+		if (playerEntity == null) {
+			return;
+		}
+
+		//? if >=1.21 {
+		SkinTextures skinTextures = playerEntity.getSkinTextures();
+		//?} else {
+		/*AbstractClientPlayerEntity skinTextures = playerEntity;
+		*///?}
+
+		Identifier skinTexture = skinTextures.texture();
+		Identifier capeTexture = skinTextures.capeTexture();
+		Identifier elytraTexture = skinTextures.elytraTexture();
+		boolean slim = skinTextures.model() == Model.SLIM;
+
+		this.setFrameTextures(this.renderProperties.getPlayerSprites(skinTexture, capeTexture, elytraTexture, slim, true));
 	}
 
 	public void clearAllFrameModelsCompletely() {

@@ -53,6 +53,7 @@ public class TotemDollGuiElementRenderer extends SpecialGuiElementRenderer<Totem
 		PROPERTIES_RENDERERS.entrySet().removeIf((entry) -> {
 			TotemDollGuiElementRenderer renderer = entry.getValue();
 			if (!renderer.isActive()) {
+				renderer.close();
 				return true;
 			}
 			renderer.setActive(false);

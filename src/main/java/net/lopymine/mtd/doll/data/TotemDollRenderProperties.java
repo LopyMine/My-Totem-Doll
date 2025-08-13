@@ -1,5 +1,6 @@
 package net.lopymine.mtd.doll.data;
 
+import it.unimi.dsi.fastutil.ints.*;
 import java.util.*;
 import java.util.function.Consumer;
 import lombok.*;
@@ -29,6 +30,8 @@ public class TotemDollRenderProperties {
 	private MModel frameMModel;
 	@NotNull
 	private final Map<Identifier, MModel> cachedFrameMModels = new HashMap<>();
+	@NotNull
+	private final Int2ObjectMap<TotemDollSprites> cachedFrameTextures = new Int2ObjectArrayMap<>();
 
 	@Override
 	public boolean equals(Object o) {
@@ -39,6 +42,17 @@ public class TotemDollRenderProperties {
 	@Override
 	public int hashCode() {
 		return Objects.hash(this.isSlim(), this.getRenderContext(), this.getNickname(), Arrays.hashCode(this.getDisabledParts()), Arrays.hashCode(this.getEnabledParts()), this.getFrameMModel(), this.getStandardMModel());
+	}
+
+	public TotemDollSprites getPlayerSprites(Identifier skinTexture, Identifier capeTexture, Identifier elytraTexture, boolean slim, boolean remapCape) {
+		int hash = Objects.hash(skinTexture, capeTexture, elytraTexture, slim);
+		TotemDollSprites cachedSprites = this.cachedFrameTextures.get(hash);
+		if (cachedSprites == null) {
+			TotemDollSprites sprites = TotemDollSprites.of(skinTexture, capeTexture, elytraTexture, slim, remapCape);
+			this.cachedFrameTextures.put(hash, sprites);
+			return sprites;
+		}
+		return cachedSprites;
 	}
 
 	public void consumeFrameMModel(Identifier id, Consumer<MModel> set) {

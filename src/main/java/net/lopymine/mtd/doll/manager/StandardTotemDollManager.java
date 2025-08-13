@@ -1,6 +1,5 @@
 package net.lopymine.mtd.doll.manager;
 
-import net.lopymine.mtd.atlas.AtlasSprite;
 import net.lopymine.mtd.atlas.manager.MyTotemDollAtlasSpriteManager;
 import net.minecraft.client.texture.*;
 import net.minecraft.util.Identifier;
@@ -86,7 +85,7 @@ public class StandardTotemDollManager {
 			try (InputStream inputStream = Files.newInputStream(Path.of(data))) {
 				NativeImage nativeImage = NativeImage.read(inputStream);
 
-				MyTotemDollAtlasSpriteManager.registerSkinSprite(id, nativeImage, (sprite) -> {
+				MyTotemDollAtlasSpriteManager.registerSpecialSkinSprite(id, nativeImage, true, (sprite) -> {
 					textures.setSkinSprite(sprite);
 					textures.setState(LoadingState.DOWNLOADED);
 				});

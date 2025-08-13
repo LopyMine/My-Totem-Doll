@@ -3,7 +3,10 @@ package net.lopymine.mtd.doll.data;
 import lombok.*;
 import net.lopymine.mtd.atlas.*;
 import net.lopymine.mtd.atlas.manager.*;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.util.SkinTextures;
+import net.minecraft.client.util.SkinTextures.Model;
 import net.minecraft.util.Identifier;
 
 import net.lopymine.mtd.config.totem.TotemDollArmsType;
@@ -50,28 +53,40 @@ public class TotemDollSprites {
 	}
 
 	public static TotemDollSprites of(AbstractClientPlayerEntity player) {
-		//? if >=1.21 {
-		return of(player.getSkinTextures(), true);
-		//?} else {
-		/*Identifier capeTexture = PlayerSkinUtils.remapTextureIfRequired(player.getCapeTexture());
-		TotemDollSprites totemDollTextures = new TotemDollSprites(player.getSkinTexture(), capeTexture, player.getElytraTexture(), TotemDollArmsType.of(player.getModel()));
-		totemDollTextures.setState(LoadingState.DOWNLOADED);
-		return totemDollTextures;
-		*///?}
+		return of(player.getSkinTextures());
 	}
 
-	//? if >=1.21 {
-	public static TotemDollSprites of(net.minecraft.client.util.SkinTextures skinTextures, boolean remapCape) {
-		AtlasSprite tempCapeSprite = AtlasSprite.of(skinTextures.capeTexture());
-		AtlasSprite capeSprite = remapCape && tempCapeSprite != null ? MyTotemDollAtlasSpriteManager.registerRemappedSprite(tempCapeSprite) : tempCapeSprite;
-		AtlasSprite skinSprite = AtlasSprite.of(skinTextures.texture());
-		AtlasSprite elytraSprite = AtlasSprite.of(skinTextures.elytraTexture());
+	public static TotemDollSprites of(SkinTextures skinTextures) {
+		return of(skinTextures.texture(), skinTextures.capeTexture(), skinTextures.elytraTexture(), skinTextures.model() == Model.SLIM, true);
+	}
 
-		TotemDollSprites totemDollSprites = new TotemDollSprites(skinSprite, capeSprite, elytraSprite, TotemDollArmsType.of(skinTextures.model().getName()));
-		totemDollSprites.setState(LoadingState.DOWNLOADED);
+	public static TotemDollSprites of(Identifier skinTexture, Identifier capeTexture, Identifier elytraTexture, boolean slim, boolean remapCape) {
+		TotemDollSprites totemDollSprites = new TotemDollSprites(null, null, null, TotemDollArmsType.of(slim));
+
+		if (skinTexture != null) {
+			MyTotemDollAtlasSpriteManager.registerSpecialSkinSprite(skinTexture, false, totemDollSprites::setSkinSprite);
+		}
+
+		if (capeTexture != null) {
+			if (remapCape) {
+				AtlasSprite capeSprite = AtlasSprite.of(capeTexture);
+				MyTotemDollAtlasSpriteManager.registerSpecialRemappedSprite(capeSprite);
+				totemDollSprites.setCapeSprite(capeSprite);
+			} else {
+				MyTotemDollAtlasSpriteManager.registerSpecialSkinSprite(capeTexture, false, totemDollSprites::setCapeSprite);
+			}
+		}
+
+		if (elytraTexture != null) {
+			MyTotemDollAtlasSpriteManager.registerSpecialSkinSprite(elytraTexture, false, totemDollSprites::setElytraSprite);
+		}
+
+		MyTotemDollAtlasManager.stitchAndUpdate(MyTotemDollAtlasSpriteManager.getSprites(), () -> {
+			totemDollSprites.setState(LoadingState.DOWNLOADED);
+		});
+
 		return totemDollSprites;
 	}
-	//?}
 
 	public void setStandardArmsType(TotemDollArmsType standardArmsType) {
 		this.armsType = standardArmsType;
