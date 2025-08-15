@@ -3,6 +3,7 @@ package net.lopymine.mtd.atlas;
 import java.util.Objects;
 import lombok.*;
 import net.lopymine.mtd.atlas.stitch.OnSpriteUploaded;
+import net.minecraft.client.resource.metadata.AnimationResourceMetadata;
 import net.minecraft.client.texture.*;
 import net.minecraft.resource.metadata.ResourceMetadata;
 import net.minecraft.util.Identifier;
@@ -25,7 +26,7 @@ public class AtlasSprite {
 
 	private volatile boolean uploaded;
 
-	private AtlasSprite(@NotNull Identifier spriteId) {
+	public AtlasSprite(@NotNull Identifier spriteId) {
 		this.spriteId = spriteId;
 	}
 
@@ -47,16 +48,14 @@ public class AtlasSprite {
 	}
 
 	public static AtlasSprite of(Identifier spriteId, NativeImage image) {
-		SpriteDimensions dimensions = new SpriteDimensions(image.getWidth(), image.getHeight());
-		SpriteContents contents = new SpriteContents(spriteId, dimensions, image, ResourceMetadata.NONE);
 		AtlasSprite atlasSprite = new AtlasSprite(spriteId);
-		atlasSprite.setContents(contents);
+		updateContents(atlasSprite, image);
 		return atlasSprite;
 	}
 
 	public static void updateContents(AtlasSprite sprite, NativeImage image) {
 		SpriteDimensions dimensions = new SpriteDimensions(image.getWidth(), image.getHeight());
-		SpriteContents contents = new SpriteContents(sprite.getSpriteId(), dimensions, image, ResourceMetadata.NONE);
+		SpriteContents contents = new SpriteContents(sprite.getSpriteId(), dimensions, image, /*? if >=1.21 {*/ ResourceMetadata.NONE /*?} else {*/ /*AnimationResourceMetadata.EMPTY *//*?}*/);
 		sprite.setContents(contents);
 	}
 
@@ -65,7 +64,7 @@ public class AtlasSprite {
 
 		for (int y = 0; y < image.getHeight(); y++) {
 			for (int x = 0; x < image.getWidth(); x++) {
-				uniqueId = 31 * uniqueId + image.getColorArgb(x, y);
+				uniqueId = 31 * uniqueId + image./*? if >=1.21.2 {*/ getColorArgb /*?} else {*/ /*getColor *//*?}*/(x, y);
 			}
 		}
 
@@ -113,6 +112,7 @@ public class AtlasSprite {
 		this.uploaded = true;
 		if (this.uploadAction != null) {
 			this.uploadAction.onUploaded(this);
+			this.uploadAction = null;
 		}
 	}
 

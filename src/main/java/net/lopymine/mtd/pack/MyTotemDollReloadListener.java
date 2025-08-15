@@ -22,6 +22,7 @@ public class MyTotemDollReloadListener implements IdentifiableResourceReloadList
 	}
 
 
+	//? if >=1.21.2 {
 	@Override
 	public CompletableFuture<Void> reload(Synchronizer synchronizer, ResourceManager manager, Executor prepareExecutor, Executor applyExecutor) {
 		return synchronizer.whenPrepared(Unit.INSTANCE).thenRunAsync(() -> {
@@ -31,6 +32,19 @@ public class MyTotemDollReloadListener implements IdentifiableResourceReloadList
 			profiler.pop();
 		}, applyExecutor);
 	}
+	//?} else {
+	/*@Override
+	public CompletableFuture<Void> reload(ResourceReloader.Synchronizer synchronizer, ResourceManager manager, Profiler prepareProfiler, Profiler applyProfiler, Executor prepareExecutor, Executor applyExecutor) {
+		return synchronizer.whenPrepared(Unit.INSTANCE).thenRunAsync(() -> {
+			applyProfiler.startTick();
+			applyProfiler.push("listener");
+			this.reloadStuff(synchronizer, manager, prepareExecutor, applyExecutor);
+			applyProfiler.pop();
+			applyProfiler.endTick();
+		}, applyExecutor);
+	}
+
+	*///?}
 
 	private void reloadStuff(Synchronizer synchronizer, ResourceManager resourceManager, Executor prepareExecutor, Executor applyExecutor) {
 		this.reloadAtlas(synchronizer, prepareExecutor, applyExecutor);

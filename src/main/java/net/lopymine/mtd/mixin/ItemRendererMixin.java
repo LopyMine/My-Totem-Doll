@@ -2,7 +2,9 @@ package net.lopymine.mtd.mixin;
 
 //? if <=1.21.3 {
 
-/*import lombok.experimental.ExtensionMethod;
+/*import com.llamalad7.mixinextras.sugar.Local;
+import lombok.experimental.ExtensionMethod;
+import net.lopymine.mtd.thing.ThingMarks;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.*;
 import net.minecraft.client.util.math.MatrixStack;
@@ -57,22 +59,21 @@ public class ItemRendererMixin {
 	/^@Inject(at = @At(value = "HEAD"), method = "renderItem(Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/render/model/json/ModelTransformationMode;ZLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;IILnet/minecraft/client/render/model/BakedModel;)V", cancellable = true)
 	private void renderDoll(ItemStack stack, ModelTransformationMode renderMode, boolean leftHanded, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, BakedModel model, CallbackInfo ci) {
 	^///?}
-	if (TotemDollRenderer.rendered(matrices, stack, DollRenderContext.of(renderMode), vertexConsumers, light, overlay)) {
+		DollRenderContext context = DollRenderContext.of(renderMode);
+		if (ThingMarks.WORLD_RENDERING.get().isMarked() && TotemDollRenderer.sentRenderRequest(matrices, stack, context, vertexConsumers, light, overlay)) {
+			ci.cancel();
+		} else
+		if (TotemDollRenderer.rendered(matrices, stack, context, vertexConsumers, light, overlay)) {
 			ci.cancel();
 		}
 	}
 
-	//? if >=1.21.2 {
-	@Inject(at = @At(value = "TAIL"), method = "renderItem(Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ModelTransformationMode;ZLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;IILnet/minecraft/client/render/model/BakedModel;ZF)V", cancellable = true)
-	private void disableModdedModel(ItemStack stack, ModelTransformationMode transformationMode, boolean leftHanded, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, BakedModel model, boolean useInventoryModel, float z, CallbackInfo ci) {
-	//?} else {
-	/^@Inject(at = @At(value = "TAIL"), method = "renderItem(Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/render/model/json/ModelTransformationMode;ZLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;IILnet/minecraft/client/render/model/BakedModel;)V", cancellable = true)
-	private void disableModdedModel(ItemStack stack, ModelTransformationMode renderMode, boolean leftHanded, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, BakedModel model, CallbackInfo ci) {
-	^///?}
-			if (stack.hasModdedModel()) {
-				stack.setModdedModel(false);
-			}
+	@Inject(at = @At(value = "TAIL"), method = "renderItem*")
+	private void disableModdedModel(CallbackInfo ci, @Local(argsOnly = true) ItemStack stack) {
+		if (stack.hasModdedModel()) {
+			stack.setModdedModel(false);
 		}
+	}
 
 }
 

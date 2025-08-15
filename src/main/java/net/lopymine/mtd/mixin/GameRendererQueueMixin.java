@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(WorldRenderer.class)
 public class GameRendererQueueMixin {
 
+	//? if >=1.21.2 {
 	@Inject(at = @At("HEAD"), method = "renderEntities")
 	private void beforeDollRendering(CallbackInfo ci) {
 		ThingMarks.WORLD_RENDERING.get().setMarked(true);
@@ -20,5 +21,17 @@ public class GameRendererQueueMixin {
 		TotemDollWorldRenderRequestsCollector.getInstance().render();
 		ThingMarks.WORLD_RENDERING.get().setMarked(false);
 	}
+	//?} else {
+	/*@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;getEntities()Ljava/lang/Iterable;"), method = "render")
+	private void beforeDollRendering(CallbackInfo ci) {
+		ThingMarks.WORLD_RENDERING.get().setMarked(true);
+	}
+
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;drawCurrentLayer()V", ordinal = 0), method = "render")
+	private void afterDollRendering(CallbackInfo ci) {
+		TotemDollWorldRenderRequestsCollector.getInstance().render();
+		ThingMarks.WORLD_RENDERING.get().setMarked(false);
+	}
+	*///?}
 
 }

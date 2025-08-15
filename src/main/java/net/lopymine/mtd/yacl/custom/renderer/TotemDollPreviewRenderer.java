@@ -19,7 +19,6 @@ import net.lopymine.mtd.gui.BackgroundRenderer;
 import net.lopymine.mtd.utils.ColorUtils;
 import net.lopymine.mtd.utils.plugin.TotemDollPlugin;
 
-import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
 
 @ExtensionMethod(DrawContextExtension.class)
@@ -103,7 +102,7 @@ public class TotemDollPreviewRenderer implements ImageRenderer {
 
 		BackgroundRenderer.drawTransparencyWidgetBackground(context, x, y, width, 30, true, true);
 
-		ClickableWidget.drawScrollableText(context, textRenderer, MyTotemDoll.text("text.status").append(this.data.getTextures().getState().getText()), x + 2, y, x + width - 2, y + 30, -1);
+		ClickableWidget.drawScrollableText(context, textRenderer, MyTotemDoll.text("text.status").append(this.data.getSprites().getState().getText()), x + 2, y, x + width - 2, y + 30, -1);
 	}
 
 	private int renderDoll(DrawContext context, int x, int y, int size) {

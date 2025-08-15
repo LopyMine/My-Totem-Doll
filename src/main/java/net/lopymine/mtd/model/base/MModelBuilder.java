@@ -100,10 +100,12 @@ public class MModelBuilder {
 		if (name != null && name.endsWith(".png")) {
 			if (name.contains(":")) {
 				String[] split = name.split(":");
-				boolean namespaceValid = Identifier.isNamespaceValid(split[0]);
-				boolean pathValid = Identifier.isPathValid(split[1]);
+				String namespace = split[0];
+				boolean namespaceValid = Identifier.isNamespaceValid(namespace);
+				String path = split[1];
+				boolean pathValid = Identifier.isPathValid(path);
 				if (namespaceValid && pathValid) {
-					this.builtinTexture = AtlasSprite.of(Identifier.of(name));
+					this.builtinTexture = AtlasSprite.of(Identifier.of(namespace, path));
 				}
 			} else {
 				this.builtinTexture = AtlasSprite.of(location.getFolderId().withSuffixedPath(this.getName()));
@@ -116,8 +118,8 @@ public class MModelBuilder {
 		return this.name == null ? UUID.randomUUID().toString() : this.name;
 	}
 
-	public Collection<AtlasSprite> collectAllBuiltinTextures() {
-		List<AtlasSprite> textures = new LinkedList<>();
+	public HashSet<AtlasSprite> collectAllBuiltinTextures() {
+		HashSet<AtlasSprite> textures = new HashSet<>();
 		if (this.builtinTexture != null) {
 			textures.add(this.builtinTexture);
 		}

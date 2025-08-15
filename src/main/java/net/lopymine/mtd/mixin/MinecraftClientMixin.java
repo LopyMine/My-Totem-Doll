@@ -28,19 +28,24 @@ public class MinecraftClientMixin {
 		MyTotemDollConfig config = MyTotemDollClient.getConfig();
 		if (config.isFirstRun()) {
 			list.add(WelcomeScreen::new);
-			if (!FabricLoader.getInstance().isDevelopmentEnvironment()) config.setFirstRun(false);
+			if (!FabricLoader.getInstance().isDevelopmentEnvironment()) {
+				config.setFirstRun(false);
+			}
 			config.save();
 		}
 	}
 	//?} else {
 	/*@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;onInitFinished(Lnet/minecraft/client/realms/RealmsClient;Lnet/minecraft/resource/ResourceReload;Lnet/minecraft/client/RunArgs$QuickPlay;)V"), method = "<init>")
-	private void addMTDHelloScreen(MinecraftClient instance, RealmsClient realmsClient, ResourceReload resourceReload, QuickPlay quickPlay, Operation<Void> original) {
-		Runnable runnable = () -> original.call(instance, realmsClient, resourceReload, quickPlay);
+	private void addMTDHelloScreen(MinecraftClient client, RealmsClient realmsClient, ResourceReload resourceReload, QuickPlay quickPlay, Operation<Void> original) {
+		Runnable runnable = () -> original.call(client, realmsClient, resourceReload, quickPlay);
 
 		MyTotemDollConfig config = MyTotemDollClient.getConfig();
-		if (config.isFirstRun() || FabricLoader.getInstance().isDevelopmentEnvironment()) {
-			instance.setScreen(new WelcomeScreen(runnable));
-			config.setFirstRun(false);
+		if (config.isFirstRun()) {
+			client.setScreen(new WelcomeScreen(runnable));
+			if (!FabricLoader.getInstance().isDevelopmentEnvironment()) {
+				config.setFirstRun(false);
+			}
+			config.save();
 		} else {
 			runnable.run();
 		}

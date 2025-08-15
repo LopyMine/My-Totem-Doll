@@ -190,9 +190,14 @@ public class TotemDollModel extends Model {
 			LockableAtlasTexture atlasTexture = MyTotemDollAtlasManager.getAtlasTexture();
 			RenderLayer renderLayer = MyTotemDollAtlasManager.getRenderLayer();
 
-			atlasTexture.setLocked(true);
+			boolean wasLocked = atlasTexture.isLocked();
+			if (!wasLocked) {
+				atlasTexture.setLocked(true);
+			}
 			this.model.getMain().draw(matrices, provider, atlasTexture.getAtlas(), renderLayer, mainTexture, this.textures, light, overlay, /*? if >=1.21 {*/color/*?} else {*/ /*red, green, blue, alpha*//*?}*/);
-			atlasTexture.setLocked(false);
+			if (!wasLocked) {
+				atlasTexture.setLocked(false);
+			}
 
 			disableIfPresent(leftArm);
 			disableIfPresent(rightArm);

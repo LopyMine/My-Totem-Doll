@@ -8,8 +8,7 @@
     ],
     "client": [
 	    //? if <=1.21.3 {
-	    /*"PlayerSkinTextureMixin",
-	    "ItemRendererMixin",
+	    /*"ItemRendererMixin",
 	    "HeldItemRendererMixin",
 	    *///?}
 

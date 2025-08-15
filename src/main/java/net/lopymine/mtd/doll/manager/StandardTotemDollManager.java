@@ -46,7 +46,7 @@ public class StandardTotemDollManager {
 
 	public static TotemDollData overrideWithConfigValues(TotemDollData data) {
 		MyTotemDollConfig config = MyTotemDollClient.getConfig();
-		data.getTextures().setStandardArmsType(config.getStandardTotemDollArmsType());
+		data.getSprites().setStandardArmsType(config.getStandardTotemDollArmsType());
 		return data;
 	}
 
@@ -70,13 +70,13 @@ public class StandardTotemDollManager {
 
 	public static @NotNull TotemDollData getSteveDoll() {
 		TotemDollData totemDollData = TotemDollData.create(null);
-		totemDollData.getTextures().setState(LoadingState.DOWNLOADED);
+		totemDollData.getSprites().setState(LoadingState.DOWNLOADED);
 		return totemDollData;
 	}
 
 	public static TotemDollData loadFileSkin(@NotNull String data) {
 		TotemDollData totemDollData = TotemDollData.create(null);
-		TotemDollSprites textures = totemDollData.getTextures();
+		TotemDollSprites textures = totemDollData.getSprites();
 		textures.setState(LoadingState.DOWNLOADING);
 
 		CompletableFuture.runAsync(() -> {
@@ -103,17 +103,15 @@ public class StandardTotemDollManager {
 
 	public static TotemDollData loadUrlSkin(@NotNull String data) {
 		TotemDollData totemDollData = TotemDollData.create(null);
-		TotemDollSprites textures = totemDollData.getTextures();
+		TotemDollSprites textures = totemDollData.getSprites();
 		textures.setState(LoadingState.DOWNLOADING);
 
 		CompletableFuture.runAsync(() -> {
 			Identifier id = MyTotemDoll.getDollTextureId("url/%s".formatted(Math.abs(data.hashCode())));
 
-			FailedAction onFailed = (reason, throwable, objects) -> {
+			FailedAction onFailed = (throwable) -> {
 				textures.setState(LoadingState.CRITICAL_ERROR);
-				String text = "Failed to load doll skin from url \"%s\". Error: %s. Reason: %s".formatted(data, reason, throwable != null ? throwable.getMessage() : "None");
-				MyTotemDollClient.LOGGER.warn(text, objects);
-				return true;
+				MyTotemDollClient.LOGGER.warn("Failed to download standard doll url skin:", throwable);
 			};
 
 			SuccessAction onSuccess = (sprite) -> {
@@ -121,7 +119,7 @@ public class StandardTotemDollManager {
 				textures.setState(LoadingState.DOWNLOADED);
 			};
 
-			TextureUtils.registerUrlTexture(data, id, onSuccess, onFailed, false);
+			PlayerSkinUtils.downloadSkin(data, id, onSuccess, onFailed, false);
 		});
 
 		return totemDollData;

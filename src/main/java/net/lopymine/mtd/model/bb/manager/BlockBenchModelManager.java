@@ -179,7 +179,7 @@ public class BlockBenchModelManager {
 
 		BBModelResolution resolution = model.getResolution();
 
-		builder.collectAllBuiltinTextures().forEach((id) -> MyTotemDollAtlasSpriteManager.registerSprite(id, false, null));
+		builder.collectAllBuiltinTextures().forEach((id) -> MyTotemDollAtlasSpriteManager.registerDynamicSprite(id, false, null));
 		MyTotemDollAtlasManager.stitchAndUpdate(MyTotemDollAtlasSpriteManager.getSprites(), null);
 
 		Supplier<MModel> supplier = () -> builder

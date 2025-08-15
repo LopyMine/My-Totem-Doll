@@ -1,7 +1,6 @@
 package net.lopymine.mtd.skin.provider;
 
 import lombok.*;
-import net.lopymine.mtd.atlas.manager.*;
 import net.minecraft.util.Identifier;
 
 
@@ -43,7 +42,7 @@ public abstract class StandardSkinProvider implements SkinProvider {
 
 		TotemDollData totemDollData = this.getDataOrCreate(value);
 
-		if (totemDollData.getTextures().canStartDownloading()) {
+		if (totemDollData.getSprites().canStartDownloading()) {
 			this.loadDoll(value, this.maxRequestsCheckEnabled, totemDollData);
 		}
 
@@ -65,13 +64,13 @@ public abstract class StandardSkinProvider implements SkinProvider {
 			this.requestsCount++;
 		}
 
-		totemDollData.getTextures().setState(LoadingState.WAITING_DOWNLOADING);
+		totemDollData.getSprites().setState(LoadingState.WAITING_DOWNLOADING);
 
 		return MyTotemDollTaskExecutor.execute(() -> {
 			int waitTime = 0;
 
 			while (true) {
-				TotemDollSprites textures = totemDollData.getTextures();
+				TotemDollSprites textures = totemDollData.getSprites();
 				textures.setState(LoadingState.DOWNLOADING);
 
 				Response<ParsedSkinData> response = this.loadDollFromAPI(value);
@@ -110,11 +109,9 @@ public abstract class StandardSkinProvider implements SkinProvider {
 
 				Identifier skinId = this.getSkinId(value);
 
-				FailedAction onFailed = (reason, throwable, objects) -> {
+				FailedAction onFailed = (throwable) -> {
 					textures.setState(LoadingState.CRITICAL_ERROR);
-					String text = "Failed to load doll skin. Error: %s. Reason: %s".formatted(reason, throwable != null ? throwable.getMessage() : "None");
-					MyTotemDollClient.LOGGER.warn(text, objects);
-					return true;
+					MyTotemDollClient.LOGGER.warn("Failed to download doll skin:", throwable);
 				};
 
 				SuccessAction onSuccess = (sprite) -> {
@@ -122,16 +119,16 @@ public abstract class StandardSkinProvider implements SkinProvider {
 					textures.setState(LoadingState.DOWNLOADED);
 				};
 
-				TextureUtils.registerUrlTexture(parsedSkinData.getSkinUrl(), skinId, onSuccess, onFailed, false);
+				PlayerSkinUtils.downloadSkin(parsedSkinData.getSkinUrl(), skinId, onSuccess, onFailed, true);
 
 				if (parsedSkinData.getCapeUrl() != null) {
 					Identifier capeId = this.getCapeId(value);
-					TextureUtils.registerUrlTexture(parsedSkinData.getCapeUrl(), capeId, textures::setCapeSprite, null, true);
+					PlayerSkinUtils.downloadSkin(parsedSkinData.getCapeUrl(), capeId, textures::setCapeSprite, null, false);
 				}
 
 				if (parsedSkinData.getElytraUrl() != null) {
 					Identifier elytraId = this.getElytraId(value);
-					TextureUtils.registerUrlTexture(parsedSkinData.getElytraUrl(), elytraId, textures::setElytraSprite, null, false);
+					PlayerSkinUtils.downloadSkin(parsedSkinData.getElytraUrl(), elytraId, textures::setElytraSprite, null, false);
 				}
 
 				break;
@@ -165,7 +162,7 @@ public abstract class StandardSkinProvider implements SkinProvider {
 		for (Entry<String, TotemDollData> entry : this.cache.entrySet()) {
 
 			TotemDollData value = entry.getValue();
-			TotemDollSprites textures = value.getTextures();
+			TotemDollSprites textures = value.getSprites();
 			textures.destroy();
 
 			list.add(loadDoll(entry.getKey(), false, value));
@@ -181,7 +178,7 @@ public abstract class StandardSkinProvider implements SkinProvider {
 			return CompletableFuture.completedFuture(null);
 		}
 
-		TotemDollSprites textures = totemDollData.getTextures();
+		TotemDollSprites textures = totemDollData.getSprites();
 		textures.destroy();
 
 		return loadDoll(value, false, totemDollData);

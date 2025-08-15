@@ -1,12 +1,8 @@
 package net.lopymine.mtd.doll.data;
 
-import java.util.Objects;
 import lombok.*;
 import net.lopymine.mtd.model.bb.manager.BlockBenchModelManager;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.render.VertexConsumerProvider.Immediate;
-import net.minecraft.client.util.SkinTextures;
-import net.minecraft.client.util.SkinTextures.Model;
 import net.minecraft.util.Identifier;
 
 import net.lopymine.mtd.doll.model.TotemDollModel;
@@ -26,17 +22,17 @@ public class TotemDollData {
 	private TotemDollModel frameModel;
 
 	@NotNull
-	private TotemDollSprites textures;
+	private TotemDollSprites sprites;
 	@Nullable
 	private TotemDollSprites frameTextures;
 
 	@NotNull
 	private TotemDollRenderProperties renderProperties = new TotemDollRenderProperties();
 
-	public TotemDollData(@Nullable String nickname, @NotNull TotemDollSprites textures) {
-		this.renderProperties.refresh(textures);
+	public TotemDollData(@Nullable String nickname, @NotNull TotemDollSprites sprites) {
+		this.renderProperties.refresh(sprites);
 		this.renderProperties.setNickname(nickname);
-		this.textures = textures;
+		this.sprites = sprites;
 	}
 
 	public static TotemDollData create(@Nullable String nickname) {
@@ -100,19 +96,19 @@ public class TotemDollData {
 	}
 
 	public TotemDollSprites getTexturesToRender() {
-		return this.frameTextures == null ? this.textures : this.frameTextures;
+		return this.frameTextures == null ? this.sprites : this.frameTextures;
 	}
 
 	public TotemDollData copy() {
-		return new TotemDollData(this.renderProperties.getNickname(), this.textures.copy());
+		return new TotemDollData(this.renderProperties.getNickname(), this.sprites.copy());
 	}
 
-	public void setTextures(@NotNull TotemDollSprites textures) {
-		this.textures = textures;
+	public void setSprites(@NotNull TotemDollSprites sprites) {
+		this.sprites = sprites;
 		if (this.standardModel == null) {
 			return;
 		}
-		this.standardModel.setSlim(textures.getArmsType().isSlim());
+		this.standardModel.setSlim(sprites.getArmsType().isSlim());
 	}
 
 	public void setFrameTextures(@Nullable TotemDollSprites frameTextures) {
@@ -129,15 +125,17 @@ public class TotemDollData {
 		}
 
 		//? if >=1.21 {
-		SkinTextures skinTextures = playerEntity.getSkinTextures();
-		//?} else {
-		/*AbstractClientPlayerEntity skinTextures = playerEntity;
-		*///?}
-
+		net.minecraft.client.util.SkinTextures skinTextures = playerEntity.getSkinTextures();
 		Identifier skinTexture = skinTextures.texture();
 		Identifier capeTexture = skinTextures.capeTexture();
 		Identifier elytraTexture = skinTextures.elytraTexture();
-		boolean slim = skinTextures.model() == Model.SLIM;
+		boolean slim = skinTextures.model() == net.minecraft.client.util.SkinTextures.Model.SLIM;
+		//?} else {
+		/*Identifier skinTexture = playerEntity.getSkinTexture();
+		Identifier capeTexture = playerEntity.getCapeTexture();
+		Identifier elytraTexture = playerEntity.getElytraTexture();
+		boolean slim = playerEntity.getModel().equalsIgnoreCase("slim");
+		*///?}
 
 		this.setFrameTextures(this.renderProperties.getPlayerSprites(skinTexture, capeTexture, elytraTexture, slim, true));
 	}
@@ -166,7 +164,7 @@ public class TotemDollData {
 		// Make sure it's cleared
 		this.clearFrameModel();
 		this.clearFrameTextures();
-		this.renderProperties.refresh(this.textures);
+		this.renderProperties.refresh(this.sprites);
 		this.getModelToRender().resetPartsVisibility();
 		return this;
 	}
@@ -178,7 +176,7 @@ public class TotemDollData {
 
 	//? if >=1.21.6 {
 	@NotNull
-	public net.lopymine.mtd.doll.renderer.special.TotemDollGuiElementRenderer getGuiRenderer(Immediate immediate) {
+	public net.lopymine.mtd.doll.renderer.special.TotemDollGuiElementRenderer getGuiRenderer(net.minecraft.client.render.VertexConsumerProvider.Immediate immediate) {
 		return net.lopymine.mtd.doll.renderer.special.TotemDollGuiElementRenderer.getRenderer(this.renderProperties, immediate);
 	}
 	//?}
