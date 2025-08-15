@@ -3,7 +3,7 @@ package net.lopymine.mtd.doll.renderer;
 import lombok.experimental.ExtensionMethod;
 import net.lopymine.mtd.atlas.AtlasSprite;
 import net.lopymine.mtd.extension.*;
-import net.lopymine.mtd.queue.TotemDollWorldRenderRequestsCollector;
+import net.lopymine.mtd.optimization.TotemDollWorldRenderRequestsCollector;
 import net.lopymine.mtd.utils.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -35,7 +35,7 @@ public class TotemDollRenderer {
 
 	public static boolean sentRenderRequest(MatrixStack matrices, ItemStack stack, DollRenderContext context, VertexConsumerProvider provider, int light, int overlay) {
 		if (canRender(stack)) {
-			TotemDollData totemDollData = stack.getTotemDollData();
+			TotemDollData totemDollData = stack.getTotemDollData(false);
 			AbstractClientPlayerEntity holdingPlayer = stack.getPlayerEntity();
 			TotemDollWorldRenderRequestsCollector.getInstance().requestRender(matrices, totemDollData, holdingPlayer, context, provider, light, overlay);
 			return true;
@@ -184,7 +184,7 @@ public class TotemDollRenderer {
 	}
 
 	public static void render(MatrixStack matrices, VertexConsumerProvider provider, int light, int overlay, TotemDollData totemDollData) {
-		TotemDollSprites textures = totemDollData.getTexturesToRender();
+		TotemDollSprites textures = totemDollData.getSpritesToRender();
 		AtlasSprite skinSprite = textures.getSkinSprite();
 		AtlasSprite capeSprite = textures.getCapeSprite();
 		AtlasSprite elytraSprite = textures.getElytraSprite();
@@ -206,15 +206,15 @@ public class TotemDollRenderer {
 		Drawer drawer = model.getDrawer();
 
 		if (nickname != null && nickname.equals("deadmau5")) {
-			drawer.requestDrawingPartWithTexture("ears", skinSprite);
+			drawer.requestDrawingPartWithSprite("ears", skinSprite);
 		}
 
 		if (capeSprite != null && capeSprite.isUploaded()) {
-			drawer.requestDrawingPartWithTexture("cape", capeSprite);
+			drawer.requestDrawingPartWithSprite("cape", capeSprite);
 		}
 
 		if (elytraSprite.isUploaded()) {
-			drawer.requestDrawingPartWithTexture("elytra", elytraSprite);
+			drawer.requestDrawingPartWithSprite("elytra", elytraSprite);
 		}
 
 		drawer.draw(matrices, provider, skinSprite, light, overlay, /*? if >=1.21 {*/ -1 /*?} else {*/ /*1.0F, 1.0F, 1.0F, 1.0F *//*?}*/);
@@ -224,7 +224,7 @@ public class TotemDollRenderer {
 
 	private static void prepareStandardDollForRendering(AbstractClientPlayerEntity playerEntity, TotemDollData totemDollData) {
 		if (playerEntity != null && MyTotemDollClient.getConfig().getStandardTotemDollSkinType() == TotemDollSkinType.HOLDING_PLAYER) {
-			totemDollData.setFrameTextures(playerEntity);
+			totemDollData.setFrameSprites(playerEntity);
 		}
 	}
 
@@ -232,7 +232,7 @@ public class TotemDollRenderer {
 		Profiler profiler = ProfilerUtils.getProfiler();
 		profiler.swap(MyTotemDoll.MOD_ID);
 
-		if (context == DollRenderContext.D_GUI && MyTotemDollClient.getConfig().getStandardTotemDollSkinType() == TotemDollSkinType.HOLDING_PLAYER) { // todo fix
+		if (context == DollRenderContext.D_GUI && MyTotemDollClient.getConfig().getStandardTotemDollSkinType() == TotemDollSkinType.HOLDING_PLAYER) {
 			playerEntity = MinecraftClient.getInstance().player;
 		}
 

@@ -78,13 +78,9 @@ public class MyTotemDollAtlasSpriteManager {
 		}
 
 		Identifier resourceId = sprite.getResourceId();
-		if (!sprite.getSpriteId().getPath().startsWith("remapped_sprites")) {
-			sprite.setSpriteId(MyTotemDoll.id("remapped_sprites/%s.png".formatted(MathHelper.abs(resourceId.toString().hashCode()))));
-		}
-
 		loadFromResource(resourceId, (image) -> {
 			NativeImage remapped = PlayerSkinUtils.remapTextureToStandardSize(image, true);
-			registerSpecialContentCachedSprite(remapped, resourceId, REMAPPED_SPRITES, RemappedAtlasSprite::ofRemapped, false, sprite::copyFrom);
+			registerSpecialContentCachedSprite(remapped, resourceId, REMAPPED_SPRITES, RemappedAtlasSprite::ofResource, false, sprite::copyFrom);
 		});
 	}
 
@@ -132,7 +128,7 @@ public class MyTotemDollAtlasSpriteManager {
 			AbstractTexture texture = MinecraftClient.getInstance().getTextureManager().textures.get(id);
 			//? if >=1.21 {
 			if (!(texture instanceof NativeImageBackedTexture backedTexture)) {
-				MyTotemDollClient.LOGGER.error("Failed to register mod's texture as a sprite in atlas! Failed to find texture even from TextureManager! Id: \"{}\", Texture Class: \"{}\"", id, texture.getClass().getSimpleName());
+				MyTotemDollClient.LOGGER.error("Failed to register mod's texture as a sprite in atlas! Failed to find texture even from TextureManager! Id: \"{}\", Texture Class: \"{}\"", id, texture == null ? "null" : texture.getClass().getSimpleName());
 				return;
 			}
 			NativeImage image = backedTexture.getImage();
@@ -162,7 +158,7 @@ public class MyTotemDollAtlasSpriteManager {
 			}
 
 			if (image == null) {
-				MyTotemDollClient.LOGGER.error("Failed to register mod's texture as a sprite in atlas! Failed to find texture even from TextureManager! Id: \"{}\", Texture Class: \"{}\"", id, texture.getClass().getSimpleName());
+				MyTotemDollClient.LOGGER.error("Failed to register mod's texture as a sprite in atlas! Failed to find texture even from TextureManager! Id: \"{}\", Texture Class: \"{}\"", id, texture == null ? "null" : texture.getClass().getSimpleName());
 				return;
 			}
 			*///?}

@@ -2,11 +2,10 @@ package net.lopymine.mtd.atlas;
 
 import java.util.Objects;
 import lombok.*;
-import net.lopymine.mtd.atlas.stitch.OnSpriteUploaded;
-import net.minecraft.client.resource.metadata.AnimationResourceMetadata;
+import net.lopymine.mtd.MyTotemDoll;
 import net.minecraft.client.texture.*;
-import net.minecraft.resource.metadata.ResourceMetadata;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.*;
 
 @Getter
@@ -14,10 +13,6 @@ import org.jetbrains.annotations.*;
 public class RemappedAtlasSprite extends AtlasSprite {
 
 	private Identifier resourceId;
-
-	protected RemappedAtlasSprite(@NotNull Identifier spriteId) {
-		this(spriteId, spriteId);
-	}
 
 	protected RemappedAtlasSprite(@NotNull Identifier resourceId, @NotNull Identifier spriteId) {
 		super(spriteId);
@@ -36,20 +31,21 @@ public class RemappedAtlasSprite extends AtlasSprite {
 	}
 
 	public static RemappedAtlasSprite ofResource(@NotNull Identifier resourceId) {
-		return new RemappedAtlasSprite(resourceId, resourceId);
+		Identifier spriteId = MyTotemDoll.id("remapped_sprites/%s.png".formatted(MathHelper.abs(resourceId.toString().hashCode())));
+		return new RemappedAtlasSprite(resourceId, spriteId);
 	}
 
-	public static RemappedAtlasSprite ofRemapped(Identifier spriteId, NativeImage image) {
-		RemappedAtlasSprite atlasSprite = new RemappedAtlasSprite(spriteId);
-		updateContents(atlasSprite, image);
-		return atlasSprite;
+	public static RemappedAtlasSprite ofResource(Identifier resourceId, NativeImage image) {
+		RemappedAtlasSprite remappedAtlasSprite = ofResource(resourceId);
+		updateContents(remappedAtlasSprite, image);
+		return remappedAtlasSprite;
 	}
 
 	@Override
-	public void copyFrom(AtlasSprite registeredSprite) {
-		if (registeredSprite instanceof RemappedAtlasSprite remappedAtlasSprite) {
+	public void copyFrom(AtlasSprite registeredSpriteWithResourceIds) {
+		if (registeredSpriteWithResourceIds instanceof RemappedAtlasSprite remappedAtlasSprite) {
 			this.resourceId = remappedAtlasSprite.getResourceId();
 		}
-		super.copyFrom(registeredSprite);
+		super.copyFrom(registeredSpriteWithResourceIds);
 	}
 }

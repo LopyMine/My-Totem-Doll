@@ -24,7 +24,7 @@ public class TotemDollData {
 	@NotNull
 	private TotemDollSprites sprites;
 	@Nullable
-	private TotemDollSprites frameTextures;
+	private TotemDollSprites frameSprites;
 
 	@NotNull
 	private TotemDollRenderProperties renderProperties = new TotemDollRenderProperties();
@@ -95,8 +95,8 @@ public class TotemDollData {
 		return this.standardModel;
 	}
 
-	public TotemDollSprites getTexturesToRender() {
-		return this.frameTextures == null ? this.sprites : this.frameTextures;
+	public TotemDollSprites getSpritesToRender() {
+		return this.frameSprites == null ? this.sprites : this.frameSprites;
 	}
 
 	public TotemDollData copy() {
@@ -111,15 +111,15 @@ public class TotemDollData {
 		this.standardModel.setSlim(sprites.getArmsType().isSlim());
 	}
 
-	public void setFrameTextures(@Nullable TotemDollSprites frameTextures) {
-		this.frameTextures = frameTextures;
-		if (frameTextures == null) {
+	public void setFrameSprites(@Nullable TotemDollSprites frameSprites) {
+		this.frameSprites = frameSprites;
+		if (frameSprites == null) {
 			return;
 		}
-		this.getModelToRender().setSlim(frameTextures.getArmsType().isSlim());
+		this.getModelToRender().setSlim(frameSprites.getArmsType().isSlim());
 	}
 
-	public void setFrameTextures(@Nullable AbstractClientPlayerEntity playerEntity) {
+	public void setFrameSprites(@Nullable AbstractClientPlayerEntity playerEntity) {
 		if (playerEntity == null) {
 			return;
 		}
@@ -137,7 +137,7 @@ public class TotemDollData {
 		boolean slim = playerEntity.getModel().equalsIgnoreCase("slim");
 		*///?}
 
-		this.setFrameTextures(this.renderProperties.getPlayerSprites(skinTexture, capeTexture, elytraTexture, slim, true));
+		this.setFrameSprites(this.renderProperties.getPlayerSprites(skinTexture, capeTexture, elytraTexture, slim, true));
 	}
 
 	public void clearAllFrameModelsCompletely() {
@@ -152,8 +152,8 @@ public class TotemDollData {
 		}
 	}
 
-	public void clearFrameTextures() {
-		this.frameTextures = null;
+	public void clearFrameSprites() {
+		this.frameSprites = null;
 	}
 
 	public TotemDollData refreshAndApplyRenderProperties() {
@@ -163,7 +163,7 @@ public class TotemDollData {
 	public TotemDollData refreshRenderProperties() {
 		// Make sure it's cleared
 		this.clearFrameModel();
-		this.clearFrameTextures();
+		this.clearFrameSprites();
 		this.renderProperties.refresh(this.sprites);
 		this.getModelToRender().resetPartsVisibility();
 		return this;

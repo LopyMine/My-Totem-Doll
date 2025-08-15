@@ -182,29 +182,27 @@ public class BlockBenchModelManager {
 		builder.collectAllBuiltinTextures().forEach((id) -> MyTotemDollAtlasSpriteManager.registerDynamicSprite(id, false, null));
 		MyTotemDollAtlasManager.stitchAndUpdate(MyTotemDollAtlasSpriteManager.getSprites(), null);
 
-		Supplier<MModel> supplier = () -> builder
+//		if (MyTotemDollClient.getConfig().isDebugLogEnabled()) {
+//			String modelName = model.getName();
+//
+//			LOGGER.info("Successfully loaded model \"{}\" with hierarchy:", modelName);
+//
+//			String line = "—";
+//			String nameReplacement = line.repeat(modelName.length() + 4);
+//			String lines = line.repeat(10);
+//
+//			LOGGER.info("{}| {} |{}", lines, modelName, lines);
+//			MModel get = supplier.get();
+//			get.logSize(LOGGER);
+//			LOGGER.info("{}{}{}", lines, nameReplacement, lines);
+//			get.logHierarchy(LOGGER);
+//			LOGGER.info("{}{}{}", lines, nameReplacement, lines);
+//		}
+
+		return () -> builder
 				.withTransform(ModelTransform./*? if <=1.21.4 {*/ /*pivot *//*?} else {*/ origin /*?}*/(-16.0F, -8.0F, 0.0F))
 				.build(resolution.getWidth(), resolution.getHeight())
 				.initAfterBuild(model);
-
-		if (MyTotemDollClient.getConfig().isDebugLogEnabled()) {
-			String modelName = model.getName();
-
-			LOGGER.info("Successfully loaded model \"{}\" with hierarchy:", modelName);
-
-			String line = "—";
-			String nameReplacement = line.repeat(modelName.length() + 4);
-			String lines = line.repeat(10);
-
-			LOGGER.info("{}| {} |{}", lines, modelName, lines);
-			MModel get = supplier.get();
-			get.logSize(LOGGER);
-			LOGGER.info("{}{}{}", lines, nameReplacement, lines);
-			get.logHierarchy(LOGGER);
-			LOGGER.info("{}{}{}", lines, nameReplacement, lines);
-		}
-
-		return supplier;
 	}
 
 	private static MModelBuilder transformGroupsAndCubes(BBGroup group, BBModel model) {

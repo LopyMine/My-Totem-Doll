@@ -168,7 +168,7 @@ public class TotemDollModel extends Model {
 
 	public static class Drawer {
 
-		private final Map<String, AtlasSprite> textures = new HashMap<>();
+		private final Map<String, AtlasSprite> sprites = new HashMap<>();
 
 		private final TotemDollModel model;
 
@@ -176,8 +176,8 @@ public class TotemDollModel extends Model {
 			this.model         = model;
 		}
 
-		public void requestDrawingPartWithTexture(String part, AtlasSprite sprite) {
-			this.textures.put(part, sprite);
+		public void requestDrawingPartWithSprite(String part, AtlasSprite sprite) {
+			this.sprites.put(part, sprite);
 		}
 
 		public void draw(MatrixStack matrices, VertexConsumerProvider provider, AtlasSprite mainTexture, int light, int overlay, /*? if >=1.21 {*/int color/*?} else {*//*float red, float green, float blue, float alpha *//*?}*/) {
@@ -194,7 +194,7 @@ public class TotemDollModel extends Model {
 			if (!wasLocked) {
 				atlasTexture.setLocked(true);
 			}
-			this.model.getMain().draw(matrices, provider, atlasTexture.getAtlas(), renderLayer, mainTexture, this.textures, light, overlay, /*? if >=1.21 {*/color/*?} else {*/ /*red, green, blue, alpha*//*?}*/);
+			this.model.getMain().draw(matrices, provider, atlasTexture.getAtlas(), renderLayer, mainTexture, this.sprites, light, overlay, /*? if >=1.21 {*/color/*?} else {*/ /*red, green, blue, alpha*//*?}*/);
 			if (!wasLocked) {
 				atlasTexture.setLocked(false);
 			}
@@ -202,11 +202,11 @@ public class TotemDollModel extends Model {
 			disableIfPresent(leftArm);
 			disableIfPresent(rightArm);
 
-			this.textures.clear();
+			this.sprites.clear();
 		}
 
 		public void prepareForRender() {
-			this.textures.clear();
+			this.sprites.clear();
 		}
 	}
 }

@@ -44,7 +44,7 @@
 	    "HandledScreenMixin",
 	    "MinecraftClientMixin",
 	    "TextureManagerMixin",
-	    "GameRendererQueueMixin"
+	    "GameRendererDollRenderingMixin"
     ],
     "injectors": {
         "defaultRequire": 1

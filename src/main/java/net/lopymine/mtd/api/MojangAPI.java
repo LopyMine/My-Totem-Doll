@@ -36,14 +36,6 @@ public class MojangAPI {
 		int statusCode = -1;
 		String responseBody = "Not reached";
 
-		if (true) {
-			try {
-				Thread.sleep(5000);
-			} catch (InterruptedException e) {
-				throw new RuntimeException(e);
-			}
-		}
-
 		try {
 			HttpClient httpClient = HttpClient.newHttpClient();
 			HttpRequest request = HttpRequest.newBuilder()
