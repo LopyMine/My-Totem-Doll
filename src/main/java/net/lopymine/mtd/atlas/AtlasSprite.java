@@ -112,6 +112,19 @@ public class AtlasSprite {
 		}
 	}
 
+	public void closeAndUnregister() {
+		if (this.cannotClose(AtlasSprite::closeAndUnregister)) {
+			return;
+		}
+		this.uploaded = false;
+		if (this.contents != null && this.closable) {
+			this.contents.close();
+		}
+		if (this.unregisterAction != null) {
+			this.unregisterAction.run();
+		}
+	}
+
 	public void closeAndUnregisterAnyway() {
 		if (this.cannotClose(AtlasSprite::closeAndUnregisterAnyway)) {
 			return;

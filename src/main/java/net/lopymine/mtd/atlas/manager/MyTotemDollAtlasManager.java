@@ -3,6 +3,7 @@ package net.lopymine.mtd.atlas.manager;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import net.fabricmc.loader.api.FabricLoader;
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.atlas.*;
 import net.lopymine.mtd.atlas.stitch.*;
@@ -106,7 +107,16 @@ public class MyTotemDollAtlasManager {
 			this.atlasSprites.forEach(AtlasSprite::markUploaded);
 			MyTotemDollAtlasManager.setAtlas(this.atlas);
 			STITCH_HOOKS_MANAGER.runAllHooks();
-		}
+
+			if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
+				HashSet<AtlasSprite> seen = new HashSet<>();
+				for (AtlasSprite atlasSprite : this.atlasSprites) {
+					if (!seen.add(atlasSprite)) {
+						MyTotemDollClient.LOGGER.error("Found sprite duplication in active list: \"{}\"", atlasSprite.getSpriteId());
+					}
+				}
+			}
+ 		}
 
 	}
 
