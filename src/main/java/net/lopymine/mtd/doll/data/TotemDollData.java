@@ -22,60 +22,75 @@ public class TotemDollData {
 	private TotemDollModel frameModel;
 
 	@NotNull
-	private TotemDollSprites sprites;
-	@Nullable
-	private TotemDollSprites frameSprites;
-
-	@NotNull
 	private TotemDollRenderProperties renderProperties = new TotemDollRenderProperties();
 
 	public TotemDollData(@Nullable String nickname, @NotNull TotemDollSprites sprites) {
 		this.renderProperties.refresh(sprites);
 		this.renderProperties.setNickname(nickname);
-		this.sprites = sprites;
+	}
+
+	public TotemDollData(@NotNull TotemDollRenderProperties properties) {
+		this.renderProperties.copyFrom(properties);
 	}
 
 	public static TotemDollData create(@Nullable String nickname) {
 		return new TotemDollData(nickname, TotemDollSprites.create());
 	}
 
+	public TotemDollSprites getStandardSprites() {
+		return this.renderProperties.getStandardSprites();
+	}
+
+	@Nullable
 	public String getNickname() {
 		return this.renderProperties.getNickname();
 	}
 
-	public void setStandardMModel(Identifier modelId) {
+	public void setStandardMModel(@NotNull Identifier modelId) {
 		BlockBenchModelManager.consumeModelById(modelId, this::setStandardMModel);
 	}
 
-	public void setStandardMModel(MModel model) {
-		this.standardModel = new TotemDollModel(model, this.renderProperties.isSlim());
+	public void setStandardMModel(@NotNull MModel model) {
 		this.renderProperties.setStandardMModel(model);
+		this.standardModel = this.renderProperties.createStandardModel();
 	}
 
-	public void setFrameMModel(Identifier id) {
+	public void setFrameMModel(@NotNull Identifier id) {
 		this.renderProperties.consumeFrameMModel(id, this::setFrameMModel);
 	}
 
 	public void setFrameMModel(@Nullable MModel frameMModel) {
 		this.renderProperties.setFrameMModel(frameMModel);
-
-		TotemDollModel tempModel = this.getFrameModelBasedOnFrameMModel();
-		if (tempModel != null && this.standardModel != null) {
-			tempModel.setSlim(this.renderProperties.isSlim());
-		}
 	}
 
 	@Nullable
 	private TotemDollModel getFrameModelBasedOnFrameMModel() {
 		if (this.renderProperties.getFrameMModel() != null) {
 			if (this.frameModel == null || !this.frameModel.getMain().equals(this.renderProperties.getFrameMModel())) {
-				return this.frameModel = new TotemDollModel(this.renderProperties.getFrameMModel(), this.renderProperties.isSlim());
+				return this.frameModel = this.renderProperties.createFrameModel();
 			}
 			return this.frameModel;
 		}
 		return null;
 	}
 
+	public void clearAllFrameModelsCompletely() {
+		this.clearFrameModel();
+		this.renderProperties.clearCachedFrameMModels();
+	}
+
+	public void clearFrameModel() {
+		if (this.frameModel != null) {
+			this.frameModel.resetPartsVisibility();
+			this.frameModel = null;
+		}
+	}
+
+	public void clearFrameSprites() {
+		this.renderProperties.setFrameSprites(null);
+	}
+
+	@NotNull
 	public TotemDollModel getModelToRender() {
 		TotemDollModel tempModel = this.getFrameModelBasedOnFrameMModel();
 		if (tempModel != null) {
@@ -95,28 +110,18 @@ public class TotemDollData {
 		return this.standardModel;
 	}
 
+	@NotNull
 	public TotemDollSprites getSpritesToRender() {
-		return this.frameSprites == null ? this.sprites : this.frameSprites;
-	}
-
-	public TotemDollData copy() {
-		return new TotemDollData(this.renderProperties.getNickname(), this.sprites.copy());
+		return this.renderProperties.getFrameSprites() == null ? this.renderProperties.getStandardSprites() : this.renderProperties.getFrameSprites();
 	}
 
 	public void setSprites(@NotNull TotemDollSprites sprites) {
-		this.sprites = sprites;
-		if (this.standardModel == null) {
-			return;
-		}
-		this.standardModel.setSlim(sprites.getArmsType().isSlim());
+		this.renderProperties.setStandardSprites(sprites);
 	}
 
+	@SuppressWarnings("unused")
 	public void setFrameSprites(@Nullable TotemDollSprites frameSprites) {
-		this.frameSprites = frameSprites;
-		if (frameSprites == null) {
-			return;
-		}
-		this.getModelToRender().setSlim(frameSprites.getArmsType().isSlim());
+		this.renderProperties.setFrameSprites(frameSprites);
 	}
 
 	public void setFrameSprites(@Nullable AbstractClientPlayerEntity playerEntity) {
@@ -137,38 +142,30 @@ public class TotemDollData {
 		boolean slim = playerEntity.getModel().equalsIgnoreCase("slim");
 		*///?}
 
-		this.setFrameSprites(this.renderProperties.getPlayerSprites(skinTexture, capeTexture, elytraTexture, slim, true));
+		this.renderProperties.setFrameSprites(skinTexture, capeTexture, elytraTexture, slim, true);
 	}
 
-	public void clearAllFrameModelsCompletely() {
-		this.clearFrameModel();
-		this.renderProperties.clearCachedFrameMModels();
+	@NotNull
+	public TotemDollData copy() {
+		return new TotemDollData(this.renderProperties);
 	}
 
-	public void clearFrameModel() {
-		if (this.frameModel != null) {
-			this.frameModel.resetPartsVisibility();
-			this.frameModel = null;
-		}
-	}
-
-	public void clearFrameSprites() {
-		this.frameSprites = null;
-	}
-
+	@NotNull
 	public TotemDollData refreshAndApplyRenderProperties() {
 		return this.refreshRenderProperties().applyRenderProperties();
 	}
 
+	@NotNull
 	public TotemDollData refreshRenderProperties() {
 		// Make sure it's cleared
 		this.clearFrameModel();
 		this.clearFrameSprites();
-		this.renderProperties.refresh(this.sprites);
 		this.getModelToRender().resetPartsVisibility();
+		this.renderProperties.refresh();
 		return this;
 	}
 
+	@NotNull
 	public TotemDollData applyRenderProperties() {
 		this.renderProperties.applyToModel(this.getModelToRender());
 		return this;

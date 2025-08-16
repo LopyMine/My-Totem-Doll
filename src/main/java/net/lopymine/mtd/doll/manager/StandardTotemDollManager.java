@@ -46,7 +46,7 @@ public class StandardTotemDollManager {
 
 	public static TotemDollData overrideWithConfigValues(TotemDollData data) {
 		MyTotemDollConfig config = MyTotemDollClient.getConfig();
-		data.getSprites().setStandardArmsType(config.getStandardTotemDollArmsType());
+		data.getStandardSprites().setStandardArmsType(config.getStandardTotemDollArmsType());
 		return data;
 	}
 
@@ -70,13 +70,13 @@ public class StandardTotemDollManager {
 
 	public static @NotNull TotemDollData getSteveDoll() {
 		TotemDollData totemDollData = TotemDollData.create(null);
-		totemDollData.getSprites().setState(LoadingState.DOWNLOADED);
+		totemDollData.getStandardSprites().setState(LoadingState.DOWNLOADED);
 		return totemDollData;
 	}
 
 	public static TotemDollData loadFileSkin(@NotNull String data) {
 		TotemDollData totemDollData = TotemDollData.create(null);
-		TotemDollSprites textures = totemDollData.getSprites();
+		TotemDollSprites textures = totemDollData.getStandardSprites();
 		textures.setState(LoadingState.DOWNLOADING);
 
 		CompletableFuture.runAsync(() -> {
@@ -103,7 +103,7 @@ public class StandardTotemDollManager {
 
 	public static TotemDollData loadUrlSkin(@NotNull String data) {
 		TotemDollData totemDollData = TotemDollData.create(null);
-		TotemDollSprites textures = totemDollData.getSprites();
+		TotemDollSprites textures = totemDollData.getStandardSprites();
 		textures.setState(LoadingState.DOWNLOADING);
 
 		CompletableFuture.runAsync(() -> {

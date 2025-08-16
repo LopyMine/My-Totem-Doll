@@ -82,7 +82,18 @@ public class AtlasSprite {
 		return Objects.hashCode(this.getSpriteId());
 	}
 
+	private boolean cannotClose(OnSpriteUploaded closeOnRegistered) {
+		if (!this.uploaded) {
+			this.uploadAction = this.uploadAction != null ? this.uploadAction.then(closeOnRegistered) : closeOnRegistered;
+			return true;
+		}
+		return false;
+	}
+
 	public void close() {
+		if (this.cannotClose(AtlasSprite::close)) {
+			return;
+		}
 		this.uploaded = false;
 		if (this.contents != null && this.closable) {
 			this.contents.close();
@@ -91,6 +102,9 @@ public class AtlasSprite {
 	}
 
 	public void closeAnyway() {
+		if (this.cannotClose(AtlasSprite::closeAnyway)) {
+			return;
+		}
 		this.uploaded = false;
 		if (this.contents != null) {
 			this.contents.close();
@@ -99,6 +113,9 @@ public class AtlasSprite {
 	}
 
 	public void closeAndUnregisterAnyway() {
+		if (this.cannotClose(AtlasSprite::closeAndUnregisterAnyway)) {
+			return;
+		}
 		this.uploaded = false;
 		if (this.contents != null) {
 			this.contents.close();

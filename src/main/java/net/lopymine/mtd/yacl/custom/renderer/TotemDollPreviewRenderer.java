@@ -102,7 +102,7 @@ public class TotemDollPreviewRenderer implements ImageRenderer {
 
 		BackgroundRenderer.drawTransparencyWidgetBackground(context, x, y, width, 30, true, true);
 
-		ClickableWidget.drawScrollableText(context, textRenderer, MyTotemDoll.text("text.status").append(this.data.getSprites().getState().getText()), x + 2, y, x + width - 2, y + 30, -1);
+		ClickableWidget.drawScrollableText(context, textRenderer, MyTotemDoll.text("text.status").append(this.data.getStandardSprites().getState().getText()), x + 2, y, x + width - 2, y + 30, -1);
 	}
 
 	private int renderDoll(DrawContext context, int x, int y, int size) {

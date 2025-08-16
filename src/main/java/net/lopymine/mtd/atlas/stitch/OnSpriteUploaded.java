@@ -6,4 +6,10 @@ public interface OnSpriteUploaded {
 
 	void onUploaded(AtlasSprite sprite);
 
+	default OnSpriteUploaded then(OnSpriteUploaded then) {
+		return (sprite) -> {
+			this.onUploaded(sprite);
+			then.onUploaded(sprite);
+		};
+	}
 }

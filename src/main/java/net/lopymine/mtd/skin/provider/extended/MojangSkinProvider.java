@@ -1,5 +1,6 @@
 package net.lopymine.mtd.skin.provider.extended;
 
+import java.util.*;
 import net.minecraft.util.Identifier;
 
 import net.lopymine.mtd.MyTotemDoll;
@@ -8,7 +9,6 @@ import net.lopymine.mtd.doll.data.TotemDollData;
 import net.lopymine.mtd.skin.data.ParsedSkinData;
 import net.lopymine.mtd.skin.provider.StandardSkinProvider;
 
-import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.jetbrains.annotations.Nullable;
@@ -47,7 +47,7 @@ public class MojangSkinProvider extends StandardSkinProvider {
 
 	@Override
 	public Set<String> getLoadedKeys() {
-		return this.getCache().values().stream().map(TotemDollData::getNickname).collect(Collectors.toSet());
+		return this.getCache().values().stream().map(TotemDollData::getNickname).filter(Objects::nonNull).collect(Collectors.toSet());
 	}
 
 	@Override

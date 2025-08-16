@@ -42,7 +42,7 @@ public abstract class StandardSkinProvider implements SkinProvider {
 
 		TotemDollData totemDollData = this.getDataOrCreate(value);
 
-		if (totemDollData.getSprites().canStartDownloading()) {
+		if (totemDollData.getStandardSprites().canStartDownloading()) {
 			this.loadDoll(value, this.maxRequestsCheckEnabled, totemDollData);
 		}
 
@@ -64,13 +64,13 @@ public abstract class StandardSkinProvider implements SkinProvider {
 			this.requestsCount++;
 		}
 
-		totemDollData.getSprites().setState(LoadingState.WAITING_DOWNLOADING);
+		totemDollData.getStandardSprites().setState(LoadingState.WAITING_DOWNLOADING);
 
 		return MyTotemDollTaskExecutor.execute(() -> {
 			int waitTime = 0;
 
 			while (true) {
-				TotemDollSprites textures = totemDollData.getSprites();
+				TotemDollSprites textures = totemDollData.getStandardSprites();
 				textures.setState(LoadingState.DOWNLOADING);
 
 				Response<ParsedSkinData> response = this.loadDollFromAPI(value);
@@ -162,7 +162,7 @@ public abstract class StandardSkinProvider implements SkinProvider {
 		for (Entry<String, TotemDollData> entry : this.cache.entrySet()) {
 
 			TotemDollData value = entry.getValue();
-			TotemDollSprites textures = value.getSprites();
+			TotemDollSprites textures = value.getStandardSprites();
 			textures.destroy();
 
 			list.add(loadDoll(entry.getKey(), false, value));
@@ -178,7 +178,7 @@ public abstract class StandardSkinProvider implements SkinProvider {
 			return CompletableFuture.completedFuture(null);
 		}
 
-		TotemDollSprites textures = totemDollData.getSprites();
+		TotemDollSprites textures = totemDollData.getStandardSprites();
 		textures.destroy();
 
 		return loadDoll(value, false, totemDollData);

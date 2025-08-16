@@ -5,12 +5,14 @@ import lombok.experimental.ExtensionMethod;
 import net.lopymine.mtd.atlas.LockableAtlasTexture;
 import net.lopymine.mtd.atlas.manager.MyTotemDollAtlasManager;
 import net.lopymine.mtd.doll.data.*;
+import net.lopymine.mtd.doll.model.TotemDollModel;
 import net.lopymine.mtd.doll.renderer.*;
 import net.lopymine.mtd.extension.MatrixStackEntryExtension;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
+import org.joml.*;
 
 @ExtensionMethod(MatrixStackEntryExtension.class)
 public class TotemDollWorldRenderRequestsCollector {
@@ -23,6 +25,7 @@ public class TotemDollWorldRenderRequestsCollector {
 
 	private final MatrixStack matrices = new MatrixStack();
 	private final List<TotemDollWorldRenderRequest> requests = new ArrayList<>();
+	private final TotemDollRenderProperties tempProperties = new TotemDollRenderProperties();
 
 	private TotemDollWorldRenderRequestsCollector() {
 
@@ -39,19 +42,19 @@ public class TotemDollWorldRenderRequestsCollector {
 		for (TotemDollWorldRenderRequest request : this.requests) {
 			this.matrices.push();
 			this.matrices.peek().copyFrom(request.copyPeek());
-			TotemDollData data = request.data(); // todo
 
-			TotemDollRenderProperties renderProperties = data.getRenderProperties();
+			TotemDollData data = request.data();
+			this.tempProperties.copyFrom(data.getRenderProperties());
 
+			data.getRenderProperties().copyFrom(request.renderProperties());
 			data.clearFrameModel();
-			data.clearFrameSprites();
-			data.getModelToRender().resetPartsVisibility();
-			data.setRenderProperties(request.renderProperties()); // TODO make it copy values from and to for valid handling
-			data.applyRenderProperties();
+			TotemDollModel modelToRender = data.getModelToRender();
+			modelToRender.resetPartsVisibility();
+			data.getRenderProperties().applyToModel(modelToRender);
 
 			TotemDollRenderer.renderDoll(this.matrices, data, request.holdingPlayer(), request.context(), request.provider(), request.light(), request.overlay());
 
-			data.setRenderProperties(renderProperties);
+			data.getRenderProperties().copyFrom(this.tempProperties);
 
 			this.matrices.pop();
 		}

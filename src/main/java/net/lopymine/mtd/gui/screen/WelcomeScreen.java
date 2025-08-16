@@ -96,7 +96,7 @@ public class WelcomeScreen extends Screen {
 		/*MinecraftClient.getInstance().getSkinProvider().loadSkin(MinecraftClient.getInstance().getSession().getProfile(), (type, id, texture) -> {
 			MyTotemDollTaskExecutor.execute(() -> {
 				MinecraftClient.getInstance().execute(() -> {
-					TotemDollSprites textures = widget.getData().getSprites();
+					TotemDollSprites textures = widget.getData().getStandardSprites();
 
 					switch (type) {
 						case SKIN -> {

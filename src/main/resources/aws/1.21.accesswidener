@@ -19,3 +19,5 @@ accessible field net/minecraft/client/gui/DrawContext vertexConsumers Lnet/minec
 
 accessible field net/minecraft/client/util/math/MatrixStack$Entry canSkipNormalization Z
 accessible field net/minecraft/client/texture/TextureManager textures Ljava/util/Map;
+
+accessible field net/minecraft/client/texture/NativeImage pointer J

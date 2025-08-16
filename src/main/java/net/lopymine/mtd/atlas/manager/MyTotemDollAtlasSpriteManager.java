@@ -182,7 +182,7 @@ public class MyTotemDollAtlasSpriteManager {
 	}
 
 	public static void reload() {
-		synchronized (LOCK) {
+		synchronized (LOCK) { // todo make here "special" lock stuff
 			ATLAS_SPRITES.forEach(AtlasSprite::close);
 			ATLAS_SPRITES.clear();
 			ATLAS_SPRITES.add(AtlasSprite.of(MissingSprite.createSpriteContents()));
