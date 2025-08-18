@@ -1,9 +1,10 @@
 package net.lopymine.mtd.atlas;
 
+import java.io.InputStream;
 import java.util.Objects;
 import lombok.*;
 import net.lopymine.mtd.atlas.stitch.OnSpriteUploaded;
-import net.minecraft.client.resource.metadata.AnimationResourceMetadata;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.*;
 import net.minecraft.resource.metadata.ResourceMetadata;
 import net.minecraft.util.Identifier;
@@ -12,6 +13,8 @@ import org.jetbrains.annotations.*;
 @Setter
 @Getter
 public class AtlasSprite {
+
+	public static final /*? if >=1.21 {*/ ResourceMetadata /*?} else {*/ /*AnimationResourceMetadata *//*?}*/ STANDARD_METADATA = /*? if >=1.21 {*/ ResourceMetadata.NONE /*?} else {*/ /*AnimationResourceMetadata.EMPTY *//*?}*/;
 
 	@NotNull
 	private Identifier spriteId;
@@ -54,9 +57,28 @@ public class AtlasSprite {
 	}
 
 	public static void updateContents(AtlasSprite sprite, NativeImage image) {
-		SpriteDimensions dimensions = new SpriteDimensions(image.getWidth(), image.getHeight());
-		SpriteContents contents = new SpriteContents(sprite.getSpriteId(), dimensions, image, /*? if >=1.21 {*/ ResourceMetadata.NONE /*?} else {*/ /*AnimationResourceMetadata.EMPTY *//*?}*/);
+		ResourceMetadata metadata = getAnimationMetadataForSprite(sprite);
+		boolean animated = metadata != STANDARD_METADATA;
+		int width = image.getWidth();
+		int height = image.getHeight();
+		int min = Math.min(width, height);
+
+		SpriteDimensions dimensions = animated ? new SpriteDimensions(min, min) : new SpriteDimensions(width, height);
+		SpriteContents contents = new SpriteContents(sprite.getSpriteId(), dimensions, image, metadata);
 		sprite.setContents(contents);
+	}
+
+	public static ResourceMetadata getAnimationMetadataForSprite(AtlasSprite sprite) {
+		try {
+			Identifier id = sprite.getSpriteId();
+			InputStream stream = MinecraftClient.getInstance()
+					.getResourceManager()
+					.getResourceOrThrow(Identifier.of(id.getNamespace(), id.getPath() + ".mcmeta"))
+					.getInputStream();
+			return ResourceMetadata.create(stream);
+		} catch (Exception ignored) {
+			return STANDARD_METADATA;
+		}
 	}
 
 	public static long generateUniqueIdByContent(NativeImage image) {
