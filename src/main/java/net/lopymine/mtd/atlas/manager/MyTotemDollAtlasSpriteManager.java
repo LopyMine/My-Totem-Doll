@@ -8,7 +8,6 @@ import java.util.function.*;
 import net.lopymine.mtd.atlas.*;
 import net.lopymine.mtd.atlas.stitch.*;
 import net.lopymine.mtd.client.MyTotemDollClient;
-import net.lopymine.mtd.doll.data.TotemDollSprites;
 import net.lopymine.mtd.utils.texture.PlayerSkinUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.*;
@@ -20,33 +19,43 @@ public class MyTotemDollAtlasSpriteManager {
 
 	private static final AtlasSprite MISSING_SPRITE = AtlasSprite.of(MissingSprite.createSpriteContents());
 
+	@NotNull
+	public static final AtlasSprite STEVE_SKIN_SPRITE = Objects.requireNonNull(AtlasSprite.of(Identifier.of("minecraft", "textures/entity/player/wide/steve.png")));
+	//? if >=1.21.2 {
+	@NotNull
+	public static final RemappedAtlasSprite ELYTRA_SPRITE = RemappedAtlasSprite.ofResource(Identifier.of("textures/entity/equipment/wings/elytra.png"));
+	//?} else {
+	/*@NotNull
+	public static final RemappedAtlasSprite ELYTRA_SPRITE = RemappedAtlasSprite.ofResource(Objects.requireNonNull(Identifier.of("minecraft","textures/entity/elytra.png")));
+	*///?}
+
 	private static final Map<Long, AtlasSprite> CONTENT_CACHED_SPECIAL_SKIN_SPRITES = new ConcurrentHashMap<>();
 	private static final Map<Long, AtlasSprite> CONTENT_CACHED_SPECIAL_REMAPPED_SPRITES = new ConcurrentHashMap<>();
 	private static final Map<Identifier, AtlasSprite> DYNAMIC_SPRITES = new ConcurrentHashMap<>();
 
-	private static final AtomicReference<List<AtlasSprite>> ATLAS_SPRITES = new AtomicReference<>(List.of());
+	private static final AtomicReference<Set<AtlasSprite>> ATLAS_SPRITES = new AtomicReference<>(Set.of());
 
-	public static List<AtlasSprite> getSprites() {
+	public static Set<AtlasSprite> getSprites() {
 		return ATLAS_SPRITES.get();
 	}
 
-	public static void registerDynamicSprite(AtlasSprite id, boolean stitchAndUpdate, @Nullable OnAtlasStitched onAtlasStitched) {
-		loadFromResource(id.getSpriteId(), (image) -> registerDynamicSprite(id, image, stitchAndUpdate, onAtlasStitched));
+	public static void registerDynamicSprite(Identifier id, boolean stitchAndUpdate, @Nullable OnSpriteUploaded onSpriteUploaded) {
+		loadFromResource(id, (image) -> registerDynamicSprite(id, image, stitchAndUpdate, onSpriteUploaded));
 	}
 
-	public static void registerDynamicSprite(AtlasSprite sprite, NativeImage image, boolean stitchAndUpdate, @Nullable OnAtlasStitched onAtlasStitched) {
-		AtlasSprite.updateContents(sprite, image);
+	public static void registerDynamicSprite(Identifier id, NativeImage image, boolean stitchAndUpdate, @Nullable OnSpriteUploaded onSpriteUploaded) {
+		SpriteFactory factory = () -> {
+			AtlasSprite sprite = AtlasSprite.of(id, image);
+			sprite.setUnregisterAction(() -> handleSprite(sprite, false));
+			return sprite;
+		};
 
-		sprite.setUnregisterAction(() -> {
-			DYNAMIC_SPRITES.remove(sprite.getSpriteId());
-			handleSprite(sprite, false);
-		});
-
-		addSpriteToMapAndList(sprite.getSpriteId(), sprite, DYNAMIC_SPRITES);
-
-		if (stitchAndUpdate) {
-			MyTotemDollAtlasManager.stitchAndUpdate(getSprites(), onAtlasStitched);
+		AtlasSprite createdSprite = createAndRegisterSprite(id, factory, DYNAMIC_SPRITES, onSpriteUploaded);
+		if (createdSprite == null) {
+			return;
 		}
+
+		uploadSprite(stitchAndUpdate, onSpriteUploaded, createdSprite);
 	}
 
 	public static void registerSpecialSkinSprite(Identifier id, boolean stitchAndUpdate, @Nullable OnSpriteUploaded onSpriteUploaded) {
@@ -78,44 +87,50 @@ public class MyTotemDollAtlasSpriteManager {
 
 	private static void registerSpecialContentCachedSprite(NativeImage image, Identifier id, Map<Long, AtlasSprite> specialSprites, BiFunction<Identifier, NativeImage, AtlasSprite> spriteFactory, boolean stitchAndUpdate, @Nullable OnSpriteUploaded onSpriteUploaded) {
 		long spriteUniqueId = AtlasSprite.generateUniqueIdByContent(image);
-		AtlasSprite alreadyRegisteredSprite = specialSprites.get(spriteUniqueId);
+
+		SpriteFactory factory = () -> {
+			AtlasSprite sprite = spriteFactory.apply(id, image);
+
+			sprite.setCachedId(spriteUniqueId);
+			sprite.setClosable(false);
+			sprite.setUnregisterAction(() -> {
+				specialSprites.remove(spriteUniqueId);
+				handleSprite(sprite, false);
+			});
+
+			return sprite;
+		};
+
+		AtlasSprite createdSprite = createAndRegisterSprite(spriteUniqueId, factory, specialSprites, onSpriteUploaded);
+		if (createdSprite == null) {
+			return;
+		}
+
+		uploadSprite(stitchAndUpdate, onSpriteUploaded, createdSprite);
+	}
+
+	private static void uploadSprite(boolean stitchAndUpdate, @Nullable OnSpriteUploaded onSpriteUploaded, AtlasSprite createdSprite) {
+		if (stitchAndUpdate && onSpriteUploaded != null) {
+			MyTotemDollAtlasManager.stitchAndUpdate(getSprites(), () -> onSpriteUploaded.onUploaded(createdSprite));
+		} else {
+			createdSprite.setUploadAction(onSpriteUploaded);
+		}
+	}
+
+	@Nullable
+	private static <K> AtlasSprite createAndRegisterSprite(K key, SpriteFactory factory, Map<K, AtlasSprite> map, @Nullable OnSpriteUploaded onSpriteUploaded) {
+		AtlasSprite alreadyRegisteredSprite = map.get(key);
 		if (alreadyRegisteredSprite != null) {
 			if (onSpriteUploaded != null) {
 				onSpriteUploaded.onUploaded(alreadyRegisteredSprite);
 			}
-			image.close();
-			return;
+			return null;
 		}
 
-		AtlasSprite sprite = spriteFactory.apply(id, image);
-
-		sprite.setCachedId(spriteUniqueId);
-		sprite.setClosable(false);
-		sprite.setUnregisterAction(() -> {
-			specialSprites.remove(spriteUniqueId);
-			handleSprite(sprite, false);
-		});
-
-		addSpriteToMapAndList(spriteUniqueId, sprite, specialSprites);
-
-		if (stitchAndUpdate && onSpriteUploaded != null) {
-			MyTotemDollAtlasManager.stitchAndUpdate(getSprites(), () -> onSpriteUploaded.onUploaded(sprite));
-		} else {
-			sprite.setUploadAction(onSpriteUploaded);
-		}
-	}
-
-	private static <K> void addSpriteToMapAndList(K key, AtlasSprite sprite, Map<K, AtlasSprite> map) {
-		AtlasSprite oldValue;
-
-		oldValue = map.put(key, sprite);
-
-		if (oldValue != null && oldValue != sprite) {
-			handleSprite(oldValue, false);
-			oldValue.closeAnyway();
-		}
-
+		AtlasSprite sprite = factory.create();
+		map.put(key, sprite);
 		handleSprite(sprite, true);
+		return sprite;
 	}
 
 	private static void loadFromResource(Identifier id, Consumer<NativeImage> consumer) {
@@ -173,22 +188,22 @@ public class MyTotemDollAtlasSpriteManager {
 
 	private static void handleSprite(AtlasSprite sprite, boolean add) {
 		while (true) {
-			AtomicReference<List<AtlasSprite>> reference = ATLAS_SPRITES;
-			List<AtlasSprite> oldSprites = reference.get();
-			List<AtlasSprite> updatedSprites = new ArrayList<>(oldSprites);
+			AtomicReference<Set<AtlasSprite>> reference = ATLAS_SPRITES;
+			Set<AtlasSprite> oldSprites = reference.get();
+			Set<AtlasSprite> updatedSprites = new HashSet<>(oldSprites);
 			if (add) {
 				updatedSprites.add(sprite);
 			} else {
 				updatedSprites.remove(sprite);
 			}
-			if (reference.compareAndSet(oldSprites, List.copyOf(updatedSprites))) {
+			if (reference.compareAndSet(oldSprites, Set.copyOf(updatedSprites))) {
 				break;
 			}
 		}
 	}
 
 	public static void close() {
-		List<AtlasSprite> sprites = getSprites();
+		Set<AtlasSprite> sprites = getSprites();
 		sprites.forEach(AtlasSprite::closeAnyway);
 	}
 
@@ -197,16 +212,24 @@ public class MyTotemDollAtlasSpriteManager {
 			entry.getValue().closeAndUnregister();
 			return true;
 		});
-		addSpriteToMapAndList(MISSING_SPRITE.getSpriteId(), MISSING_SPRITE, DYNAMIC_SPRITES);
-		registerDynamicSprite(TotemDollSprites.STEVE_SKIN_SPRITE, false, null);
-		registerSpecialRemappedSprite(TotemDollSprites.ELYTRA_SPRITE, false);
+
+		createAndRegisterSprite(MISSING_SPRITE.getSpriteId(), () -> MISSING_SPRITE, DYNAMIC_SPRITES, null);
+		registerDynamicSprite(STEVE_SKIN_SPRITE.getSpriteId(), false, null);
+
+		registerSpecialRemappedSprite(ELYTRA_SPRITE, false);
 	}
 
 	static {
 		MISSING_SPRITE.setClosable(false);
-		MISSING_SPRITE.setUnregisterAction(() -> {
-			DYNAMIC_SPRITES.remove(MISSING_SPRITE.getSpriteId());
-			handleSprite(MISSING_SPRITE, false);
-		});
+		MISSING_SPRITE.setUnregisterAction(() -> handleSprite(MISSING_SPRITE, false));
+
+		STEVE_SKIN_SPRITE.setClosable(false);
+		STEVE_SKIN_SPRITE.setUnregisterAction(() -> handleSprite(STEVE_SKIN_SPRITE, false));
+	}
+
+	private interface SpriteFactory {
+
+		AtlasSprite create();
+
 	}
 }

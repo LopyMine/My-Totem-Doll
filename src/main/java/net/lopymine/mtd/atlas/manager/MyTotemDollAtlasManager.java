@@ -61,15 +61,15 @@ public class MyTotemDollAtlasManager {
 		return ATLAS_TEXTURE;
 	}
 
-	public static void stitchAndUpdate(List<AtlasSprite> sprites, @Nullable OnAtlasStitched onAtlasStitched) {
+	public static void stitchAndUpdate(Set<AtlasSprite> sprites, @Nullable OnAtlasStitched onAtlasStitched) {
 		stitchAndUpdate(sprites, MyTotemDollTaskExecutor.MAIN_EXECUTOR, onAtlasStitched);
 	}
 
-	public static void stitchAndUpdate(List<AtlasSprite> sprites, Executor executor, @Nullable OnAtlasStitched onAtlasStitched) {
+	public static void stitchAndUpdate(Set<AtlasSprite> sprites, Executor executor, @Nullable OnAtlasStitched onAtlasStitched) {
 		stitchAndUpdate(sprites, null, executor, MinecraftClient.getInstance(), onAtlasStitched);
 	}
 
-	public static void stitchAndUpdate(List<AtlasSprite> sprites, @Nullable ResourceReloader.Synchronizer synchronizer, Executor prepareExecutor, Executor applyExecutor, @Nullable OnAtlasStitched onAtlasStitched) {
+	public static void stitchAndUpdate(Set<AtlasSprite> sprites, @Nullable ResourceReloader.Synchronizer synchronizer, Executor prepareExecutor, Executor applyExecutor, @Nullable OnAtlasStitched onAtlasStitched) {
 		int currentId = LATEST_ATLAS_VERSION.incrementAndGet();
 		STITCH_HOOKS_MANAGER.addHook(onAtlasStitched);
 
@@ -95,7 +95,7 @@ public class MyTotemDollAtlasManager {
 		ATLAS_TEXTURE.getAtlas().close();
 	}
 
-	private record AtlasStitchingContext(int version, SpriteAtlasTexture atlas, List<AtlasSprite> atlasSprites) {
+	private record AtlasStitchingContext(int version, SpriteAtlasTexture atlas, Set<AtlasSprite> atlasSprites) {
 
 		public void upload(StitchResult result) {
 			int latestAtlasVersion = LATEST_ATLAS_VERSION.get();
@@ -107,15 +107,6 @@ public class MyTotemDollAtlasManager {
 			this.atlasSprites.forEach(AtlasSprite::markUploaded);
 			MyTotemDollAtlasManager.setAtlas(this.atlas);
 			STITCH_HOOKS_MANAGER.runAllHooks();
-
-			if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
-				HashSet<AtlasSprite> seen = new HashSet<>();
-				for (AtlasSprite atlasSprite : this.atlasSprites) {
-					if (!seen.add(atlasSprite)) {
-						MyTotemDollClient.LOGGER.error("Found sprite duplication in active list: \"{}\"", atlasSprite.getSpriteId());
-					}
-				}
-			}
  		}
 
 	}

@@ -1,5 +1,6 @@
 package net.lopymine.mtd.model.base;
 
+import java.util.function.*;
 import lombok.*;
 import lombok.experimental.ExtensionMethod;
 import net.lopymine.mtd.atlas.AtlasSprite;
@@ -30,7 +31,7 @@ public class MModelBuilder {
 	@Nullable
 	private String name;
 	@Nullable
-	private AtlasSprite builtinTexture;
+	private AtlasSprite builtinSprite;
 	private float xScale = 1.0F;
 	private float yScale = 1.0F;
 	private float zScale = 1.0F;
@@ -79,7 +80,7 @@ public class MModelBuilder {
 
 		String name = this.getName();
 
-		MModel part = new MModel(cuboids, children, this.state, name, this.builtinTexture);
+		MModel part = new MModel(cuboids, children, this.state, name, this.builtinSprite);
 
 		ModelTransform transform = this.parent == null || isParentRoot ? this.transform : this.transform.subtract(this.parent.getTransform());
 
@@ -105,10 +106,10 @@ public class MModelBuilder {
 				String path = split[1];
 				boolean pathValid = Identifier.isPathValid(path);
 				if (namespaceValid && pathValid) {
-					this.builtinTexture = AtlasSprite.of(Identifier.of(namespace, path));
+					this.builtinSprite = AtlasSprite.of(Identifier.of(namespace, path));
 				}
 			} else {
-				this.builtinTexture = AtlasSprite.of(location.getFolderId().withSuffixedPath(this.getName()));
+				this.builtinSprite = AtlasSprite.of(location.getFolderId().withSuffixedPath(this.getName()));
 			}
 		}
 	}
@@ -118,12 +119,12 @@ public class MModelBuilder {
 		return this.name == null ? UUID.randomUUID().toString() : this.name;
 	}
 
-	public HashSet<AtlasSprite> collectAllBuiltinTextures() {
-		HashSet<AtlasSprite> textures = new HashSet<>();
-		if (this.builtinTexture != null) {
-			textures.add(this.builtinTexture);
+	public Map<Identifier, Consumer<AtlasSprite>> collectAllBuiltinTextures() {
+		Map<Identifier, Consumer<AtlasSprite>> textures = new HashMap<>();
+		if (this.builtinSprite != null) {
+			textures.put(this.builtinSprite.getSpriteId(), this.builtinSprite::copyFrom);
 		}
-		this.childrenBuilders.values().forEach((builder) -> textures.addAll(builder.collectAllBuiltinTextures()));
+		this.childrenBuilders.values().forEach((builder) -> textures.putAll(builder.collectAllBuiltinTextures()));
 		return textures;
 	}
 }

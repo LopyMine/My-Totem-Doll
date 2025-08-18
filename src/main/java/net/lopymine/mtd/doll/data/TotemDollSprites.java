@@ -1,6 +1,5 @@
 package net.lopymine.mtd.doll.data;
 
-import java.util.Objects;
 import lombok.*;
 import net.lopymine.mtd.atlas.*;
 import net.lopymine.mtd.atlas.manager.*;
@@ -9,21 +8,13 @@ import net.minecraft.util.Identifier;
 import net.lopymine.mtd.config.totem.TotemDollArmsType;
 
 import org.jetbrains.annotations.*;
+import static net.lopymine.mtd.atlas.manager.MyTotemDollAtlasSpriteManager.ELYTRA_SPRITE;
+import static net.lopymine.mtd.atlas.manager.MyTotemDollAtlasSpriteManager.STEVE_SKIN_SPRITE;
 
 @Getter
 @Setter
 @AllArgsConstructor
 public class TotemDollSprites {
-
-	@NotNull
-	public static final AtlasSprite STEVE_SKIN_SPRITE = Objects.requireNonNull(AtlasSprite.of(Identifier.of("minecraft", "textures/entity/player/wide/steve.png")));
-	//? if >=1.21.2 {
-	@NotNull
-	public static final RemappedAtlasSprite ELYTRA_SPRITE = RemappedAtlasSprite.ofResource(Identifier.of("textures/entity/equipment/wings/elytra.png"));
-	//?} else {
-	/*@NotNull
-	public static final RemappedAtlasSprite ELYTRA_SPRITE = RemappedAtlasSprite.ofResource(Objects.requireNonNull(Identifier.of("minecraft","textures/entity/elytra.png")));
-	*///?}
 
 	@NotNull
 	private LoadingState state = LoadingState.NOT_DOWNLOADED;

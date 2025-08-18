@@ -34,11 +34,14 @@ import java.util.concurrent.*;
 import java.util.function.*;
 import org.jetbrains.annotations.*;
 
+// 0 - success
+// -1 - failed
+// 1 - loading
 public class BlockBenchModelManager {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger("%s/BlockBenchModelManager".formatted(MyTotemDoll.MOD_NAME));
 
-	private static final Map<Identifier, Supplier<MModel>> LOADED_MODELS = new ConcurrentHashMap<>();
+	private static final Map<Identifier, CompletableFuture<Supplier<MModel>>> LOADED_MODELS = new ConcurrentHashMap<>();
 
 	private static final Set<String> SUPPORTED_MODEL_FORMATS = Set.of("java_block", "free_rotation");
 
@@ -48,47 +51,55 @@ public class BlockBenchModelManager {
 	}
 
 	public static Response<MModel> getModelAsResponse(Identifier id) {
-		Supplier<MModel> model = LOADED_MODELS.get(id);
+		CompletableFuture<Supplier<MModel>> future = LOADED_MODELS.get(id);
 
-		if (model == null) {
+		if (future == null) {
 			BBModel blockBenchModel = parseModel(id);
 			if (blockBenchModel == null) {
-				LOADED_MODELS.put(id, () -> null);
+				LOADED_MODELS.putIfAbsent(id, CompletableFuture.completedFuture(null));
 				return Response.empty(-1);
 			}
 
 			Supplier<MModel> supplier = createMModelSupplerFromBBModel(blockBenchModel);
-			LOADED_MODELS.put(id, supplier);
+			LOADED_MODELS.putIfAbsent(id, CompletableFuture.completedFuture(supplier));
 
 			return Response.of(0, supplier.get());
 		}
 
-		return Response.of(0, model.get());
+		if (!future.isDone()) {
+			return Response.empty(1);
+		}
+
+		try {
+			Supplier<MModel> supplier = future.getNow(null);
+			if (supplier == null) {
+				return Response.empty(-1);
+			}
+			return Response.of(0, supplier.get());
+		} catch (Exception e) {
+			LOGGER.warn("Failed to load model, exception from future:", e);
+		}
+
+		return Response.empty(-1);
 	}
 
 	public static void getModelAsyncAsResponse(Identifier id, Consumer<Response<MModel>> consumer) {
-		Supplier<MModel> model = LOADED_MODELS.get(id);
+		CompletableFuture<Supplier<MModel>> future = LOADED_MODELS.computeIfAbsent(id, (key) -> CompletableFuture.supplyAsync(() -> {
+			BBModel blockBenchModel = parseModel(id);
+			if (blockBenchModel == null) {
+				return null;
+			}
 
-		if (model == null) {
-			CompletableFuture.runAsync(() -> {
-				BBModel blockBenchModel = parseModel(id);
-				if (blockBenchModel == null) {
-					LOADED_MODELS.put(id, () -> null);
-					consumer.accept(Response.empty(-1));
-					return;
-				}
+			return createMModelSupplerFromBBModel(blockBenchModel);
+		}));
 
-				Supplier<MModel> supplier = createMModelSupplerFromBBModel(blockBenchModel);
-				LOADED_MODELS.put(id, supplier);
-
+		future.thenAccept((supplier) -> {
+			if (supplier == null) {
+				consumer.accept(Response.empty(-1));
+			} else {
 				consumer.accept(Response.of(0, supplier.get()));
-			});
-
-			return;
-		}
-
-		MModel value = model.get();
-		consumer.accept(Response.of(value == null ? -1 : 0, value));
+			}
+		});
 	}
 
 	public static void consumeModelById(Identifier id, Consumer<MModel> consumer) {
@@ -179,7 +190,10 @@ public class BlockBenchModelManager {
 
 		BBModelResolution resolution = model.getResolution();
 
-		builder.collectAllBuiltinTextures().forEach((id) -> MyTotemDollAtlasSpriteManager.registerDynamicSprite(id, false, null));
+		builder.collectAllBuiltinTextures().forEach((id, updateConsumer) -> {
+			MyTotemDollAtlasSpriteManager.registerDynamicSprite(id, false, updateConsumer::accept);
+		});
+
 		MyTotemDollAtlasManager.stitchAndUpdate(MyTotemDollAtlasSpriteManager.getSprites(), null);
 
 //		if (MyTotemDollClient.getConfig().isDebugLogEnabled()) {
