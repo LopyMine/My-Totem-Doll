@@ -1,14 +1,19 @@
 package net.lopymine.mtd.atlas;
 
-import java.io.InputStream;
+import java.io.*;
 import java.util.Objects;
 import lombok.*;
 import net.lopymine.mtd.atlas.stitch.OnSpriteUploaded;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.*;
-import net.minecraft.resource.metadata.ResourceMetadata;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.*;
+
+//? if >=1.21 {
+import net.minecraft.resource.metadata.*;
+//?} else {
+/*import net.minecraft.client.resource.metadata.*;
+*///?}
 
 @Setter
 @Getter
@@ -57,7 +62,7 @@ public class AtlasSprite {
 	}
 
 	public static void updateContents(AtlasSprite sprite, NativeImage image) {
-		ResourceMetadata metadata = getAnimationMetadataForSprite(sprite);
+		/*? if >=1.21 {*/ResourceMetadata /*?} else {*/ /*AnimationResourceMetadata *//*?}*/ metadata = getAnimationMetadataForSprite(sprite);
 		boolean animated = metadata != STANDARD_METADATA;
 		int width = image.getWidth();
 		int height = image.getHeight();
@@ -68,14 +73,22 @@ public class AtlasSprite {
 		sprite.setContents(contents);
 	}
 
-	public static ResourceMetadata getAnimationMetadataForSprite(AtlasSprite sprite) {
+	public static /*? if >=1.21 {*/ResourceMetadata /*?} else {*/ /*AnimationResourceMetadata *//*?}*/ getAnimationMetadataForSprite(AtlasSprite sprite) {
 		try {
 			Identifier id = sprite.getSpriteId();
 			InputStream stream = MinecraftClient.getInstance()
 					.getResourceManager()
 					.getResourceOrThrow(Identifier.of(id.getNamespace(), id.getPath() + ".mcmeta"))
 					.getInputStream();
+			//? if >=1.21 {
 			return ResourceMetadata.create(stream);
+			//?} else {
+			/*AnimationResourceMetadata metadata = net.minecraft.resource.AbstractFileResourcePack.parseMetadata(AnimationResourceMetadata.READER, stream);
+			if (metadata == null) {
+				return STANDARD_METADATA;
+			}
+			return metadata;
+			*///?}
 		} catch (Exception ignored) {
 			return STANDARD_METADATA;
 		}
