@@ -20,5 +20,10 @@ accessible field net/minecraft/client/gui/DrawContext vertexConsumers Lnet/minec
 accessible method net/minecraft/util/Identifier isNamespaceValid (Ljava/lang/String;)Z
 accessible method net/minecraft/util/Identifier isPathValid (Ljava/lang/String;)Z
 
+accessible field net/minecraft/client/texture/TextureManager textures Ljava/util/Map;
+accessible method net/minecraft/client/util/math/MatrixStack$Entry <init> (Lorg/joml/Matrix4f;Lorg/joml/Matrix3f;)V
+
 accessible field net/minecraft/client/texture/PlayerSkinTexture cacheFile Ljava/io/File;
-accessible class net/minecraft/client/texture/ResourceTexture$TextureData
+accessible field net/minecraft/client/texture/PlayerSkinTexture url Ljava/lang/String;
+
+accessible field net/minecraft/client/texture/NativeImage pointer J

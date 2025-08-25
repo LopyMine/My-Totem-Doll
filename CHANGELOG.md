@@ -1,1 +1,2 @@
-- Fixed slim arms for 3d_funko doll model
+- Optimized totem doll rendering (x2 FPS boost)
+- Fixed crashing in ModMenu at 1.20.1

@@ -2,6 +2,7 @@ package net.lopymine.mtd.mixin;
 
 //? if >=1.21.4 {
 import lombok.experimental.ExtensionMethod;
+import net.lopymine.mtd.thing.ThingMarks;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.client.util.math.MatrixStack;
@@ -37,8 +38,13 @@ public class ItemRenderStateMixin implements ItemRenderStateWithStack {
 	private void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, CallbackInfo ci) {
 		DollRenderContext context = DollRenderContext.of(/*? if <=1.21.4 {*//*this.modelTransformationMode*//*?} else {*/ this.displayContext /*?}*/);
 
-		if (this.stack != null && TotemDollRenderer.rendered(matrices, this.stack, context, vertexConsumers, light, overlay)) {
-			ci.cancel();
+		if (this.stack != null) {
+			if (ThingMarks.WORLD_RENDERING.get().isMarked() && TotemDollRenderer.sentRenderRequest(matrices, this.stack, context, vertexConsumers, light, overlay)) {
+				ci.cancel();
+			} else
+				if (TotemDollRenderer.rendered(matrices, this.stack, context, vertexConsumers, light, overlay)) {
+				ci.cancel();
+			}
 		}
 
 		if (this.stack != null && this.stack.hasModdedModel()) {

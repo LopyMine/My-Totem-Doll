@@ -1,9 +1,10 @@
 package net.lopymine.mtd.model.base;
 
+import java.util.function.*;
 import lombok.*;
 import lombok.experimental.ExtensionMethod;
+import net.lopymine.mtd.atlas.AtlasSprite;
 import net.minecraft.client.model.ModelTransform;
-import net.minecraft.client.render.model.json.Transformation;
 
 
 import net.lopymine.mtd.extension.*;
@@ -11,10 +12,11 @@ import net.lopymine.mtd.model.bb.ModelState;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.*;
 
 @SuppressWarnings("unused")
-@ExtensionMethod({ModelTransformExtension.class, DilationExtension.class})
+@ExtensionMethod({ModelTransformExtension.class, DilationExtension.class, IdentifierExtension.class})
 public class MModelBuilder {
 
 	private final List<MCubeBuilder> cuboidBuilders = new ArrayList<>();
@@ -26,9 +28,10 @@ public class MModelBuilder {
 	@Getter(AccessLevel.PRIVATE)
 	@Nullable
 	private MModelBuilder parent;
-	@Setter(AccessLevel.PRIVATE)
 	@Nullable
 	private String name;
+	@Nullable
+	private AtlasSprite builtinSprite;
 	private float xScale = 1.0F;
 	private float yScale = 1.0F;
 	private float zScale = 1.0F;
@@ -46,9 +49,9 @@ public class MModelBuilder {
 		return this;
 	}
 
-	public MModelBuilder addChild(String name, MModelBuilder builder) {
+	public MModelBuilder addChild(String name, MModelBuilder builder, Identifier location) {
 		builder.setParent(this);
-		builder.setName(name);
+		builder.setName(name, location);
 		this.childrenBuilders.put(name, builder);
 		return this;
 	}
@@ -77,7 +80,7 @@ public class MModelBuilder {
 
 		String name = this.getName();
 
-		MModel part = new MModel(cuboids, children, this.state, name);
+		MModel part = new MModel(cuboids, children, this.state, name, this.builtinSprite);
 
 		ModelTransform transform = this.parent == null || isParentRoot ? this.transform : this.transform.subtract(this.parent.getTransform());
 
@@ -93,8 +96,35 @@ public class MModelBuilder {
 		return part;
 	}
 
+	public void setName(@Nullable String name, Identifier location) {
+		this.name = name;
+		if (name != null && name.endsWith(".png")) {
+			if (name.contains(":")) {
+				String[] split = name.split(":");
+				String namespace = split[0];
+				boolean namespaceValid = Identifier.isNamespaceValid(namespace);
+				String path = split[1];
+				boolean pathValid = Identifier.isPathValid(path);
+				if (namespaceValid && pathValid) {
+					this.builtinSprite = AtlasSprite.of(Identifier.of(namespace, path));
+				}
+			} else {
+				this.builtinSprite = AtlasSprite.of(location.getFolderId().withSuffixedPath(this.getName()));
+			}
+		}
+	}
+
 	@NotNull
 	private String getName() {
 		return this.name == null ? UUID.randomUUID().toString() : this.name;
+	}
+
+	public Map<Identifier, Consumer<AtlasSprite>> collectAllBuiltinTextures() {
+		Map<Identifier, Consumer<AtlasSprite>> textures = new HashMap<>();
+		if (this.builtinSprite != null) {
+			textures.put(this.builtinSprite.getSpriteId(), this.builtinSprite::copyFrom);
+		}
+		this.childrenBuilders.values().forEach((builder) -> textures.putAll(builder.collectAllBuiltinTextures()));
+		return textures;
 	}
 }

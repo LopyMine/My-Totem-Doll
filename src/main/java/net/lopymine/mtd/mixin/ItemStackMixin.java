@@ -94,7 +94,7 @@ public abstract class ItemStackMixin {
 		}
 		String o = data[0];
 		TotemDollData totemDollData = TotemDollManager.getDoll(o);
-		return Optional.of(new LoadingStateTooltipData(totemDollData.getTextures().getState()));
+		return Optional.of(new LoadingStateTooltipData(totemDollData.getStandardSprites().getState()));
 	}
 
 	@Unique
@@ -103,7 +103,7 @@ public abstract class ItemStackMixin {
 			return Optional.empty();
 		}
 		String tags = data[1];
-		if (tags == null || tags.isEmpty() || TagsManager.getTagsStream(tags).noneMatch(TagsManager::hasTag)) {
+		if (tags == null || tags.isEmpty() || !TagsManager.hasAnyTag(tags)) {
 			return Optional.empty();
 		}
 		return Optional.of(new CombinedTooltipData(

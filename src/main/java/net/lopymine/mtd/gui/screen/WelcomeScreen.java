@@ -1,9 +1,9 @@
 package net.lopymine.mtd.gui.screen;
 
+import net.lopymine.mtd.atlas.manager.*;
 import net.lopymine.mtd.config.totem.TotemDollArmsType;
 import net.lopymine.mtd.doll.data.*;
 import net.lopymine.mtd.thread.MyTotemDollTaskExecutor;
-import net.lopymine.mtd.utils.texture.PlayerSkinUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.MultilineText;
 import net.minecraft.client.gui.*;
@@ -89,27 +89,29 @@ public class WelcomeScreen extends Screen {
 			}
 			net.minecraft.client.util.SkinTextures skinTextures = optional.get();
 			//?}
-			widget.getData().setTextures(TotemDollTextures.of(skinTextures, true));
+			widget.getData().setSprites(TotemDollSprites.of(skinTextures));
 		});
 		//?} else {
 
 		/*MinecraftClient.getInstance().getSkinProvider().loadSkin(MinecraftClient.getInstance().getSession().getProfile(), (type, id, texture) -> {
 			MyTotemDollTaskExecutor.execute(() -> {
 				MinecraftClient.getInstance().execute(() -> {
-					TotemDollTextures textures = widget.getData().getTextures();
+					TotemDollSprites textures = widget.getData().getStandardSprites();
+
 					switch (type) {
-						case CAPE -> textures.setCapeTexture(PlayerSkinUtils.remapTextureIfRequired(id));
 						case SKIN -> {
-							textures.setSkinTexture(id);
+							MyTotemDollAtlasSpriteManager.registerSpecialSkinSprite(id, false, textures::setSkinSprite);
 							if (texture != null) {
 								textures.setArmsType(TotemDollArmsType.of(texture.getMetadata("model")));
 							}
 						}
-						case ELYTRA -> textures.setElytraTexture(id);
+						case CAPE -> MyTotemDollAtlasSpriteManager.registerSpecialSkinSprite(id, false, textures::setCapeSprite);
+						case ELYTRA -> MyTotemDollAtlasSpriteManager.registerSpecialSkinSprite(id, false, textures::setElytraSprite);
 					}
 				});
 			});
 		}, false);
+		MyTotemDollAtlasManager.stitchAndUpdate(MyTotemDollAtlasSpriteManager.getSprites(), null);
 
 		*///?}
 

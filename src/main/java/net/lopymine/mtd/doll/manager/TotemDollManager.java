@@ -1,5 +1,6 @@
 package net.lopymine.mtd.doll.manager;
 
+import net.lopymine.mtd.atlas.manager.*;
 import net.lopymine.mtd.doll.data.TotemDollData;
 import net.lopymine.mtd.skin.provider.SkinProvider;
 import net.lopymine.mtd.skin.provider.extended.MojangSkinProvider;
@@ -55,6 +56,7 @@ public class TotemDollManager {
 		}
 
 		return CompletableFuture.allOf(list.toArray(new CompletableFuture[0])).thenApply((__) -> {
+			MyTotemDollAtlasManager.stitchAndUpdate(MyTotemDollAtlasSpriteManager.getSprites(), null);
 			action.accept((System.currentTimeMillis() - startMs) / 1000F);
 			return null;
 		});
@@ -78,6 +80,7 @@ public class TotemDollManager {
 		}
 
 		return completableFuture.thenApply((__) -> {
+			MyTotemDollAtlasManager.stitchAndUpdate(MyTotemDollAtlasSpriteManager.getSprites(), null);
 			action.accept((System.currentTimeMillis() - startMs) / 1000F);
 			return null;
 		});

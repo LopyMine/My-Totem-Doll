@@ -1,5 +1,7 @@
 package net.lopymine.mtd.client.event;
 
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.lopymine.mtd.atlas.manager.*;
 import net.minecraft.client.gui.tooltip.*;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
@@ -48,6 +50,8 @@ public class MyTotemDollEvents {
 	private static void registerLifecycleEvents() {
 		ClientLifecycleEvents.CLIENT_STOPPING.register((client) -> {
 			MyTotemDollTaskExecutor.stop();
+			MyTotemDollAtlasManager.close();
+			MyTotemDollAtlasSpriteManager.close();
 		});
 	}
 }

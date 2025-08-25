@@ -2,6 +2,7 @@ package net.lopymine.mtd.model.bb.manager;
 
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
+import net.lopymine.mtd.atlas.manager.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.ModelTransform;
 import net.minecraft.client.render.model.json.*;
@@ -33,11 +34,14 @@ import java.util.concurrent.*;
 import java.util.function.*;
 import org.jetbrains.annotations.*;
 
+// 0 - success
+// -1 - failed
+// 1 - loading
 public class BlockBenchModelManager {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger("%s/BlockBenchModelManager".formatted(MyTotemDoll.MOD_NAME));
 
-	private static final Map<Identifier, Supplier<MModel>> LOADED_MODELS = new ConcurrentHashMap<>();
+	private static final Map<Identifier, CompletableFuture<Supplier<MModel>>> LOADED_MODELS = new ConcurrentHashMap<>();
 
 	private static final Set<String> SUPPORTED_MODEL_FORMATS = Set.of("java_block", "free_rotation");
 
@@ -47,47 +51,55 @@ public class BlockBenchModelManager {
 	}
 
 	public static Response<MModel> getModelAsResponse(Identifier id) {
-		Supplier<MModel> model = LOADED_MODELS.get(id);
+		CompletableFuture<Supplier<MModel>> future = LOADED_MODELS.get(id);
 
-		if (model == null) {
+		if (future == null) {
 			BBModel blockBenchModel = parseModel(id);
 			if (blockBenchModel == null) {
-				LOADED_MODELS.put(id, () -> null);
+				LOADED_MODELS.putIfAbsent(id, CompletableFuture.completedFuture(null));
 				return Response.empty(-1);
 			}
 
 			Supplier<MModel> supplier = createMModelSupplerFromBBModel(blockBenchModel);
-			LOADED_MODELS.put(id, supplier);
+			LOADED_MODELS.putIfAbsent(id, CompletableFuture.completedFuture(supplier));
 
 			return Response.of(0, supplier.get());
 		}
 
-		return Response.of(0, model.get());
+		if (!future.isDone()) {
+			return Response.empty(1);
+		}
+
+		try {
+			Supplier<MModel> supplier = future.getNow(null);
+			if (supplier == null) {
+				return Response.empty(-1);
+			}
+			return Response.of(0, supplier.get());
+		} catch (Exception e) {
+			LOGGER.warn("Failed to load model, exception from future:", e);
+		}
+
+		return Response.empty(-1);
 	}
 
 	public static void getModelAsyncAsResponse(Identifier id, Consumer<Response<MModel>> consumer) {
-		Supplier<MModel> model = LOADED_MODELS.get(id);
+		CompletableFuture<Supplier<MModel>> future = LOADED_MODELS.computeIfAbsent(id, (key) -> CompletableFuture.supplyAsync(() -> {
+			BBModel blockBenchModel = parseModel(id);
+			if (blockBenchModel == null) {
+				return null;
+			}
 
-		if (model == null) {
-			CompletableFuture.runAsync(() -> {
-				BBModel blockBenchModel = parseModel(id);
-				if (blockBenchModel == null) {
-					LOADED_MODELS.put(id, () -> null);
-					consumer.accept(Response.empty(-1));
-					return;
-				}
+			return createMModelSupplerFromBBModel(blockBenchModel);
+		}));
 
-				Supplier<MModel> supplier = createMModelSupplerFromBBModel(blockBenchModel);
-				LOADED_MODELS.put(id, supplier);
-
+		future.thenAccept((supplier) -> {
+			if (supplier == null) {
+				consumer.accept(Response.empty(-1));
+			} else {
 				consumer.accept(Response.of(0, supplier.get()));
-			});
-
-			return;
-		}
-
-		MModel value = model.get();
-		consumer.accept(Response.of(value == null ? -1 : 0, value));
+			}
+		});
 	}
 
 	public static void consumeModelById(Identifier id, Consumer<MModel> consumer) {
@@ -173,34 +185,38 @@ public class BlockBenchModelManager {
 		MModelBuilder builder = MModelBuilder.builder(ModelState.ROOT);
 
 		for (BBGroup group : model.getGroups()) {
-			builder.addChild(group.getName(), transformGroupsAndCubes(group, model));
+			builder.addChild(group.getName(), transformGroupsAndCubes(group, model), model.getLocation());
 		}
 
 		BBModelResolution resolution = model.getResolution();
 
-		Supplier<MModel> supplier = () -> builder
+		builder.collectAllBuiltinTextures().forEach((id, updateConsumer) -> {
+			MyTotemDollAtlasSpriteManager.registerDynamicSprite(id, false, updateConsumer::accept);
+		});
+
+		MyTotemDollAtlasManager.stitchAndUpdate(MyTotemDollAtlasSpriteManager.getSprites(), null);
+
+//		if (MyTotemDollClient.getConfig().isDebugLogEnabled()) {
+//			String modelName = model.getName();
+//
+//			LOGGER.info("Successfully loaded model \"{}\" with hierarchy:", modelName);
+//
+//			String line = "—";
+//			String nameReplacement = line.repeat(modelName.length() + 4);
+//			String lines = line.repeat(10);
+//
+//			LOGGER.info("{}| {} |{}", lines, modelName, lines);
+//			MModel get = supplier.get();
+//			get.logSize(LOGGER);
+//			LOGGER.info("{}{}{}", lines, nameReplacement, lines);
+//			get.logHierarchy(LOGGER);
+//			LOGGER.info("{}{}{}", lines, nameReplacement, lines);
+//		}
+
+		return () -> builder
 				.withTransform(ModelTransform./*? if <=1.21.4 {*/ /*pivot *//*?} else {*/ origin /*?}*/(-16.0F, -8.0F, 0.0F))
 				.build(resolution.getWidth(), resolution.getHeight())
 				.initAfterBuild(model);
-
-		if (MyTotemDollClient.getConfig().isDebugLogEnabled()) {
-			String modelName = model.getName();
-
-			LOGGER.info("Successfully loaded model \"{}\" with hierarchy:", modelName);
-
-			String line = "—";
-			String nameReplacement = line.repeat(modelName.length() + 4);
-			String lines = line.repeat(10);
-
-			LOGGER.info("{}| {} |{}", lines, modelName, lines);
-			MModel get = supplier.get();
-			get.logSize(LOGGER);
-			LOGGER.info("{}{}{}", lines, nameReplacement, lines);
-			get.logHierarchy(LOGGER);
-			LOGGER.info("{}{}{}", lines, nameReplacement, lines);
-		}
-
-		return supplier;
 	}
 
 	private static MModelBuilder transformGroupsAndCubes(BBGroup group, BBModel model) {
@@ -214,12 +230,12 @@ public class BlockBenchModelManager {
 				if (!get.isVisible()) {
 					continue;
 				}
-				builder.addChild(get.getName(), transformGroupsAndCubes(get, model));
+				builder.addChild(get.getName(), transformGroupsAndCubes(get, model), model.getLocation());
 			} else if (right.isPresent()) {
 				UUID uuid = right.get();
 				BBCube cube = model.getCube(uuid);
 				if (cube != null && cube.isVisible()) {
-					builder.addChild(cube.getUuid().toString(), getChildCube(cube));
+					builder.addChild(cube.getUuid().toString(), getChildCube(cube), model.getLocation());
 				}
 			}
 		}

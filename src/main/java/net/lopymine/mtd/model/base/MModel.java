@@ -2,23 +2,23 @@ package net.lopymine.mtd.model.base;
 
 import lombok.*;
 import lombok.experimental.ExtensionMethod;
+import net.lopymine.mtd.atlas.*;
 import net.minecraft.client.model.*;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.model.json.*;
+import net.minecraft.client.texture.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
-import org.slf4j.Logger;
 
-import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.extension.*;
 import net.lopymine.mtd.model.bb.*;
 
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.function.*;
 import java.util.stream.Collectors;
 import org.jetbrains.annotations.*;
+import org.slf4j.Logger;
 
 @Getter
 @Setter
@@ -28,6 +28,7 @@ public class MModel extends ModelPart {
 	@Setter(AccessLevel.PRIVATE)
 	private ModelTransformation transformation = ModelTransformation.NONE;
 	private final Map<String, MModel> mChildren;
+	private final List<MModel> mChildrenModels;
 	private final List<MCuboid> mCuboids;
 	private final ModelState state;
 	private final String name;
@@ -39,15 +40,17 @@ public class MModel extends ModelPart {
 	@Nullable
 	private Identifier location;
 	@Nullable
-	private Identifier builtinTexture;
+	private AtlasSprite builtinTexture;
 
-	public MModel(List<MCuboid> mCuboids, Map<String, MModel> mChildren, ModelState state, String name) {
+	public MModel(List<MCuboid> mCuboids, Map<String, MModel> mChildren, ModelState state, String name, @Nullable AtlasSprite builtinTexture) {
 		super(mCuboids.stream().map(MCuboid::asCuboid).toList(), mChildren.entrySet().stream().collect(Collectors.toMap(Entry::getKey, e -> e.getValue().asModelPart())));
 		this.state     = state;
 		this.name      = name;
 		this.mChildren = mChildren;
+		this.mChildrenModels = new ArrayList<>(mChildren.values());
+		this.mChildrenModels.forEach((mmodel) -> mmodel.setParent(this));
 		this.mCuboids  = mCuboids;
-		this.mChildren.values().forEach((mmodel) -> mmodel.setParent(this));
+		this.builtinTexture = builtinTexture;
 	}
 
 	public MModel initAfterBuild(BBModel model) {
@@ -58,26 +61,7 @@ public class MModel extends ModelPart {
 
 	public void setLocation(@NotNull Identifier location) {
 		this.location = location;
-
-		String name = this.getName();
-		try {
-			if (name.endsWith(".png")) {
-				if (name.contains(":")) {
-					String[] split = name.split(":");
-					boolean namespaceValid = Identifier.isNamespaceValid(split[0]);
-					boolean pathValid = Identifier.isPathValid(split[1]);
-					if (namespaceValid && pathValid) {
-						this.builtinTexture = Identifier.of(/*? if <1.21 {*/ /*"minecraft", *//*?}*/ name);
-					}
-				} else {
-					this.builtinTexture = location.getFolderId().withSuffixedPath(this.getName());
-				}
-			}
-
-			this.mChildren.forEach((modelName, model) -> model.setLocation(location));
-		} catch (Exception e) {
-			MyTotemDollClient.LOGGER.error("Failed to set builtinTexture for model \"%s\": ".formatted(name), e);
-		}
+		this.mChildren.forEach((modelName, model) -> model.setLocation(location));
 	}
 
 	@Override
@@ -97,7 +81,7 @@ public class MModel extends ModelPart {
 			list.add(model);
 		}
 
-		for (MModel value : this.mChildren.values()) {
+		for (MModel value : this.mChildrenModels) {
 			list.addAll(value.findModels(suffix).getModels());
 		}
 
@@ -108,34 +92,28 @@ public class MModel extends ModelPart {
 		return this;
 	}
 
-	public void draw(MatrixStack matrices, VertexConsumerProvider provider, Function<Identifier, RenderLayer> layerFunction, Identifier mainTexture, Map<String, Supplier<Identifier>> partsTextures, Set<String> requestedParts, int light, int overlay, /*? if >=1.21 {*/int color/*?} else {*//*float red, float green, float blue, float alpha *//*?}*/) {
-		// TODO Optimize
-		if (this.skipRendering && !requestedParts.contains(this.getName())) {
+	public void draw(MatrixStack matrices, VertexConsumerProvider provider, SpriteAtlasTexture atlas, RenderLayer atlasRenderLayer, AtlasSprite mainSprite, Map<String, AtlasSprite> requestedParts, int light, int overlay, /*? if >=1.21 {*/int color/*?} else {*//*float red, float green, float blue, float alpha *//*?}*/) {
+		AtlasSprite providedSprite = requestedParts.get(this.getName());
+
+		if ((this.skipRendering && providedSprite == null) || (!this.visible) || (this.mCuboids.isEmpty() && this.mChildren.isEmpty())) {
 			return;
 		}
 
-		if (!this.visible) {
-			return;
-		}
-
-		if (this.mCuboids.isEmpty() && this.mChildren.isEmpty()) {
-			return;
-		}
-
-		Identifier texture = this.builtinTexture == null ? partsTextures.getOrDefault(this.getName(), () -> mainTexture).get() : this.builtinTexture;
-		if (texture == null) {
+		AtlasSprite currentSpriteId = this.builtinTexture == null ? providedSprite == null ? mainSprite : providedSprite : this.builtinTexture;
+		if (currentSpriteId == null) {
 			return;
 		}
 
 		matrices.push();
 		this./*? if <=1.21.4 {*//*rotate*//*?} else {*/ applyTransform /*?}*/(matrices);
 		if (!this.hidden && !this.mCuboids.isEmpty()) {
-			VertexConsumer consumer = provider.getBuffer(layerFunction.apply(texture));
-			this.renderCuboids(matrices.peek(), consumer, light, overlay, /*? if >=1.21 {*/ color/*?} else {*/ /*red, green, blue, alpha *//*?}*/);
+			Sprite currentSprite = atlas.getSprite(currentSpriteId.getSpriteId());
+			VertexConsumer consumer = currentSprite.getTextureSpecificVertexConsumer(provider.getBuffer(atlasRenderLayer));
+			this.renderCuboids(matrices.peek(), consumer, light, overlay, /*? if >=1.21 {*/ color /*?} else {*/ /*red, green, blue, alpha *//*?}*/);
 		}
 
-		for (MModel model : this.mChildren.values()) {
-			model.draw(matrices, provider, layerFunction, texture, partsTextures, requestedParts, light, overlay, /*? if >=1.21 {*/ color/*?} else {*/ /*red, green, blue, alpha *//*?}*/);
+		for (MModel model : this.mChildrenModels) {
+			model.draw(matrices, provider, atlas, atlasRenderLayer, currentSpriteId, requestedParts, light, overlay, /*? if >=1.21 {*/ color /*?} else {*/ /*red, green, blue, alpha *//*?}*/);
 		}
 
 		matrices.pop();
@@ -184,7 +162,7 @@ public class MModel extends ModelPart {
 			logger.info(cuboidDilation);
 		}
 
-		for (MModel value : this.mChildren.values()) {
+		for (MModel value : this.mChildrenModels) {
 			value.logHierarchy(logger);
 		}
 	}

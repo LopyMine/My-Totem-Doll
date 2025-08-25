@@ -1,17 +1,18 @@
 package net.lopymine.mtd.doll.model;
 
 import lombok.*;
+import net.lopymine.mtd.atlas.*;
+import net.lopymine.mtd.atlas.manager.MyTotemDollAtlasManager;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.client.MyTotemDollClient;
-import net.lopymine.mtd.doll.data.TotemDollTextures;
+import net.lopymine.mtd.doll.data.TotemDollSprites;
 import net.lopymine.mtd.model.base.*;
 import net.lopymine.mtd.model.bb.manager.BlockBenchModelManager;
 import java.util.*;
-import java.util.function.*;
 import org.jetbrains.annotations.Nullable;
 
 @Getter
@@ -139,7 +140,7 @@ public class TotemDollModel extends Model {
 
 	*///?}
 
-	public void apply(TotemDollTextures textures) {
+	public void apply(TotemDollSprites textures) {
 		this.slim = textures.getArmsType().isSlim();
 		this.resetPartsVisibility();
 	}
@@ -167,50 +168,45 @@ public class TotemDollModel extends Model {
 
 	public static class Drawer {
 
-		private final Map<String, Supplier<Identifier>> textures = new HashMap<>();
-		private final Set<String> requestedParts = new HashSet<>();
+		private final Map<String, AtlasSprite> sprites = new HashMap<>();
 
-		private final Function<Identifier, RenderLayer> layerFunction;
 		private final TotemDollModel model;
 
 		public Drawer(TotemDollModel model) {
 			this.model         = model;
-			this.layerFunction = model::getLayer;
 		}
 
-		public Drawer texture(String part, Identifier texture) {
-			this.textures.put(part, () -> texture);
-			return this;
+		public void requestDrawingPartWithSprite(String part, AtlasSprite sprite) {
+			this.sprites.put(part, sprite);
 		}
 
-		public Drawer texture(String part, Supplier<Identifier> texture) {
-			this.textures.put(part, texture);
-			return this;
-		}
-
-		public Drawer requestDrawingPart(String part) {
-			this.requestedParts.add(part);
-			return this;
-		}
-
-		public void draw(MatrixStack matrices, VertexConsumerProvider provider, Identifier mainTexture, int light, int overlay, /*? if >=1.21 {*/int color/*?} else {*//*float red, float green, float blue, float alpha *//*?}*/) {
+		public void draw(MatrixStack matrices, VertexConsumerProvider provider, AtlasSprite mainTexture, int light, int overlay, /*? if >=1.21 {*/int color/*?} else {*//*float red, float green, float blue, float alpha *//*?}*/) {
 			MModelCollection leftArm = this.model.getLeftArm();
 			MModelCollection rightArm = this.model.getRightArm();
 
 			enableIfPresent(leftArm);
 			enableIfPresent(rightArm);
 
-			this.model.getMain().draw(matrices, provider, this.layerFunction, mainTexture, this.textures, this.requestedParts, light, overlay, /*? if >=1.21 {*/color/*?} else {*/ /*red, green, blue, alpha*//*?}*/);
+			LockableAtlasTexture atlasTexture = MyTotemDollAtlasManager.getAtlasTexture();
+			RenderLayer renderLayer = MyTotemDollAtlasManager.getRenderLayer();
+
+			boolean wasLocked = atlasTexture.isLocked();
+			if (!wasLocked) {
+				atlasTexture.setLocked(true);
+			}
+			this.model.getMain().draw(matrices, provider, atlasTexture.getAtlas(), renderLayer, mainTexture, this.sprites, light, overlay, /*? if >=1.21 {*/color/*?} else {*/ /*red, green, blue, alpha*//*?}*/);
+			if (!wasLocked) {
+				atlasTexture.setLocked(false);
+			}
 
 			disableIfPresent(leftArm);
 			disableIfPresent(rightArm);
 
-			this.textures.clear();
+			this.sprites.clear();
 		}
 
 		public void prepareForRender() {
-			this.textures.clear();
-			this.requestedParts.clear();
+			this.sprites.clear();
 		}
 	}
 }

@@ -8,8 +8,7 @@
     ],
     "client": [
 	    //? if <=1.21.3 {
-	    /*"PlayerSkinTextureMixin",
-	    "ItemRendererMixin",
+	    /*"ItemRendererMixin",
 	    "HeldItemRendererMixin",
 	    *///?}
 
@@ -44,7 +43,9 @@
 	    "ItemStackMixin",
 	    "HandledScreenMixin",
 	    "MinecraftClientMixin",
-	    "TextureManagerMixin"
+	    "TextureManagerMixin",
+	    "GameRendererDollRenderingMixin",
+	    "SpriteContentsMixin"
     ],
     "injectors": {
         "defaultRequire": 1

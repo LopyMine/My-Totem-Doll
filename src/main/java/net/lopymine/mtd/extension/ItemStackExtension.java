@@ -36,6 +36,10 @@ public class ItemStackExtension {
 	}
 
 	public static TotemDollData getTotemDollData(ItemStack stack) {
+		return getTotemDollData(stack, true);
+	}
+
+	public static TotemDollData getTotemDollData(ItemStack stack, boolean applyRenderProperties) {
 		Text name = getRealCustomName(stack);
 
 		if (name != null) {
@@ -51,10 +55,11 @@ public class ItemStackExtension {
 				TagsManager.processTags(tags, data);
 			}
 
-			return data.applyRenderProperties(); // apply render properties
+			return applyRenderProperties ? data.applyRenderProperties() : data; // apply render properties
 		}
 
-		return StandardTotemDollManager.getStandardDoll().refreshAndApplyRenderProperties();
+		TotemDollData data = StandardTotemDollManager.getStandardDoll().refreshRenderProperties();
+		return applyRenderProperties ? data.applyRenderProperties() : data;
 	}
 
 	public static void setModdedModel(ItemStack itemStack, boolean modded) {

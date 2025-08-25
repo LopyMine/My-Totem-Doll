@@ -1,13 +1,8 @@
 package net.lopymine.mtd.skin.provider;
 
 import lombok.*;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.texture.*;
 import net.minecraft.util.Identifier;
-import org.apache.commons.io.FileUtils;
 
-
-import net.fabricmc.loader.api.FabricLoader;
 
 import net.lopymine.mtd.api.Response;
 import net.lopymine.mtd.client.MyTotemDollClient;
@@ -20,7 +15,6 @@ import net.lopymine.mtd.skin.data.ParsedSkinData;
 import net.lopymine.mtd.thread.MyTotemDollTaskExecutor;
 import net.lopymine.mtd.utils.texture.*;
 
-import java.io.*;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.*;
@@ -48,7 +42,7 @@ public abstract class StandardSkinProvider implements SkinProvider {
 
 		TotemDollData totemDollData = this.getDataOrCreate(value);
 
-		if (totemDollData.getTextures().canStartDownloading()) {
+		if (totemDollData.getStandardSprites().canStartDownloading()) {
 			this.loadDoll(value, this.maxRequestsCheckEnabled, totemDollData);
 		}
 
@@ -70,13 +64,13 @@ public abstract class StandardSkinProvider implements SkinProvider {
 			this.requestsCount++;
 		}
 
-		totemDollData.getTextures().setState(LoadingState.WAITING_DOWNLOADING);
+		totemDollData.getStandardSprites().setState(LoadingState.WAITING_DOWNLOADING);
 
 		return MyTotemDollTaskExecutor.execute(() -> {
 			int waitTime = 0;
 
 			while (true) {
-				TotemDollTextures textures = totemDollData.getTextures();
+				TotemDollSprites textures = totemDollData.getStandardSprites();
 				textures.setState(LoadingState.DOWNLOADING);
 
 				Response<ParsedSkinData> response = this.loadDollFromAPI(value);
@@ -115,31 +109,26 @@ public abstract class StandardSkinProvider implements SkinProvider {
 
 				Identifier skinId = this.getSkinId(value);
 
-				FailedAction onFailed = (reason, throwable, objects) -> {
+				FailedAction onFailed = (throwable) -> {
 					textures.setState(LoadingState.CRITICAL_ERROR);
-					String text = "Failed to load doll skin. Error: %s. Reason: %s".formatted(reason, throwable != null ? throwable.getMessage() : "None");
-					MyTotemDollClient.LOGGER.warn(text, objects);
-					return true;
+					MyTotemDollClient.LOGGER.warn("Failed to download doll skin:", throwable);
 				};
-				SuccessAction onSuccess = () -> {
-					textures.setSkinTexture(skinId);
+
+				SuccessAction onSuccess = (sprite) -> {
+					textures.setSkinSprite(sprite);
 					textures.setState(LoadingState.DOWNLOADED);
 				};
 
-				TextureUtils.registerUrlTexture(parsedSkinData.getSkinUrl(), skinId, onSuccess, onFailed, false);
+				PlayerSkinUtils.downloadSkin(parsedSkinData.getSkinUrl(), skinId, onSuccess, onFailed, true);
 
 				if (parsedSkinData.getCapeUrl() != null) {
 					Identifier capeId = this.getCapeId(value);
-					TextureUtils.registerUrlTexture(parsedSkinData.getCapeUrl(), capeId, () -> {
-						textures.setCapeTexture(capeId);
-					}, null, true);
+					PlayerSkinUtils.downloadSkin(parsedSkinData.getCapeUrl(), capeId, textures::setCapeSprite, null, false);
 				}
 
 				if (parsedSkinData.getElytraUrl() != null) {
 					Identifier elytraId = this.getElytraId(value);
-					TextureUtils.registerUrlTexture(parsedSkinData.getElytraUrl(), elytraId, () -> {
-						textures.setElytraTexture(elytraId);
-					}, null, false);
+					PlayerSkinUtils.downloadSkin(parsedSkinData.getElytraUrl(), elytraId, textures::setElytraSprite, null, false);
 				}
 
 				break;
@@ -173,7 +162,7 @@ public abstract class StandardSkinProvider implements SkinProvider {
 		for (Entry<String, TotemDollData> entry : this.cache.entrySet()) {
 
 			TotemDollData value = entry.getValue();
-			TotemDollTextures textures = value.getTextures();
+			TotemDollSprites textures = value.getStandardSprites();
 			textures.destroy();
 
 			list.add(loadDoll(entry.getKey(), false, value));
@@ -189,7 +178,7 @@ public abstract class StandardSkinProvider implements SkinProvider {
 			return CompletableFuture.completedFuture(null);
 		}
 
-		TotemDollTextures textures = totemDollData.getTextures();
+		TotemDollSprites textures = totemDollData.getStandardSprites();
 		textures.destroy();
 
 		return loadDoll(value, false, totemDollData);
