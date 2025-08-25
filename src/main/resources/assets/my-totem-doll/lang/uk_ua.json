@@ -9,16 +9,16 @@
 	"my-totem-doll.modmenu.group.main.name": "&lГоловна",
 	"my-totem-doll.modmenu.group.main.description": "Головні налаштування мода My Totem Doll.",
 	"my-totem-doll.modmenu.option.mod_enabled.name": "Стан моду",
-	"my-totem-doll.modmenu.option.mod_enabled.description": "Якщо увімкнено, усі тотеми зміняться на ляльки гравців.",
+	"my-totem-doll.modmenu.option.mod_enabled.description": "Якщо ввімкнено, усі тотеми зміняться на ляльки гравців.",
 	"my-totem-doll.modmenu.option.support_other_mods_totems.name": "Підтримка тотемів інших модів",
 	"my-totem-doll.modmenu.option.support_other_mods_totems.description": "Якщо увімкнено, моделі ляльок також застосовуватимуться до тотемів інших модів. Якщо вимкнено, не застосовуватимуться.",
 	"my-totem-doll.modmenu.option.debug_log_enabled.name": "&6Стан журналу налагодження",
-	"my-totem-doll.modmenu.option.debug_log_enabled.description": "Якщо увімкнено, додаткова інформація буде зареєстрована на консолі для налагодження.",
+	"my-totem-doll.modmenu.option.debug_log_enabled.description": "Якщо ввімкнено, додаткова інформація буде зареєстрована на консолі для налагодження.",
 
-	"my-totem-doll.modmenu.group.threads.name": "&lПотоки",
-	"my-totem-doll.modmenu.group.threads.description": "Параметри потоків, які можуть вплинути на продуктивність!",
-	"my-totem-doll.modmenu.option.executor_threads_count.name": "Кількість потоків виконавця",
-	"my-totem-doll.modmenu.option.executor_threads_count.description": "Встановлює, скільки потоків буде виділено для завдань мода, таких як завантаження скінів. В основному використовується для завантаження скінів.",
+	"my-totem-doll.modmenu.group.parallel_tasks.name": "&lПаралельні завдання",
+	"my-totem-doll.modmenu.group.parallel_tasks.description": "Налаштування паралельних завдань, які можуть вплинути на продуктивність!",
+	"my-totem-doll.modmenu.option.parallel_tasks_count.name": "Кількість паралельних завдань",
+	"my-totem-doll.modmenu.option.parallel_tasks_count.description": "Визначає, скільки паралельних завдань можуть запускатися модом, таких як паралельне завантаження скінів.",
 
 	"my-totem-doll.modmenu.category.rendering.name": "&lПромальовування",
 	"my-totem-doll.modmenu.group.right_hand.name": "&lПрава рука",
@@ -41,7 +41,7 @@
 	"my-totem-doll.modmenu.group.standard_doll_model.description": "",
 	"my-totem-doll.modmenu.group.standard_doll_skin.description": "",
 
-	"my-totem-doll.modmenu.option.use_vanilla_totem_model.name": "Використовувати усталену модель тотему",
+	"my-totem-doll.modmenu.option.use_vanilla_totem_model.name": "Використовувати усталену модель тотема",
 
 	"my-totem-doll.modmenu.option.standard_doll_skin_type.name": "Скін",
 	"my-totem-doll.modmenu.option.standard_doll_skin_type.steve": "Стів",
@@ -50,10 +50,10 @@
 	"my-totem-doll.modmenu.option.standard_doll_skin_type.url_skin": "URL",
 	"my-totem-doll.modmenu.option.standard_doll_skin_type.file_skin": "Файл",
 
-	"my-totem-doll.modmenu.option.standard_doll_skin_type.player.suggestion": "Введіть ім'я гравця в поле «Скін гравця», щоб застосувати його скін до ляльки.",
+	"my-totem-doll.modmenu.option.standard_doll_skin_type.player.suggestion": "Уведіть ім'я гравця в поле «Скін гравця», щоб застосувати його скін до ляльки.",
 	"my-totem-doll.modmenu.option.standard_doll_skin_type.holding_player.suggestion": "Кожна лялька матиме скін гравця, який її тримає. Якщо ніхто не тримає ляльку, буде Стів.",
-	"my-totem-doll.modmenu.option.standard_doll_skin_type.url_skin.suggestion": "Введіть посилання на скін у полі «Скін гравця» щоб застосувати свій скін до ляльки.",
-	"my-totem-doll.modmenu.option.standard_doll_skin_type.file_skin.suggestion": "Введіть шлях до скіна в полі «Скін гравця», щоб застосувати свій скін до ляльки.",
+	"my-totem-doll.modmenu.option.standard_doll_skin_type.url_skin.suggestion": "Уведіть посилання на скін у полі «Скін гравця» щоб застосувати свій скін до ляльки.",
+	"my-totem-doll.modmenu.option.standard_doll_skin_type.file_skin.suggestion": "Уведіть шлях до скіну в полі «Скін гравця», щоб застосувати свій скін до ляльки.",
 
 	"my-totem-doll.modmenu.option.standard_doll_skin_type.result.error": "&4Помилка(можна повторити)",
 	"my-totem-doll.modmenu.option.standard_doll_skin_type.result.critical_error": "&cКритична помилка(не можна повторити)",
@@ -126,5 +126,5 @@
 	"my-totem-doll.text.loading.failed": "&c&lПомилка завантаження!",
 
 	"my-totem-doll.tag_menu.title": "Теґи",
-	"my-totem-doll.tag_menu.custom_models.title": "Власні моделі\n \n&7[Shift]&r + &7[оберт колесика миші]&r для зміни\nрозміру підказки.\n&7[Ctrl]&r + &7[оберт колесика миші]&r для зміни розміру\nмоделі у підказці."
+	"my-totem-doll.tag_menu.custom_models.title": "Користувацькі моделі\n \n&7[Shift]&r + &7[оберт колесика миші]&r для зміни\nрозміру підказки.\n&7[Ctrl]&r + &7[оберт колесика миші]&r для зміни розміру\nмоделі у підказці."
 }
