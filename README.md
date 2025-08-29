@@ -39,7 +39,7 @@ My Totem Doll also has some commands for refreshing the totem skins:
 
 You can customize individual totems in the anvil! **Put your totem in the anvil to the first slot to see the Tags menu button. Click on it to open the Tags menu.**
 
-![Showcase](https://cdn.modrinth.com/data/cached_images/d54f3739ab784b78a725cb4fcc4f2e1e4e5435cd.png)
+![Showcase](https://cdn.modrinth.com/data/cached_images/4bcc37c741f5722c7c196795cd996b10f1034ff8.png)
 
 ## Multiplayer Support
 
