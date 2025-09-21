@@ -1,1 +1,2 @@
-- Minor fixes
+- Fixed issue when model authors were added to every mod description.
+- Fixed issue when you could see invisible player with totem while having the "Holding Player" option.

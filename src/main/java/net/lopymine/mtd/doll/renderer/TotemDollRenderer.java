@@ -7,7 +7,7 @@ import net.lopymine.mtd.optimization.TotemDollWorldRenderRequestsCollector;
 import net.lopymine.mtd.utils.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.network.*;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.VertexConsumerProvider.Immediate;
 import net.minecraft.client.util.math.MatrixStack;
@@ -224,6 +224,9 @@ public class TotemDollRenderer {
 
 	private static void prepareStandardDollForRendering(AbstractClientPlayerEntity playerEntity, TotemDollData totemDollData) {
 		if (playerEntity != null && MyTotemDollClient.getConfig().getStandardTotemDollSkinType() == TotemDollSkinType.HOLDING_PLAYER) {
+			if (!playerEntity.equals(MinecraftClient.getInstance().player) && playerEntity.isInvisibleTo(MinecraftClient.getInstance().player)) {
+				return;
+			}
 			totemDollData.setFrameSprites(playerEntity);
 		}
 	}

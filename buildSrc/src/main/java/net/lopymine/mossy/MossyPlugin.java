@@ -113,6 +113,18 @@ public class MossyPlugin implements Plugin<Project> {
 			task.from(((RemapJarTask) project.getTasks().getByName("remapJar")).getArchiveFile().get());
 			task.into(getRootFile(project, "libs/"));
 		});
+		for (String publishTask : List.of("publishModrinth", "publishCurseforge")) {
+			project.getTasks().named(publishTask).configure((task) -> {
+				task.doLast((t) -> {
+					try {
+						Thread.sleep(1000L);
+					} catch (Exception e) {
+						MossyPlugin.LOGGER.log("Failed to wait before publishing!");
+						e.printStackTrace();
+					}
+				});
+			});
+		}
 	}
 
 	private static void configureProject(@NotNull Project project, MossyPlugin plugin) {
