@@ -4,7 +4,7 @@
 		"my-totem-doll.modmenu.no_config_library_screen.message": "MyTotemDollの設定画面を開くには&6&lYetAnotherConfigLib[YACL]&fをインストールする必要があります。\n\n&a&lYACL &6&lModrinthページを開きますか？",
 		"my-totem-doll.modmenu.old_config_library_screen.message": "お使いの&6&lYetAnotherConfigLib[YACL]&fバージョン%sはMyTotemDollの設定には古すぎます。&6&lYACL&fをバージョン%s以上に更新してください。\n\n&a&lYACL &6&lModrinthページを開きますか？",
 	
-  	"my-totem-doll.modmenu.category.general.name": "&l一般",
+  		"my-totem-doll.modmenu.category.general.name": "&l一般",
 
 		"my-totem-doll.modmenu.group.main.name": "&lメイン",
 		"my-totem-doll.modmenu.group.main.description": "MyTotemDollModのメイン設定",
