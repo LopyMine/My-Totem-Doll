@@ -82,7 +82,7 @@
 		"my-totem-doll.tags.tips.title": "&e&lヒント！",
  		"my-totem-doll.tags.tips.text": "  &e&l1。&rトーテムにカーソルを合わせて &7[Shift]&rを押すと、そのステータスを確認できます。金床では常に有効です。\n\n &e&l2 &rコマンド &7/my-totem-doll refresh [...]&r を使って、人形のスキンを更新できます",
 
- 		"my-totem-doll.tags.title": "&7ドールタグ：",
+ 		"my-totem-doll.tags.title": "&7人形タグ：",
 		"my-totem-doll.tags.0": "アレックスの腕に設定",
 		"my-totem-doll.tags.1": "スティーブの腕に設定",
 		"my-totem-doll.tags.2": "マント無効化",
@@ -102,7 +102,7 @@
 
 		"my-totem-doll.welcome_screen.title": "はじめに",
 		"my-totem-doll.welcome_screen.text": "&lようこそ。&r初めて&lMy Totem Doll mod&rを導入してゲームを起動しました。トーテムに使用する標準モデルを選択して下さい",
-		"my-totem-doll.welcome_screen.option.3d": "&l3Dドール",
+		"my-totem-doll.welcome_screen.option.3d": "&l3D人形",
 		"my-totem-doll.welcome_screen.option.2d": "&l2Dトーテム",
 
 		"my-totem-doll.placeholder.search": "検索…",
