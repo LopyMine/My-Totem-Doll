@@ -2,7 +2,9 @@ package net.lopymine.mtd.utils.texture;
 
 import java.net.*;
 import lombok.experimental.ExtensionMethod;
+import net.lopymine.mtd.atlas.RemappedAtlasSprite;
 import net.lopymine.mtd.atlas.manager.*;
+import net.lopymine.mtd.doll.data.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.*;
 import net.minecraft.util.Identifier;
@@ -13,6 +15,11 @@ import java.io.*;
 import java.nio.file.*;
 import net.minecraft.util.math.ColorHelper;
 import org.jetbrains.annotations.*;
+
+import net.lopymine.mtd.atlas.manager.*;
+import net.lopymine.mtd.config.totem.TotemDollArmsType;
+import net.lopymine.mtd.doll.data.*;
+import net.lopymine.mtd.thread.MyTotemDollTaskExecutor;
 
 public class PlayerSkinUtils {
 
@@ -162,4 +169,43 @@ public class PlayerSkinUtils {
 
 	}
 	*///?}
+
+	public static void setupClientTextures(TotemDollData data) {
+		//? if >=1.21 {
+		MinecraftClient.getInstance().getSkinProvider().fetchSkinTextures(MinecraftClient.getInstance().getGameProfile()).thenAccept((/*? if >=1.21.4 {*/ optional /*?} else {*/ /*skinTextures *//*?}*/) -> {
+			//? if >=1.21.4 {
+			if (optional.isEmpty()) {
+				return;
+			}
+			net.minecraft.client.util.SkinTextures skinTextures = optional.get();
+			//?}
+			data.setSprites(TotemDollSprites.of(skinTextures));
+		});
+		//?} else {
+		/*MinecraftClient.getInstance().getSkinProvider().loadSkin(MinecraftClient.getInstance().getSession().getProfile(), (type, id, texture) -> {
+			MyTotemDollTaskExecutor.execute(() -> {
+				MinecraftClient.getInstance().execute(() -> {
+					TotemDollSprites textures = data.getStandardSprites();
+
+					switch (type) {
+						case SKIN -> {
+							MyTotemDollAtlasSpriteManager.registerSpecialSkinSprite(id, false, textures::setSkinSprite);
+							if (texture != null) {
+								textures.setArmsType(TotemDollArmsType.of(texture.getMetadata("model")));
+							}
+						}
+						case CAPE -> {
+							RemappedAtlasSprite capeSprite = RemappedAtlasSprite.ofResource(id);
+							MyTotemDollAtlasSpriteManager.registerSpecialRemappedSprite(capeSprite);
+							textures.setCapeSprite(capeSprite);
+						}
+						case ELYTRA -> MyTotemDollAtlasSpriteManager.registerSpecialSkinSprite(id, false, textures::setElytraSprite);
+					}
+				});
+			});
+		}, false);
+		MyTotemDollAtlasManager.stitchAndUpdate(MyTotemDollAtlasSpriteManager.getSprites(), null);
+
+		*///?}
+	}
 }

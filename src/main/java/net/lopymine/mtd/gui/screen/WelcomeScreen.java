@@ -1,9 +1,6 @@
 package net.lopymine.mtd.gui.screen;
 
-import net.lopymine.mtd.atlas.manager.*;
-import net.lopymine.mtd.config.totem.TotemDollArmsType;
-import net.lopymine.mtd.doll.data.*;
-import net.lopymine.mtd.thread.MyTotemDollTaskExecutor;
+import net.lopymine.mtd.utils.texture.PlayerSkinUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.MultilineText;
 import net.minecraft.client.gui.*;
@@ -81,39 +78,7 @@ public class WelcomeScreen extends Screen {
 		WelcomeTotemDollModelPreviewWidget widget = new WelcomeTotemDollModelPreviewWidget(area.getX(), area.getY(), area.getWidth(), runnable);
 		widget.updateModel(modelId);
 
-		//? if >=1.21 {
-		MinecraftClient.getInstance().getSkinProvider().fetchSkinTextures(MinecraftClient.getInstance().getGameProfile()).thenAccept((/*? if >=1.21.4 {*/ optional /*?} else {*/ /*skinTextures *//*?}*/) -> {
-			//? if >=1.21.4 {
-			if (optional.isEmpty()) {
-				return;
-			}
-			net.minecraft.client.util.SkinTextures skinTextures = optional.get();
-			//?}
-			widget.getData().setSprites(TotemDollSprites.of(skinTextures));
-		});
-		//?} else {
-
-		/*MinecraftClient.getInstance().getSkinProvider().loadSkin(MinecraftClient.getInstance().getSession().getProfile(), (type, id, texture) -> {
-			MyTotemDollTaskExecutor.execute(() -> {
-				MinecraftClient.getInstance().execute(() -> {
-					TotemDollSprites textures = widget.getData().getStandardSprites();
-
-					switch (type) {
-						case SKIN -> {
-							MyTotemDollAtlasSpriteManager.registerSpecialSkinSprite(id, false, textures::setSkinSprite);
-							if (texture != null) {
-								textures.setArmsType(TotemDollArmsType.of(texture.getMetadata("model")));
-							}
-						}
-						case CAPE -> MyTotemDollAtlasSpriteManager.registerSpecialSkinSprite(id, false, textures::setCapeSprite);
-						case ELYTRA -> MyTotemDollAtlasSpriteManager.registerSpecialSkinSprite(id, false, textures::setElytraSprite);
-					}
-				});
-			});
-		}, false);
-		MyTotemDollAtlasManager.stitchAndUpdate(MyTotemDollAtlasSpriteManager.getSprites(), null);
-
-		*///?}
+		PlayerSkinUtils.setupClientTextures(widget.getData());
 
 		return widget;
 	}
