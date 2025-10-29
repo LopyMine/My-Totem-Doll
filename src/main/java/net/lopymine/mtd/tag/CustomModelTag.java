@@ -3,7 +3,7 @@ package net.lopymine.mtd.tag;
 import lombok.Getter;
 import net.minecraft.util.Identifier;
 
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.*;
 
 @Getter
 public class CustomModelTag extends Tag {
@@ -13,6 +13,15 @@ public class CustomModelTag extends Tag {
 	protected CustomModelTag(char tag, @Nullable TagAction action, Identifier modelId) {
 		super(tag, action);
 		this.modelId = modelId;
+	}
+
+	public @NotNull String getModelName() {
+		String path = this.modelId.getPath();
+		int i = path.lastIndexOf('/');
+		if (i != -1) {
+			return path.substring(i + 1);
+		}
+		return path;
 	}
 
 	public static Builder startBuilder(char tag, Identifier modelId) {

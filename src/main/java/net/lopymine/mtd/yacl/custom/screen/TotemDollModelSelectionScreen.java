@@ -200,7 +200,8 @@ public class TotemDollModelSelectionScreen extends Screen {
 	}
 
 	private void setSelectedModel(Identifier modelId, String pack, String modelName) {
-		this.selectedModel     = MyTotemDoll.text("text.nice_id", pack, modelId.getPath());
+		String packName = MyTotemDoll.MOD_ID.equals(pack) ? MyTotemDoll.MOD_NAME.replace(" ", "") : pack;
+		this.selectedModel     = MyTotemDoll.text("text.nice_id", packName, modelId.getPath());
 		this.selectedModelId   = modelId;
 		this.selectedModelName = Text.of(modelName);
 		this.totemDollModelPreviewWidget.updateModel(modelId);
