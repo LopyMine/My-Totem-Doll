@@ -1,6 +1,7 @@
 package net.lopymine.mtd.utils.plugin;
 
 import lombok.experimental.ExtensionMethod;
+import net.lopymine.mtd.config.MyTotemDollConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -27,7 +28,7 @@ public class TotemDollPlugin {
 
 	public static boolean work(@Nullable Text realCustomName) {
 		boolean standardDollWithoutName = realCustomName == null;
-		if (standardDollWithoutName && TotemDollPlugin.isGoodStick(MyTotemDollClient.getConfig().getStandardTotemDollSkinValue())) {
+		if (standardDollWithoutName && TotemDollPlugin.isGoodStick(MyTotemDollConfig.getInstance().getStandardTotemDollSkinValue())) {
 			return true;
 		}
 		if (!standardDollWithoutName && TotemDollPlugin.isGoodStick(realCustomName.getString())) {

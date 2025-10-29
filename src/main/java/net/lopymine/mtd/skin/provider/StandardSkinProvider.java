@@ -24,6 +24,7 @@ import org.jetbrains.annotations.*;
 @Getter
 public abstract class StandardSkinProvider implements SkinProvider {
 
+	private final Map<String, CompletableFuture<Void>> reloadingFutures = new ConcurrentHashMap<>();
 	private final Map<String, TotemDollData> cache = new ConcurrentHashMap<>();
 
 	private boolean maxRequestsCheckEnabled;
@@ -160,28 +161,49 @@ public abstract class StandardSkinProvider implements SkinProvider {
 		Set<CompletableFuture<?>> list = new HashSet<>();
 
 		for (Entry<String, TotemDollData> entry : this.cache.entrySet()) {
-
+			String key = entry.getKey();
 			TotemDollData value = entry.getValue();
-			TotemDollSprites textures = value.getStandardSprites();
-			textures.destroy();
 
-			list.add(loadDoll(entry.getKey(), false, value));
+			CompletableFuture<Void> future = this.reloadingFutures.get(key);
+			if (future != null) {
+				list.add(future);
+				continue;
+			}
+
+			list.add(this.reloadDataAndRegisterFuture(key, value));
 		}
 
 		return CompletableFuture.allOf(list.toArray(new CompletableFuture[0]));
 	}
 
 	@Override
-	public CompletableFuture<Void> reload(String value) {
+	public CompletableFuture<Void> reloadOne(String value) {
+		CompletableFuture<Void> future = this.reloadingFutures.get(value);
+		if (future != null) {
+			return future;
+		}
+
 		TotemDollData totemDollData = this.getFromCache(value);
 		if (totemDollData == null) {
 			return CompletableFuture.completedFuture(null);
 		}
 
+		return this.reloadDataAndRegisterFuture(value, totemDollData);
+	}
+
+	private CompletableFuture<Void> reloadDataAndRegisterFuture(String value, TotemDollData totemDollData) {
 		TotemDollSprites textures = totemDollData.getStandardSprites();
 		textures.destroy();
 
-		return loadDoll(value, false, totemDollData);
+		CompletableFuture<Void> future = this.loadDoll(value, false, totemDollData)
+				.whenComplete((r, e) -> {
+					this.reloadingFutures.remove(value);
+					if (e != null) {
+						MyTotemDollClient.LOGGER.error("Failed to reload doll data for \"{}\": ", value, e);
+					}
+				});
+		this.reloadingFutures.put(value, future);
+		return future;
 	}
 
 	protected abstract Response<ParsedSkinData> loadDollFromAPI(String value);

@@ -28,18 +28,18 @@ public class TotemDollPreviewTooltipComponent implements TooltipComponent {
 
 	@Override
 	public int getHeight(/*? >=1.21.2 {*/TextRenderer textRenderer/*?}*/) {
-		return MyTotemDollClient.getConfig().getBetterTagMenuTooltipSize() + 10;
+		return MyTotemDollConfig.getInstance().getBetterTagMenuTooltipSize() + 10;
 	}
 
 	@Override
 	public int getWidth(TextRenderer textRenderer) {
-		return MyTotemDollClient.getConfig().getBetterTagMenuTooltipSize();
+		return MyTotemDollConfig.getInstance().getBetterTagMenuTooltipSize();
 	}
 
 	@Override
 	public void drawItems(TextRenderer textRenderer, int x, int y,/*? >=1.21.2 {*/int w, int h,/*?}*/ DrawContext context) {
 		int width = this.getWidth(textRenderer);
-		MyTotemDollConfig config = MyTotemDollClient.getConfig();
+		MyTotemDollConfig config = MyTotemDollConfig.getInstance();
 		float sizeOriginal = config.getBetterTagMenuTooltipSize();
 		float size = (sizeOriginal / 1.25F) * config.getTagMenuTooltipModelScale();
 		Text text = Text.of(this.modelId.getFileName());

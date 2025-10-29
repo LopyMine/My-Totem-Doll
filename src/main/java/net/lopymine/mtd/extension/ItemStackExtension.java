@@ -15,7 +15,10 @@ public class ItemStackExtension {
 	@Nullable
 	public static Text getRealCustomName(ItemStack itemStack) {
 		//? if >=1.21 {
-		return itemStack.get(net.minecraft.component.DataComponentTypes.CUSTOM_NAME);
+		if (itemStack.components == null) {
+			return null;
+		}
+		return itemStack.components.get(net.minecraft.component.DataComponentTypes.CUSTOM_NAME);
 		//?} else {
 		/*net.minecraft.nbt.NbtCompound nbtCompound = itemStack.getSubNbt("display");
 		if (nbtCompound != null && nbtCompound.contains("Name", 8)) {

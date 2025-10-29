@@ -20,7 +20,11 @@ public class FabricModMixin {
 
 	//? if >=1.21 {
 	@Dynamic
-	@Inject(at = @At("RETURN"), method = "getContributors", remap = false)
+	@Inject(
+			at = @At("RETURN"),
+			method = "getContributors",
+			remap = false
+	)
 	private void addMoreContributors(CallbackInfoReturnable<Map<String, Collection<String>>> cir) {
 		if (!MyTotemDoll.MOD_ID.equals(this.metadata.getId())) {
 			return;
@@ -38,7 +42,7 @@ public class FabricModMixin {
 	//?} else {
 	/*@Inject(at = @At("RETURN"), method = "getContributors", remap = false)
 	private void addMoreContributors(CallbackInfoReturnable<List<String>> cir) {
-			if (!MyTotemDoll.MOD_ID.equals(this.metadata.getId())) {
+			if (!MyTotemDollв.MOD_ID.equals(this.metadata.getId())) {
 			return;
 		}
 		List<String> list = cir.getReturnValue();

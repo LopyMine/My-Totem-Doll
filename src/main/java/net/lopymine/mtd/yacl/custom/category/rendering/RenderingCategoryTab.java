@@ -8,6 +8,7 @@ import dev.isxander.yacl3.gui.tab.*;
 import dev.isxander.yacl3.gui.utils.GuiUtils;
 import lombok.experimental.ExtensionMethod;
 import net.lopymine.mtd.extension.DrawContextExtension;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.*;
@@ -34,11 +35,15 @@ public class RenderingCategoryTab implements TabExt {
 	private final Tooltip tooltip;
 	private final SearchFieldWidget searchField;
 	private final ScreenRect rightPaneDim;
-	public ListHolderWidget<OptionListWidget> optionList;
+	//? if >=1.21.9 {
+	private WidgetAndType<OptionListWidget> optionList;
+	//?} else {
+	/*public ListHolderWidget<OptionListWidget> optionList;
+	*///?}
 
 	public RenderingCategoryTab(YACLScreen screen, ConfigCategory category, ScreenRect tabArea) {
 		if (!(screen instanceof MyTotemDollYACLScreen yaclScreen)) {
-			throw new IllegalArgumentException("This category only for me! [My Totem Doll]");
+			throw new IllegalArgumentException("This category is only for me! [My Totem Doll]");
 		}
 
 		this.category = category;
@@ -71,19 +76,36 @@ public class RenderingCategoryTab implements TabExt {
 
 		this.searchField = new SearchFieldWidget(
 				screen,
-				screen.textRenderer,
+				MinecraftClient.getInstance().textRenderer,
 				screen.width / 3 * 2 + screen.width / 6 - paddedWidth / 2 + 1,
 				this.undoButton.getY() - 22,
 				paddedWidth - 2, 18,
 				Text.translatable("gui.recipebook.search_hint"),
 				Text.translatable("gui.recipebook.search_hint"),
-				searchQuery -> optionList.getList().updateSearchQuery(searchQuery)
+				//? if >=1.21.9 {
+				(searchQuery) -> this.optionList.getType().updateSearchQuery(searchQuery)
+				//?} else {
+				/*searchQuery -> optionList.getList().updateSearchQuery(searchQuery)
+				*///?}
 		);
 
-		this.optionList = new ListHolderWidget<>(
+		//? if >=1.21.9 {
+		this.optionList = YACLSelectionList.asWidget(new OptionListWidget(
+				screen,
+				category,
+				MinecraftClient.getInstance(),
+				0,
+				0,
+				screen.width / 3 * 2 + 1,
+				screen.height,
+				(desc) -> {}
+		));
+		//?} else {
+		/*this.optionList = new ListHolderWidget<>(
 				() -> new ScreenRect(tabArea.position(), tabArea.width() / 3 * 2 - 2, tabArea.height()),
 				new OptionListWidget(screen, category, screen.client, 0, 0, screen.width / 3 * 2 + 1, screen.height, desc -> {})
 		);
+		*///?}
 
 		updateButtons();
 	}
@@ -95,7 +117,7 @@ public class RenderingCategoryTab implements TabExt {
 
 	@Override
 	public void forEachChild(Consumer<ClickableWidget> consumer) {
-		consumer.accept(this.optionList);
+		consumer.accept(this.optionList/*? if >=1.21.9 {*/.getWidget() /*?}*/);
 		consumer.accept(this.saveFinishedButton);
 		consumer.accept(this.cancelResetButton);
 		consumer.accept(this.undoButton);
@@ -137,8 +159,14 @@ public class RenderingCategoryTab implements TabExt {
 
 
 	@Override
-	public void refreshGrid(ScreenRect screenRectangle) {
-
+	public void refreshGrid(ScreenRect area) {
+		//? if >=1.21.9 {
+		ScreenRect rect = new ScreenRect(area.position(), area.width() / 3 * 2, area.height());
+		this.optionList.getType().setX(rect.getLeft());
+		this.optionList.getType().setY(rect.getTop() + 1);
+		this.optionList.getType().setWidth(rect.width());
+		this.optionList.getType().setHeight(rect.height() - 1);
+		//?}
 	}
 
 	@Nullable

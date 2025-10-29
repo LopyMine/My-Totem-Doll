@@ -36,6 +36,12 @@ public class ModelTransformationExtension {
 		return /*? >=1.21.4 {*/ transform.fixed(); /*?} else {*/ /*transform.fixed; *//*?}*/
 	}
 
+	//? if >=1.21.9 {
+	public static Transformation getOnShelf(ModelTransformation transform) {
+		return transform.fixedFromBottom();
+	}
+	//?}
+
 //	public static ModelTransformation getBlockBenchedModelTransformation(ModelTransformation transform) {
 //		return ModelTransformation.of(-getPivotX(transform), -getPivotY(transform), getPivotZ(transform), getPitch(transform), getYaw(transform), getRoll(transform));
 //	}

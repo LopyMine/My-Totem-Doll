@@ -6,6 +6,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.*;
 import net.minecraft.client.gui.tooltip.*;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.input.AbstractInput;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -54,9 +55,9 @@ public class TagButtonWidget extends ButtonWidget {
 	}
 
 	@Override
-	public void onPress() {
+	public void onPress(/*? if >=1.21.9 {*/ AbstractInput input /*?}*/) {
 		this.pressed = !this.pressed;
-		super.onPress();
+		super.onPress(/*? if >=1.21.9 {*/ input /*?}*/);
 	}
 
 	public void setPressed(boolean pressed) {
@@ -73,7 +74,6 @@ public class TagButtonWidget extends ButtonWidget {
 	public void setTooltip(@Nullable Text text) {
 		this.tooltipText = text;
 	}
-
 
 	@Override
 	public void /*? if >=1.21 {*/renderWidget/*?} else {*//*renderButton*//*?}*/(DrawContext context, int mouseX, int mouseY, float delta) {

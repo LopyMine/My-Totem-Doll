@@ -3,6 +3,7 @@ package net.lopymine.mtd.doll.data;
 import lombok.*;
 import net.lopymine.mtd.atlas.*;
 import net.lopymine.mtd.atlas.manager.*;
+import net.minecraft.util.AssetInfo.TextureAsset;
 import net.minecraft.util.Identifier;
 
 import net.lopymine.mtd.config.totem.TotemDollArmsType;
@@ -40,15 +41,25 @@ public class TotemDollSprites {
 		return new TotemDollSprites(null, null, null, TotemDollArmsType.WIDE);
 	}
 
-	//? if >=1.21 {
+	//? if >=1.21.9 {
 	public static TotemDollSprites of(net.minecraft.client.network.AbstractClientPlayerEntity player) {
+		return of(player.getSkin());
+	}
+
+	public static TotemDollSprites of(net.minecraft.entity.player.SkinTextures skinTextures) {
+		TextureAsset cape = skinTextures.cape();
+		TextureAsset elytra = skinTextures.elytra();
+		return of(skinTextures.body().texturePath(), cape == null ? null : cape.texturePath(), elytra == null ? null : elytra.texturePath(), skinTextures.model() == net.minecraft.entity.player.PlayerSkinType.SLIM, true);
+	}
+	//?} elif >=1.21 {
+	/*public static TotemDollSprites of(net.minecraft.client.network.AbstractClientPlayerEntity player) {
 		return of(player.getSkinTextures());
 	}
 
 	public static TotemDollSprites of(net.minecraft.client.util.SkinTextures skinTextures) {
 		return of(skinTextures.texture(), skinTextures.capeTexture(), skinTextures.elytraTexture(), skinTextures.model() == net.minecraft.client.util.SkinTextures.Model.SLIM, true);
 	}
-	//?}
+	*///?}
 
 	public static TotemDollSprites of(Identifier skinTexture, Identifier capeTexture, Identifier elytraTexture, boolean slim, boolean remapCape) {
 		TotemDollSprites totemDollSprites = new TotemDollSprites(null, null, null, TotemDollArmsType.of(slim));

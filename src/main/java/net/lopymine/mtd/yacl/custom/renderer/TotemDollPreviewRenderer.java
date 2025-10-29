@@ -5,6 +5,7 @@ import lombok.experimental.ExtensionMethod;
 import net.lopymine.mtd.extension.DrawContextExtension;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.*;
+import net.minecraft.client.font.MultilineText.Alignment;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ClickableWidget;
 
@@ -54,7 +55,7 @@ public class TotemDollPreviewRenderer implements ImageRenderer {
 
 	private void updateSuggestion(int width, boolean resized) {
 		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-		MyTotemDollConfig config = MyTotemDollClient.getConfig();
+		MyTotemDollConfig config = MyTotemDollConfig.getInstance();
 		TotemDollSkinType skinType = config.getStandardTotemDollSkinType();
 		String skinValue = config.getStandardTotemDollSkinValue();
 
@@ -81,7 +82,11 @@ public class TotemDollPreviewRenderer implements ImageRenderer {
 
 		context.push();
 		context.translate(0, 0, 10);
-		int i = this.suggestionText.draw(context, x + 5, y + 5, 10, suggestionColor);
+		//? if >=1.21.9 {
+		int i = this.suggestionText.draw(context, Alignment.LEFT, x + 5, y + 5, 10, false, suggestionColor);
+		//?} else {
+		/*int i = this.suggestionText.draw(context, x + 5, y + 5, 10, suggestionColor);
+		*///?}
 		context.translate(0, 0, -5);
 		BackgroundRenderer.drawTransparencyWidgetBackground(context, x, y, width, i - y + 5, true, suggestionColor);
 
@@ -106,7 +111,7 @@ public class TotemDollPreviewRenderer implements ImageRenderer {
 	}
 
 	private int renderDoll(DrawContext context, int x, int y, int size) {
-		MyTotemDollConfig config = MyTotemDollClient.getConfig();
+		MyTotemDollConfig config = MyTotemDollConfig.getInstance();
 
 		BackgroundRenderer.drawTransparencyWidgetBackground(context, x, y, size, size, true, true);
 

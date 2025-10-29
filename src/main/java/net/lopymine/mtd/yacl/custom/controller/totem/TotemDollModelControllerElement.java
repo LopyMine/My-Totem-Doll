@@ -5,7 +5,7 @@ import dev.isxander.yacl3.gui.YACLScreen;
 import dev.isxander.yacl3.gui.controllers.ControllerWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.text.*;
 
@@ -49,7 +49,18 @@ public class TotemDollModelControllerElement extends ControllerWidget<TotemDollM
 		super.drawValueText(graphics, mouseX, mouseY, delta);
 	}
 
+	//? if >=1.21.9 {
 	@Override
+	public boolean mouseClicked(Click click, boolean doubled) {
+		if (this.isAvailable() && this.isMouseOver(click.x(), click.y()) && this.getDimension().isPointInside((int) click.x(), (int) click.y())) {
+			this.playDownSound();
+			MinecraftClient.getInstance().setScreen(new TotemDollModelSelectionScreen(this.screen, this.controller.option()));
+			return true;
+		}
+		return false;
+	}
+	//?} else {
+	/*@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		if (this.isAvailable() && this.isMouseOver(mouseX, mouseY) && this.getDimension().isPointInside((int) mouseX, (int) mouseY)) {
 			this.playDownSound();
@@ -58,4 +69,5 @@ public class TotemDollModelControllerElement extends ControllerWidget<TotemDollM
 		}
 		return false;
 	}
+	*///?}
 }

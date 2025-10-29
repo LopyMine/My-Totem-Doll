@@ -2,6 +2,7 @@ package net.lopymine.mtd.gui.tooltip.info;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.*;
+import net.minecraft.client.font.MultilineText.Alignment;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 
@@ -27,7 +28,7 @@ public class InfoTooltipComponent implements TooltipComponent {
 
 	@Override
 	public int getHeight(/*? >=1.21.2 {*/TextRenderer textRenderer/*?}*/) {
-		return (this.text.count() * 10) + 26 + 2 + 5 + 2 + 5;
+		return (this.text./*? if >=1.21.9 {*/ getLineCount /*?} else {*//* count *//*?}*/() * 10) + 26 + 2 + 5 + 2 + 5;
 	}
 
 	@Override
@@ -41,6 +42,10 @@ public class InfoTooltipComponent implements TooltipComponent {
 		int titleWidth = textRenderer.getWidth(this.title);
 		context.drawText(textRenderer, this.title, x + (((width) / 2) - (titleWidth / 2)), y + 8, -1, false);
 		DrawUtils.drawTexture(context, SEPARATOR, x, y + 24, 0, 0, 150, 5, 150, 5);
-		this.text.draw(context, x + 5, y + 26 + 2 + 5 + 2, 10, -1);
+		//? if >=1.21.9 {
+		this.text.draw(context, Alignment.LEFT, x + 5, y + 26 + 2 + 5 + 2, 10, true, -1);
+		//?} else {
+		/*this.text.draw(context, x + 5, y + 26 + 2 + 5 + 2, 10, -1);
+		*///?}
 	}
 }

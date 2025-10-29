@@ -44,7 +44,7 @@ public class TotemDollManager {
 		return loaded;
 	}
 
-	public static CompletableFuture<Float> reload(Consumer<Float> action) {
+	public static CompletableFuture<Float> reloadData(Consumer<Float> action) {
 		List<SkinProvider> providers = new ArrayList<>(TagsSkinProviders.getSkinProvidersIds().values());
 		providers.add(MojangSkinProvider.getInstance());
 
@@ -63,7 +63,7 @@ public class TotemDollManager {
 	}
 
 	@Nullable
-	public static CompletableFuture<Float> reload(String value, Consumer<Float> action) {
+	public static CompletableFuture<Float> reloadData(String value, Consumer<Float> action) {
 		long startMs = System.currentTimeMillis();
 
 		SkinProvider skinProvider = TagsSkinProviders.getProviderFor(value);
@@ -71,9 +71,9 @@ public class TotemDollManager {
 		CompletableFuture<Void> completableFuture =
 				skinProvider == null
 						?
-						MojangSkinProvider.getInstance().reload(value)
+						MojangSkinProvider.getInstance().reloadOne(value)
 						:
-						skinProvider.reload(value);
+						skinProvider.reloadOne(value);
 
 		if (completableFuture == null) {
 			return null;

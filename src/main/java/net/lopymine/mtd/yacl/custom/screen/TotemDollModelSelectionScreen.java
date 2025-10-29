@@ -2,6 +2,7 @@ package net.lopymine.mtd.yacl.custom.screen;
 
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.utils.*;
+import net.lopymine.mtd.config.MyTotemDollConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -27,12 +28,13 @@ public class TotemDollModelSelectionScreen extends Screen {
 	private final Option<Identifier> option;
 	private final Screen parent;
 
-	private MutableDimension<Integer> modelPanelDimension;
-	private MutableDimension<Integer> listPanelDimension;
-	private MutableDimension<Integer> modelPathDimension;
-	private MutableDimension<Integer> titleDimension;
+	@SuppressWarnings("all")
+	private MutableDimension<Integer> modelPanelDimension, listPanelDimension, modelPathDimension, titleDimension, listTitleDimension;
+
+	private final List<Dimension<Integer>> dimensions = new ArrayList<>();
 
 	private TotemDollModelPreviewWidget totemDollModelPreviewWidget;
+	private ButtonListWidget listWidget;
 
 	@Nullable
 	private Identifier selectedModelId;
@@ -53,15 +55,17 @@ public class TotemDollModelSelectionScreen extends Screen {
 		int h = 20;
 
 		this.modelPanelDimension = this.getModelPanelDimension(o);
-		this.listPanelDimension  = this.getListPanelDimension(o);
-		MutableDimension<Integer> textFieldDimension = this.getTextFieldDimension(this.listPanelDimension, o, h);
+		this.listTitleDimension = this.getListTitleDimension(o, h);
+		this.listPanelDimension  = this.getListPanelDimension(this.listTitleDimension, o, h);
 		this.modelPathDimension = this.getModelPathDimension(this.modelPanelDimension, this.listPanelDimension, o, h);
 		this.titleDimension     = this.getTitleDimension(o, h, this.modelPanelDimension);
-		MutableDimension<Integer> buttonPanelDimension = this.getButtonPanelDimension(o, h, this.modelPathDimension, this.listPanelDimension);
+		MutableDimension<Integer> textFieldDimension = this.getTextFieldDimension(h, o);
+		MutableDimension<Integer> buttonPanelDimension = this.getButtonPanelDimension(o, h, this.modelPathDimension, textFieldDimension);
 
-		ButtonListWidget listWidget = this.addDrawableChild(new ButtonListWidget(this.listPanelDimension.x(), this.listPanelDimension.y(), this.listPanelDimension.width(), this.listPanelDimension.height(), 25));
+		this.listWidget = this.addDrawableChild(new ButtonListWidget(this.listPanelDimension.x(), this.listPanelDimension.y() + 2, this.listPanelDimension.width(), this.listPanelDimension.height(), 20));
+
 		TextFieldWidget textFieldWidget = this.addDrawableChild(new TextFieldWidget(MinecraftClient.getInstance().textRenderer, textFieldDimension.x(), textFieldDimension.y(), textFieldDimension.width(), textFieldDimension.height(), Text.of("")));
-		textFieldWidget.setChangedListener(listWidget::search);
+		textFieldWidget.setChangedListener(this.listWidget::search);
 		textFieldWidget.setPlaceholder(MyTotemDoll.text("placeholder.search"));
 
 		this.addDrawableChild(
@@ -83,7 +87,7 @@ public class TotemDollModelSelectionScreen extends Screen {
 				Math.min(modelPreviewDimension.width(), modelPreviewDimension.height())
 		);
 
-		Identifier standardModelId = MyTotemDollClient.getConfig().getStandardTotemDollModelValue();
+		Identifier standardModelId = MyTotemDollConfig.getInstance().getStandardTotemDollModelValue();
 
 		Set<Entry<String, Set<Identifier>>> entries = new HashSet<>(TotemDollModelFinder.getFoundedTotemModels().entrySet());
 		entries.add(Map.entry(MyTotemDoll.MOD_ID, TotemDollModelFinder.getBuiltinTotemModels()));
@@ -104,6 +108,17 @@ public class TotemDollModelSelectionScreen extends Screen {
 				listWidget.addEntry(button);
 			}
 		}
+
+		this.dimensions.clear();
+		this.dimensions.add(this.modelPanelDimension);
+		this.dimensions.add(this.listPanelDimension);
+		this.dimensions.add(this.modelPathDimension);
+		this.dimensions.add(this.titleDimension);
+		this.dimensions.add(this.listTitleDimension);
+	}
+
+	private MutableDimension<Integer> getTextFieldDimension(int h, int o) {
+		return this.listPanelDimension.clone().setHeight(h).setY(this.listPanelDimension.yLimit() + (o / 2));
 	}
 
 	private static @NotNull String getModelName(String path) {
@@ -122,20 +137,17 @@ public class TotemDollModelSelectionScreen extends Screen {
 		this.close();
 	}
 
-	private MutableDimension<Integer> getButtonPanelDimension(int o, int h, MutableDimension<Integer> modelPathDimension, MutableDimension<Integer> listPanelDimension) {
-		listPanelDimension.expand(0, -((h * 2) + (o * 2)));
-		return modelPathDimension.withX(modelPathDimension.xLimit() + o).withY(listPanelDimension.yLimit() + o).withWidth(listPanelDimension.width()).withHeight(h).clone();
+	private MutableDimension<Integer> getButtonPanelDimension(int o, int h, MutableDimension<Integer> modelPathDimension, MutableDimension<Integer> textFieldDimension) {
+		return modelPathDimension.withX(modelPathDimension.xLimit() + o).withY(textFieldDimension.yLimit() + o).withWidth(textFieldDimension.width()).withHeight(h).clone();
 	}
 
 	@Override
 	public void renderBackground(DrawContext context /*? if >=1.21 {*/ ,int mouseX, int mouseY, float delta/*?}*/) {
 		super.renderBackground(context/*? if >=1.21 {*/ , mouseX, mouseY, delta /*?}*/);
 
-		BackgroundRenderer.drawTransparencyBackground(context, this.modelPanelDimension.x(), this.modelPanelDimension.y(), this.modelPanelDimension.width(), this.modelPanelDimension.height(), true);
-		BackgroundRenderer.drawTransparencyBackground(context, this.listPanelDimension.x(), this.listPanelDimension.y(), this.listPanelDimension.width(), this.listPanelDimension.height(), true);
-		BackgroundRenderer.drawTransparencyBackground(context, this.modelPathDimension.x(), this.modelPathDimension.y(), this.modelPathDimension.width(), this.modelPathDimension.height(), true);
-		BackgroundRenderer.drawTransparencyBackground(context, this.titleDimension.x(), this.titleDimension.y(), this.titleDimension.width(), this.titleDimension.height(), true);
-
+		for (Dimension<Integer> dimension : this.dimensions) {
+			BackgroundRenderer.drawTransparencyBackground(context, dimension.x(), dimension.y(), dimension.width(), dimension.height(), true);
+		}
 	}
 
 	@Override
@@ -145,6 +157,9 @@ public class TotemDollModelSelectionScreen extends Screen {
 
 		// Title
 		ClickableWidget.drawScrollableText(context, textRenderer, this.getTitle(), this.titleDimension.x() + 2, this.titleDimension.y(), this.titleDimension.xLimit() - 2, this.titleDimension.yLimit(), -1);
+
+		// List Title
+		ClickableWidget.drawScrollableText(context, textRenderer, MyTotemDoll.text("text.found_models", this.listWidget.getEntryCount()), this.listTitleDimension.x() + 2, this.listTitleDimension.y(), this.listTitleDimension.xLimit() - 2, this.listTitleDimension.yLimit(), -1);
 
 		// "Full Model Path" text
 		MutableText fullModelPathText = MyTotemDoll.text("text.full_model_path");
@@ -191,10 +206,9 @@ public class TotemDollModelSelectionScreen extends Screen {
 		this.totemDollModelPreviewWidget.updateModel(modelId);
 	}
 
-	private MutableDimension<Integer> getTextFieldDimension(MutableDimension<Integer> listPanelDimension, int o, int h) {
-		int y = (h + o) * 2;
-		listPanelDimension.expand(0, -y).move(0, y);
-		return Dimension.ofInt(listPanelDimension.x(), o + h + o, listPanelDimension.width(), h);
+	private MutableDimension<Integer> getListTitleDimension(int o, int h) {
+		int w = this.width / 5;
+		return Dimension.ofInt(this.width - o - w, (o * 2) + h, w, h);
 	}
 
 	private MutableDimension<Integer> getTitleDimension(int o, int h, MutableDimension<Integer> modelPanelDimension) {
@@ -213,11 +227,9 @@ public class TotemDollModelSelectionScreen extends Screen {
 		return Dimension.ofInt(modelPanelDimension.x(), modelPanelDimension.yLimit() + o, (this.width - listPanelDimension.width() - (o * 3)), (h * 2) + o);
 	}
 
-	private MutableDimension<Integer> getListPanelDimension(int o) {
-		int w = this.width / 5;
-		int h = this.height - (o * 2);
-
-		return Dimension.ofInt(this.width - o - w, o, w, h);
+	private MutableDimension<Integer> getListPanelDimension(MutableDimension<Integer> listTitleDimension, int o, int h) {
+		int w = this.height - (o * 6 + h * 5);
+		return listTitleDimension.clone().setHeight(w).setY(listTitleDimension.yLimit() + (o / 2));
 	}
 
 	private MutableDimension<Integer> getModelPanelDimension(int o) {

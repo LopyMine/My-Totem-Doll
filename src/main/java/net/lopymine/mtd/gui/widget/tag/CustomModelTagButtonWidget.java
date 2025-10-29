@@ -1,9 +1,12 @@
 package net.lopymine.mtd.gui.widget.tag;
 
 import lombok.*;
+import net.lopymine.mtd.utils.ScreenUtils;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
@@ -80,11 +83,11 @@ public class CustomModelTagButtonWidget extends TagButtonWidget {
 			return false;
 		}
 		int amount = ((int) verticalAmount) > 0 ? 1 : -1;
-		MyTotemDollConfig config = MyTotemDollClient.getConfig();
-		if (Screen.hasShiftDown()) {
+		MyTotemDollConfig config = MyTotemDollConfig.getInstance();
+		if (ScreenUtils.hasShiftDown()) {
 			config.setBetterTagMenuTooltipSize(MathHelper.clamp(config.getBetterTagMenuTooltipSize() + (amount * 2), 60, 500));
 			return true;
-		} else if (Screen.hasControlDown()) {
+		} else if (ScreenUtils.hasControlDown()) {
 			config.setTagMenuTooltipModelScale(MathHelper.clamp(config.getTagMenuTooltipModelScale() + (amount / 12F), 0.1F, 10F));
 			return true;
 		}

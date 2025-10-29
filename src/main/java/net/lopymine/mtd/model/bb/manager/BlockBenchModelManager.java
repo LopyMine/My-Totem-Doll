@@ -2,7 +2,9 @@ package net.lopymine.mtd.model.bb.manager;
 
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
+import net.fabricmc.loader.api.*;
 import net.lopymine.mtd.atlas.manager.*;
+import net.lopymine.mtd.model.bb.BBOutliner;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.ModelTransform;
 import net.minecraft.client.render.model.json.*;
@@ -16,7 +18,6 @@ import com.mojang.serialization.*;
 
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.api.Response;
-import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.config.other.vector.Vec3f;
 import net.lopymine.mtd.doll.data.TotemDollData;
 import net.lopymine.mtd.doll.manager.*;
@@ -114,71 +115,184 @@ public class BlockBenchModelManager {
 	@Nullable
 	private static BBModel parseModel(Identifier id) {
 		try {
-			ResourceManager resourceManager = MinecraftClient.getInstance().getResourceManager();
-			InputStream open = resourceManager.open(id);
-
-			JsonObject jsonObject = new Gson().fromJson(new JsonReader(new InputStreamReader(open)), JsonObject.class);
+			JsonObject jsonObject = readAsJsonObject(id);
 
 			String name = CodecUtils.decode("name", Codec.STRING, jsonObject);
 			BBModelMeta meta = CodecUtils.decode("meta", BBModelMeta.CODEC, jsonObject);
-			BBModelResolution resolution = CodecUtils.decode("resolution", BBModelResolution.CODEC, jsonObject);
-			if (meta == null || resolution == null) {
-				LOGGER.warn("Failed to parse metadata or resolution for model \"{}\"! Skipping.", name);
+			if (meta == null) {
+				LOGGER.warn("Failed to parse metadata for model \"{}\"! Skipping.", name);
 				return null;
 			}
 			if (!SUPPORTED_MODEL_FORMATS.contains(meta.getModel())) {
 				LOGGER.warn("Found model with unsupported model format. Name: \"{}\", Model Format: \"{}\". Skipping.", meta.getModel(), name);
 				return null;
 			}
-			ModelTransformation display = CodecUtils.decode("display", ModelTransformation.NONE, Transformations.MODEL_TRANSFORMATION_CODEC, jsonObject);
-			Boolean frontGuiLight = CodecUtils.decode("front_gui_light", false, Codec.BOOL, jsonObject);
 
-			List<BBCube> cubes = new ArrayList<>();
-			for (JsonElement jsonElement : jsonObject.get("elements").getAsJsonArray()) {
-				JsonObject element = jsonElement.getAsJsonObject();
-				if (!element.get("type").getAsString().equals("cube")) {
-					continue;
-				}
-				CodecUtils.decode(BBCube.CODEC, element, cubes::add);
+			SemanticVersion modelVersion = SemanticVersion.parse(meta.getVersion());
+
+			if (modelVersion.compareTo((Version) SemanticVersion.parse("5.0")) >= 0) {
+				return processBBModel50(id, jsonObject, name, meta);
+			} else if (modelVersion.compareTo((Version) SemanticVersion.parse("4.10")) >= 0) {
+				return processBBModel410(id, jsonObject, name, meta);
 			}
-
-			List<UUID> rootCubes = new ArrayList<>();
-			List<BBGroup> groups = new ArrayList<>();
-			for (JsonElement jsonElement : jsonObject.get("outliner").getAsJsonArray()) {
-				CodecUtils.decode(Codec.either(BBGroup.CODEC, Uuids.CODEC), jsonElement, (either) -> {
-					Optional<BBGroup> left = either.left();
-					left.ifPresent((group) -> {
-						if (group.getName().equals("root")) {
-							group.setName("sub-root-" + group.getUuid());
-						}
-						groups.add(group);
-					});
-
-					Optional<UUID> right = either.right();
-					right.ifPresent(rootCubes::add);
-				});
-			}
-
-			BBGroup rootGroup = new BBGroup(
-					"root",
-					new Vec3f(),
-					new Vec3f(),
-					0,
-					true,
-					UUID.randomUUID(),
-					rootCubes.stream()
-							.map(Either::<BBGroup, UUID>right)
-							.toList()
-			);
-			groups.add(0, rootGroup);
-
-			return new BBModel(id, name, meta, resolution, cubes, groups, frontGuiLight, display);
 		} catch (NoSuchFileException | FileNotFoundException e) {
 			LOGGER.warn("Failed to find bbmodel find with id \"{}\"", id.toString());
 		} catch (Exception e) {
 			LOGGER.warn("Failed to load bbmodel find with id \"%s\"".formatted(id.toString()), e);
 		}
 		return null;
+	}
+
+	private static @Nullable BBModel processBBModel410(Identifier id, JsonObject jsonObject, String name, BBModelMeta meta) {
+		BBModelResolution resolution = CodecUtils.decode("resolution", BBModelResolution.CODEC, jsonObject);
+		if (resolution == null) {
+			LOGGER.warn("Failed to parse resolution from 4.10 format for model \"{}\"! Skipping.", name);
+			return null;
+		}
+
+		List<BBCube> cubes = parseCubes(jsonObject);
+		BBModelGroupsAndRootCubes result = parseGroupsAndCubes410(jsonObject);
+
+		return createFinalBBModel(id, jsonObject, name, meta, result.rootCubes(), result.groups(), resolution, cubes);
+	}
+
+	private static @Nullable BBModel processBBModel50(Identifier id, JsonObject jsonObject, String name, BBModelMeta meta) {
+		BBModelResolution resolution = CodecUtils.decode("resolution", BBModelResolution.CODEC, jsonObject);
+		if (resolution == null) {
+			LOGGER.warn("Failed to parse resolution from 5.0 format for model \"{}\"! Skipping.", name);
+			return null;
+		}
+
+		List<BBCube> cubes = parseCubes(jsonObject);
+		BBModelGroupsAndRootCubes result = parseGroupsAndCubes50(jsonObject);
+
+		return createFinalBBModel(id, jsonObject, name, meta, result.rootCubes(), result.groups(), resolution, cubes);
+	}
+
+	private static @NotNull List<BBCube> parseCubes(JsonObject jsonObject) {
+		List<BBCube> cubes = new ArrayList<>();
+		for (JsonElement jsonElement : jsonObject.get("elements").getAsJsonArray()) {
+			JsonObject element = jsonElement.getAsJsonObject();
+			if (!element.get("type").getAsString().equals("cube")) {
+				continue;
+			}
+			CodecUtils.decode(BBCube.CODEC, element, (cube) -> {
+				cube.setFaces(parseCubeFaces(element.get("faces").getAsJsonObject()));
+				cubes.add(cube);
+			});
+		}
+		return cubes;
+	}
+
+	private static BBCubeFaces parseCubeFaces(JsonObject faces) {
+		BBCubeFaces cubeFaces = new BBCubeFaces(new HashMap<>());
+
+		for (Direction direction : Direction.values()) {
+			JsonObject face = faces.get(direction.getId()).getAsJsonObject();
+			if (face.has("texture") && face.get("texture").isJsonNull()) {
+				continue;
+			}
+			UV uv = CodecUtils.decode("uv", UV.CODEC, face);
+			Integer decodedRotation = CodecUtils.decode("rotation", Codec.INT, face);
+			int rotation = decodedRotation == null ? 0 : decodedRotation;
+			BBCubeFace cubeFace = new BBCubeFace(uv, rotation);
+			cubeFaces.getFaces().put(direction, cubeFace);
+		}
+
+		return cubeFaces;
+	}
+
+	private static @NotNull BBModelGroupsAndRootCubes parseGroupsAndCubes50(JsonObject jsonObject) {
+		List<UUID> rootCubes = new ArrayList<>();
+		List<BBOutliner> outliners = new ArrayList<>();
+		for (JsonElement jsonElement : jsonObject.get("outliner").getAsJsonArray()) {
+			CodecUtils.decode(Codec.either(BBOutliner.CODEC, Uuids.CODEC), jsonElement, (either) -> {
+				Optional<BBOutliner> left = either.left();
+				left.ifPresent(outliners::add);
+				Optional<UUID> right = either.right();
+				right.ifPresent(rootCubes::add);
+			});
+		}
+
+		Map<UUID, BBGroup> map = new HashMap<>();
+		for (JsonElement jsonElement : jsonObject.get("groups").getAsJsonArray()) {
+			CodecUtils.decode(BBGroup.CODEC, jsonElement, (group) -> map.put(group.getUuid(), group));
+		}
+
+		List<BBGroup> groups = new ArrayList<>();
+		for (BBOutliner outliner : outliners) {
+			BBGroup group = convertOutlinerToBBGroup(outliner, map);
+			if (group.getName().equals("root")) {
+				group.setName("sub-root-" + group.getUuid());
+			}
+			groups.add(group);
+		}
+
+		return new BBModelGroupsAndRootCubes(rootCubes, groups);
+	}
+
+	private static BBGroup convertOutlinerToBBGroup(BBOutliner outliner, Map<UUID, BBGroup> map) {
+		List<Either<BBGroup, UUID>> children = new ArrayList<>();
+
+		for (Either<BBOutliner, UUID> either : outliner.getChildren()) {
+			Optional<BBOutliner> left = either.left();
+			left.ifPresent(bbOutliner -> children.add(Either.left(convertOutlinerToBBGroup(bbOutliner, map))));
+			Optional<UUID> right = either.right();
+			right.ifPresent(uuid -> children.add(Either.right(uuid)));
+		}
+
+		BBGroup group = map.get(outliner.getUuid());
+		group.setChildren(children);
+		return group;
+	}
+
+	private static @NotNull BBModelGroupsAndRootCubes parseGroupsAndCubes410(JsonObject jsonObject) {
+		List<UUID> rootCubes = new ArrayList<>();
+		List<BBGroup> groups = new ArrayList<>();
+		for (JsonElement jsonElement : jsonObject.get("outliner").getAsJsonArray()) {
+			CodecUtils.decode(Codec.either(BBGroup.CODEC, Uuids.CODEC), jsonElement, (either) -> {
+				Optional<BBGroup> left = either.left();
+				left.ifPresent((group) -> {
+					if (group.getName().equals("root")) {
+						group.setName("sub-root-" + group.getUuid());
+					}
+					groups.add(group);
+				});
+
+				Optional<UUID> right = either.right();
+				right.ifPresent(rootCubes::add);
+			});
+		}
+		return new BBModelGroupsAndRootCubes(rootCubes, groups);
+	}
+
+	private record BBModelGroupsAndRootCubes(List<UUID> rootCubes, List<BBGroup> groups) {
+
+	}
+
+	private static @NotNull BBModel createFinalBBModel(Identifier id, JsonObject jsonObject, String name, BBModelMeta meta, List<UUID> rootCubes, List<BBGroup> groups, BBModelResolution resolution, List<BBCube> cubes) {
+		BBGroup rootGroup = new BBGroup(
+				"root",
+				new Vec3f(),
+				new Vec3f(),
+				0,
+				true,
+				UUID.randomUUID(),
+				rootCubes.stream()
+						.map(Either::<BBGroup, UUID>right)
+						.toList()
+		);
+		groups.add(0, rootGroup);
+
+		ModelTransformation display = CodecUtils.decode("display", ModelTransformation.NONE, Transformations.MODEL_TRANSFORMATION_CODEC, jsonObject);
+		Boolean frontGuiLight = CodecUtils.decode("front_gui_light", false, Codec.BOOL, jsonObject);
+		return new BBModel(id, name, meta, resolution, cubes, groups, frontGuiLight, display);
+	}
+
+	private static JsonObject readAsJsonObject(Identifier id) throws IOException {
+		ResourceManager resourceManager = MinecraftClient.getInstance().getResourceManager();
+		InputStream open = resourceManager.open(id);
+		return new Gson().fromJson(new JsonReader(new InputStreamReader(open)), JsonObject.class);
 	}
 
 	private static Supplier<MModel> createMModelSupplerFromBBModel(@NotNull BBModel model) {
@@ -195,23 +309,6 @@ public class BlockBenchModelManager {
 		});
 
 		MyTotemDollAtlasManager.stitchAndUpdate(MyTotemDollAtlasSpriteManager.getSprites(), null);
-
-//		if (MyTotemDollClient.getConfig().isDebugLogEnabled()) {
-//			String modelName = model.getName();
-//
-//			LOGGER.info("Successfully loaded model \"{}\" with hierarchy:", modelName);
-//
-//			String line = "—";
-//			String nameReplacement = line.repeat(modelName.length() + 4);
-//			String lines = line.repeat(10);
-//
-//			LOGGER.info("{}| {} |{}", lines, modelName, lines);
-//			MModel get = supplier.get();
-//			get.logSize(LOGGER);
-//			LOGGER.info("{}{}{}", lines, nameReplacement, lines);
-//			get.logHierarchy(LOGGER);
-//			LOGGER.info("{}{}{}", lines, nameReplacement, lines);
-//		}
 
 		return () -> builder
 				.withTransform(ModelTransform./*? if <=1.21.4 {*/ /*pivot *//*?} else {*/ origin /*?}*/(-16.0F, -8.0F, 0.0F))
@@ -252,13 +349,16 @@ public class BlockBenchModelManager {
 				.withDilation(cube.getInflate());
 
 		BBCubeFaces faces = cube.getFaces();
-		Map<Direction, BBCubeFace> map = faces.map();
+		Map<Direction, BBCubeFace> map = faces.getFaces();
 
-		for (Direction value : map.keySet()) {
+		for (Direction value : Direction.values()) {
 			Direction direction = value == Direction.UP || value == Direction.DOWN || value == Direction.EAST || value == Direction.WEST ? value.getOpposite() : value;
 			BBCubeFace face = map.get(direction);
-			UV uv = face.getUv();
+			if (face == null) {
+				continue;
+			}
 
+			UV uv = face.getUv();
 			if (uv.isDummy()) {
 				continue;
 			}

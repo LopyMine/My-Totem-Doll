@@ -1,6 +1,9 @@
 package net.lopymine.mtd.api;
 
 import com.google.gson.*;
+import net.lopymine.mtd.cache.KnownPlayerUUIDsConfigManager;
+import net.lopymine.mtd.config.MyTotemDollConfig;
+import net.lopymine.mtd.config.cache.KnownPlayerUUIDsConfig;
 import net.minecraft.client.MinecraftClient;
 import org.apache.http.client.HttpResponseException;
 import net.lopymine.mtd.client.MyTotemDollClient;
@@ -32,7 +35,7 @@ public class MojangAPI {
 	}
 
 	public static Response<UUID> getUUID(String nickname, boolean canRetry) {
-		boolean debugLogEnabled = MyTotemDollClient.getConfig().isDebugLogEnabled();
+		boolean debugLogEnabled = MyTotemDollConfig.getInstance().isDebugLogEnabled();
 		int statusCode = -1;
 		String responseBody = "Not reached";
 
@@ -98,6 +101,12 @@ public class MojangAPI {
 	}
 
 	public static Response<ParsedSkinData> getSkinData(String nickname) {
+		KnownPlayerUUIDsConfig config = KnownPlayerUUIDsConfig.getInstance();
+		Map<String, UUID> cache = config.getCache();
+		UUID uuid = cache.get(nickname);
+		if (uuid != null) {
+			return MojangAPI.getSkinData(uuid, nickname);
+		}
 		Response<UUID> response = MojangAPI.getUUID(nickname, true);
 		if (response.statusCode() == -1 && response.isEmpty()) { // Other errors
 			return Response.empty(response.statusCode());
@@ -111,7 +120,11 @@ public class MojangAPI {
 		if (response.isEmpty()) {
 			return Response.empty(response.statusCode());
 		}
-		return MojangAPI.getSkinData(response.value(), nickname);
+		UUID value = response.value();
+		cache.put(nickname, value);
+		config.setDirty(true);
+		KnownPlayerUUIDsConfigManager.save();
+		return MojangAPI.getSkinData(value, nickname);
 	}
 
 	@Nullable
@@ -124,6 +137,9 @@ public class MojangAPI {
 			HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
 			JsonObject jsonObject = GSON.fromJson(response.body(), JsonObject.class);
 			if (jsonObject == null) {
+				return Response.empty(response.statusCode());
+			}
+			if (response.statusCode() == 429) { // Too many requests
 				return Response.empty(response.statusCode());
 			}
 

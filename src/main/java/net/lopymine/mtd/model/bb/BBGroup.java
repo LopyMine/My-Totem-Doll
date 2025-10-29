@@ -15,8 +15,6 @@ import java.util.*;
 
 import static net.lopymine.mtd.utils.CodecUtils.option;
 
-
-
 @Setter
 @Getter
 @AllArgsConstructor

@@ -7,6 +7,7 @@ import lombok.*;
 import lombok.experimental.ExtensionMethod;
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.client.MyTotemDollClient;
+import net.lopymine.mtd.config.MyTotemDollConfig;
 import net.lopymine.mtd.doll.data.TotemDollRenderProperties;
 import net.lopymine.mtd.doll.renderer.*;
 import net.lopymine.mtd.extension.ItemStackExtension;
@@ -60,7 +61,7 @@ public class TotemDollGuiElementRenderer extends SpecialGuiElementRenderer<Totem
 			return false;
 		});
 		int cleared = all - PROPERTIES_RENDERERS.size();
-		if (MyTotemDollClient.getConfig().isDebugLogEnabled() && cleared != 0) {
+		if (MyTotemDollConfig.getInstance().isDebugLogEnabled() && cleared != 0) {
 			MyTotemDollClient.LOGGER.info("Removed Inactive Totem Doll Renderers: {}", cleared);
 		}
 	}

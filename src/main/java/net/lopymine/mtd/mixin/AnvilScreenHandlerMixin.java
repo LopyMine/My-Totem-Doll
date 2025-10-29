@@ -15,7 +15,10 @@ import net.lopymine.mtd.extension.ItemStackExtension;
 @ExtensionMethod(ItemStackExtension.class)
 public class AnvilScreenHandlerMixin {
 
-	@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getName()Lnet/minecraft/text/Text;"), method = "updateResult")
+	@WrapOperation(
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getName()Lnet/minecraft/text/Text;"),
+			method = "updateResult"
+	)
 	private Text swapItemName(ItemStack stack, Operation<Text> original) {
 		if (!MyTotemDollClient.canProcess(stack)) {
 			return original.call(stack);

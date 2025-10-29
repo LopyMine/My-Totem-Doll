@@ -3,6 +3,7 @@ package net.lopymine.mtd.gui.screen;
 import net.lopymine.mtd.utils.texture.PlayerSkinUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.MultilineText;
+import net.minecraft.client.font.MultilineText.Alignment;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.screen.*;
 import net.minecraft.util.Identifier;
@@ -47,7 +48,11 @@ public class WelcomeScreen extends Screen {
 		int screenHeight = this.height;
 		this.text = MultilineText.create(MinecraftClient.getInstance().textRenderer, MyTotemDoll.text("welcome_screen.text"), screenWidth - (offset * 2));
 
-		int textHeight = (this.text.count() * 9) + 10;
+		//? if >=1.21.9 {
+		int textHeight = (this.text.getLineCount() * 9) + 10;
+		//?} else {
+		/*int textHeight = (this.text.count() * 9) + 10;
+		*///?}
 		int textWidth = this.text.getMaxWidth() + 10;
 
 		this.textArea = new Area().size(textWidth, textHeight).centrolizeX(0, screenWidth).y(offset);
@@ -70,7 +75,7 @@ public class WelcomeScreen extends Screen {
 
 	private @NotNull WelcomeTotemDollModelPreviewWidget createWelcomeModelPreviewWidget(Area area, Identifier modelId) {
 		Runnable runnable = () -> {
-			MyTotemDollConfig config = MyTotemDollClient.getConfig();
+			MyTotemDollConfig config = MyTotemDollConfig.getInstance();
 			config.setStandardTotemDollModelValue(modelId);
 			this.close();
 		};
@@ -93,7 +98,11 @@ public class WelcomeScreen extends Screen {
 		*///?}
 
 		BackgroundRenderer.drawTransparencyWidgetBackground(context, this.textArea.getX(), this.textArea.getY(), this.textArea.getWidth(), this.textArea.getHeight(), true, false);
-		this.text.drawCenterWithShadow(context, this.textArea.getX() + (this.textArea.getWidth() / 2), this.textArea.getY() + 5, 9, -1);
+		//? if >=1.21.9 {
+		this.text.draw(context, Alignment.CENTER, this.textArea.getX() + (this.textArea.getWidth() / 2), this.textArea.getY() + 5, 9, true, -1);
+		//?} else {
+		/*this.text.drawCenterWithShadow(context, this.textArea.getX() + (this.textArea.getWidth() / 2), this.textArea.getY() + 5, 9, -1);
+		*///?}
 
 		boolean firstOver = this.firstDollArea.over(mouseX, mouseY);
 		BackgroundRenderer.drawTransparencyWidgetBackground(context, this.firstDollArea.getX(), this.firstDollArea.getY(), this.firstDollArea.getWidth(), this.firstDollArea.getHeight(), true, firstOver);

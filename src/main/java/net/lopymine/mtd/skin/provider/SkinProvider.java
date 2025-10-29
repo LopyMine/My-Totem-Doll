@@ -17,7 +17,7 @@ public interface SkinProvider {
 
 	CompletableFuture<Void> reloadAll();
 
-	CompletableFuture<Void> reload(String value);
+	CompletableFuture<Void> reloadOne(String value);
 
 	boolean canProcess(String value);
 }

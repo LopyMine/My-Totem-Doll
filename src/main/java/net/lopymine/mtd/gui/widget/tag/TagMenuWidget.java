@@ -2,6 +2,7 @@ package net.lopymine.mtd.gui.widget.tag;
 
 import lombok.experimental.ExtensionMethod;
 import net.lopymine.mtd.doll.data.TotemDollData;
+import net.lopymine.mtd.gui.widget.list.AbstractVersionedEntryListWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 
@@ -14,7 +15,6 @@ import net.minecraft.util.*;
 
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.extension.ItemStackExtension;
-import net.lopymine.mtd.gui.widget.list.ListWithStaticHeaderWidget;
 import net.lopymine.mtd.gui.widget.tag.TagMenuWidget.TagRow;
 import net.lopymine.mtd.tag.*;
 import net.lopymine.mtd.tag.manager.TagsManager;
@@ -25,19 +25,19 @@ import java.util.stream.*;
 import org.jetbrains.annotations.*;
 
 @ExtensionMethod(ItemStackExtension.class)
-public class TagMenuWidget extends ListWithStaticHeaderWidget<TagRow> {
+public class TagMenuWidget extends AbstractVersionedEntryListWidget<TagRow> {
 
 	public static final Identifier BACKGROUND = MyTotemDoll.id("textures/gui/tag_menu/background_new.png");
 
-	public TagMenuWidget(int x, int y, NameApplier nameApplier) {
-		super(x, y, 50, 156, 16, 35);
+	public TagMenuWidget(int x, int y, Renamer renamer) {
+		super(x, y, 30, 125, 16);
 
 		List<Tag> list = TagsManager.getRegisteredTags().values().stream().toList();
 		for (int i = 0; i < list.size(); i += 2) {
 			List<Tag> tags = getRangeOfList(list, i);
 			List<TagButtonWidget> widgets = new ArrayList<>();
 			for (Tag tag : tags) {
-				TagButtonWidget tagButtonWidget = createTagButtonWidget(nameApplier, tag);
+				TagButtonWidget tagButtonWidget = createTagButtonWidget(renamer, tag);
 				widgets.add(tagButtonWidget);
 			}
 			this.addEntry(new TagRow(widgets));
@@ -53,7 +53,7 @@ public class TagMenuWidget extends ListWithStaticHeaderWidget<TagRow> {
 			List<CustomModelTag> tags = getRangeOfList(customModelIds, i);
 			List<TagButtonWidget> tagRowWidget = new ArrayList<>();
 			for (CustomModelTag tag : tags) {
-				CustomModelTagButtonWidget tagButtonWidget = createCustomModelTagButtonWidget(nameApplier, tag, allCustomModelWidgets);
+				CustomModelTagButtonWidget tagButtonWidget = createCustomModelTagButtonWidget(renamer, tag, allCustomModelWidgets);
 
 				tagRowWidget.add(tagButtonWidget);
 				allCustomModelWidgets.add(tagButtonWidget);
@@ -63,38 +63,13 @@ public class TagMenuWidget extends ListWithStaticHeaderWidget<TagRow> {
 	}
 
 	@Override
-	protected void renderStaticHeader(DrawContext context, int x, int y) {
-		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-		ClickableWidget.drawScrollableText(context, textRenderer, MyTotemDoll.text("tag_menu.title"), this.getX() + 8, this.getWidgetY() + 13, this.getX() + this.getWidth() - 8, this.getWidgetY() + 13 + textRenderer.fontHeight, -1);
-	}
-
-	@Override
 	public int getRowWidth() {
 		return 30;
 	}
 
 	@Override
-	public int getRowLeft() {
-		return this.getX() + 10;
-	}
-
-	@Override
-	public int getListHeight() {
-		return super.getListHeight();
-	}
-
-	@Override
 	protected void drawMenuListBackground(DrawContext context) {
-//				if (this.getHoveredEntry() != null) {
-//			context.fill(this.getX(), this.getY(), this.getRight() + 5, this.getBottom(), Argb.getArgb(0, 255, 0));
-//		} else {
-//			context.fill(this.getX(), this.getY(), this.getRight() + 5, this.getBottom(), Argb.getArgb(255, 0, 0));
-//		}
-		DrawUtils.drawTexture(context, BACKGROUND, this.getX(), this.getWidgetY(), 0, 0, 50, 166, 50, 166);
-	}
-
-	@Override
-	protected void drawSelectionHighlight(DrawContext context, int y, int entryWidth, int entryHeight, int borderColor, int fillColor) {
+		//DrawUtils.drawTexture(context, BACKGROUND, this.getX(), this.getY(), 0, 0, 50, 166, 50, 166);
 	}
 
 	@Override
@@ -104,11 +79,6 @@ public class TagMenuWidget extends ListWithStaticHeaderWidget<TagRow> {
 			return true;
 		}
 		return super.mouseScrolled(mouseX, mouseY, /*? if >=1.21 {*/horizontalAmount, /*?}*/ verticalAmount);
-	}
-
-	@Override
-	public boolean needScrollBar() {
-		return false;
 	}
 
 	public void updateButtons(ItemStack stack) {
@@ -156,27 +126,27 @@ public class TagMenuWidget extends ListWithStaticHeaderWidget<TagRow> {
 				.collect(Collectors.toList());
 	}
 
-	private static @NotNull TagButtonWidget createTagButtonWidget(NameApplier nameApplier, Tag tag) {
+	private static @NotNull TagButtonWidget createTagButtonWidget(Renamer renamer, Tag tag) {
 		char character = tag.getTag();
 
 		TagButtonWidget tagButtonWidget = new TagButtonWidget(tag, 0, 0, (widget) -> {
-			updateItemStackName(nameApplier, widget, character);
+			updateItemStackName(renamer, widget, character);
 		});
 
 		tagButtonWidget.setTooltip(TagsManager.getTagDescription(character));
 		return tagButtonWidget;
 	}
 
-	private static @NotNull CustomModelTagButtonWidget createCustomModelTagButtonWidget(NameApplier nameApplier, CustomModelTag tag, List<TagButtonWidget> allCustomModelWidgets) {
+	private static @NotNull CustomModelTagButtonWidget createCustomModelTagButtonWidget(Renamer renamer, CustomModelTag tag, List<TagButtonWidget> allCustomModelWidgets) {
 		char character = tag.getTag();
 
 		return new CustomModelTagButtonWidget(tag, 0, 0, (tagButtonWidget) -> {
-			updateItemStackName(nameApplier, tagButtonWidget, character);
+			updateItemStackName(renamer, tagButtonWidget, character);
 
 			for (TagButtonWidget widget : allCustomModelWidgets) {
 				if (!widget.equals(tagButtonWidget)) {
 					widget.setPressed(false);
-					updateItemStackName(nameApplier, widget, widget.getTag().getTag());
+					updateItemStackName(renamer, widget, widget.getTag().getTag());
 				}
 			}
 		});
@@ -191,9 +161,9 @@ public class TagMenuWidget extends ListWithStaticHeaderWidget<TagRow> {
 		return tags;
 	}
 
-	private static void updateItemStackName(NameApplier nameApplier, TagButtonWidget b, char c) {
-		String name = b.isPressed() ? TagsManager.addTag(nameApplier.getName(), c) : TagsManager.removeTag(nameApplier.getName(), c);
-		nameApplier.setName(name);
+	private static void updateItemStackName(Renamer renamer, TagButtonWidget b, char c) {
+		String name = b.isPressed() ? TagsManager.addTag(renamer.getName(), c) : TagsManager.removeTag(renamer.getName(), c);
+		renamer.setName(name);
 	}
 
 	@Nullable
@@ -206,8 +176,13 @@ public class TagMenuWidget extends ListWithStaticHeaderWidget<TagRow> {
 		return TagsManager.getTagsFromName(customName);
 	}
 
+	@Override
+	public void setPosition(int x, int y) {
+		super.setPosition(x, y);
+		this.setScrollY(this.getScrollY());
+	}
 
-	public interface NameApplier {
+	public interface Renamer {
 
 		String getName();
 
@@ -233,7 +208,38 @@ public class TagMenuWidget extends ListWithStaticHeaderWidget<TagRow> {
 			return this.buttons;
 		}
 
+		//? if >=1.21.9 {
+
+
 		@Override
+		public void setX(int x) {
+			super.setX(x);
+
+			int pos = x;
+			for (TagButtonWidget button : this.buttons) {
+				button.setX(pos);
+				pos += button.getWidth() + 2;
+			}
+		}
+
+		@Override
+		public void setY(int y) {
+			super.setY(y);
+			for (TagButtonWidget button : this.buttons) {
+				button.setY(y);
+			}
+		}
+
+		@Override
+		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+			for (TagButtonWidget widget : this.buttons) {
+				widget.setCanBeHovered(hovered);
+				widget.render(context, mouseX, mouseY, tickDelta);
+			}
+		}
+
+		//?} else {
+		/*@Override
 		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
 			int xOffset = 0;
 
@@ -244,6 +250,7 @@ public class TagMenuWidget extends ListWithStaticHeaderWidget<TagRow> {
 				xOffset += widget.getWidth() + 2;
 			}
 		}
+		*///?}
 	}
 
 	public static class SeparatorRow extends TagRow {
@@ -257,8 +264,19 @@ public class TagMenuWidget extends ListWithStaticHeaderWidget<TagRow> {
 			this.text = text;
 		}
 
+		//? if >=1.21.9 {
 		@Override
+		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+			this.render(context, this.getY(), this.getX(), this.getHeight(), hovered);
+		}
+		//?} else {
+		/*@Override
 		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+			this.render(context, y, x, entryHeight, hovered);
+		}
+		*///?}
+
+		private void render(DrawContext context, int y, int x, int entryHeight, boolean hovered) {
 			MinecraftClient client = MinecraftClient.getInstance();
 			TextRenderer textRenderer = client.textRenderer;
 

@@ -23,6 +23,9 @@ public enum DollRenderContext {
 	D_GUI("gui"),
 	D_GROUND("ground"),
 	D_FIXED("fixed"),
+	//? if >=1.21.9 {
+	D_ON_SHELF("on_shelf"),
+	//?}
 
 	D_FLOATING("floating"),
 	D_PREVIEW("preview"),
@@ -67,6 +70,9 @@ public enum DollRenderContext {
 				case GUI -> D_GUI;
 				case GROUND -> D_GROUND;
 				case FIXED -> D_FIXED;
+				//? if >=1.21.9 {
+				case ON_SHELF -> D_ON_SHELF;
+				//?}
 				default -> D_NONE;
 			};
 		}
@@ -85,6 +91,9 @@ public enum DollRenderContext {
 			case D_GUI -> transformation.getGui();
 			case D_GROUND -> transformation.getGround();
 			case D_FIXED -> transformation.getFixed();
+			//? if >=1.21.9 {
+			case D_ON_SHELF -> transformation.getOnShelf();
+			//?}
 			default -> Transformation.IDENTITY;
 		};
 	}

@@ -177,7 +177,12 @@ public class PlayerSkinUtils {
 			if (optional.isEmpty()) {
 				return;
 			}
-			net.minecraft.client.util.SkinTextures skinTextures = optional.get();
+			//? if >=1.21.9 {
+			net.minecraft.entity.player.SkinTextures skinTextures = optional.get();
+			//?} else {
+			/*net.minecraft.client.util.SkinTextures skinTextures = optional.get();
+			*///?}
+
 			//?}
 			data.setSprites(TotemDollSprites.of(skinTextures));
 		});

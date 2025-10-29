@@ -45,7 +45,10 @@
 	    "MinecraftClientMixin",
 	    "TextureManagerMixin",
 	    "GameRendererDollRenderingMixin",
-	    "SpriteContentsMixin"
+	    "SpriteContentsMixin",
+	    "EntityRenderDispatcherMixin",
+	    "ItemPickupParticleMixin",
+	    "SelectItemModelMixin"
     ],
     "injectors": {
         "defaultRequire": 1

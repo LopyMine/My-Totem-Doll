@@ -2,11 +2,13 @@ package net.lopymine.mtd.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.*;
 import lombok.experimental.ExtensionMethod;
+import net.lopymine.mtd.MyTotemDoll;
+import net.lopymine.mtd.utils.DrawUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.screen.ingame.*;
-import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.gui.widget.*;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.*;
 import net.minecraft.screen.*;
@@ -21,7 +23,7 @@ import net.lopymine.mtd.config.other.vector.Vec2i;
 import net.lopymine.mtd.extension.ItemStackExtension;
 import net.lopymine.mtd.gui.widget.info.*;
 import net.lopymine.mtd.gui.widget.tag.*;
-import net.lopymine.mtd.gui.widget.tag.TagMenuWidget.NameApplier;
+import net.lopymine.mtd.gui.widget.tag.TagMenuWidget.Renamer;
 import net.lopymine.mtd.tag.Tag;
 import net.lopymine.mtd.utils.mixin.MTDAnvilScreen;
 
@@ -46,7 +48,7 @@ public abstract class AnvilScreenMixin extends ForgingScreen<AnvilScreenHandler>
 	@Nullable
 	private TipsWidget tipsWidget = null;
 	@Unique
-	private boolean menuVisible = false;
+	private boolean currentVisibleState = false;
 
 	public AnvilScreenMixin(AnvilScreenHandler handler, PlayerInventory playerInventory, Text title, Identifier texture) {
 		super(handler, playerInventory, title, texture);
@@ -60,53 +62,60 @@ public abstract class AnvilScreenMixin extends ForgingScreen<AnvilScreenHandler>
 
 	@Inject(at = @At("HEAD"), method = "setup")
 	private void setupTagMenu(CallbackInfo ci) {
-		if (!MyTotemDollClient.getConfig().isModEnabled()) {
+		if (!MyTotemDollConfig.getInstance().isModEnabled()) {
 			return;
 		}
 
-		ItemStack stack = this.handler.getSlot(0).getStack();
-		ItemStack result = this.handler.getSlot(2).getStack();
-		boolean bl = stack.isOf(Items.TOTEM_OF_UNDYING);
+		ItemStack stackOne = this.handler.getSlot(0).getStack();
+		ItemStack stackTwo = this.handler.getSlot(2).getStack();
+		boolean bl = MyTotemDollClient.canProcess(stackOne);
 
-		NameApplier nameApplier = new NameApplier() {
+		//
+
+		this.tagMenuWidget = new TagMenuWidget(0, 0, new Renamer() {
 			@Override
 			public String getName() {
-				return nameField.getText();
+				return AnvilScreenMixin.this.nameField.getText();
 			}
 
 			@Override
 			public void setName(String name) {
-				nameField.setText(name);
+				AnvilScreenMixin.this.nameField.setText(name);
 			}
-		};
-		this.tagMenuWidget         = new TagMenuWidget(0, 0, nameApplier);
-		this.tagMenuWidget.visible = this.menuVisible;
+		});
+		this.tagMenuWidget.visible = this.currentVisibleState;
 		if (this.tagMenuWidget.visible) {
-			this.tagMenuWidget.updateButtons(result.isEmpty() ? stack : result);
+			this.tagMenuWidget.updateButtons(stackTwo.isEmpty() ? stackOne : stackTwo);
 		}
-		this.addDrawableChild(this.tagMenuWidget);
 
 		//
 
 		this.infoWidget         = new SmallInfoWidget(0, 0);
 		this.infoWidget.visible = this.tagMenuWidget.visible;
-		this.addDrawable(this.infoWidget);
-
-		this.tipsWidget         = new TipsWidget(0, 0);
-		this.tipsWidget.visible = this.tagMenuWidget.visible;
-		this.addDrawable(this.tipsWidget);
 
 		//
 
-		Vec2i tagButtonPos = new MyTotemDollConfig().getTagButtonPos();
-		this.tagButtonWidget = new DraggingTagButtonWidget(Tag.simple('4'), this.x, this.y,  this.x + tagButtonPos.getX(), this.y + tagButtonPos.getY(), 0, 0, (b) -> {
-			this.menuVisible = b.isPressed();
+		this.tipsWidget         = new TipsWidget(0, 0);
+		this.tipsWidget.visible = this.tagMenuWidget.visible;
+
+		//
+
+		Vec2i originalPos = MyTotemDollConfig.getNewInstance().getTagButtonPos();
+		this.tagButtonWidget = new DraggingTagButtonWidget(
+				Tag.simple('4'),
+				this.x,
+				this.y,
+				this.x + originalPos.getX(),
+				this.y + originalPos.getY(),
+				0,
+				0,
+				(b) -> {
+			this.currentVisibleState = b.isPressed();
 			this.resize(this.client, this.width, this.height);
 		});
-		this.tagButtonWidget.setPressed(this.tagMenuWidget.visible);
 		this.tagButtonWidget.visible = bl;
-		this.addDrawableChild(this.tagButtonWidget);
-
+		this.tagButtonWidget.setPressed(this.tagMenuWidget.visible);
+		
 		//
 
 		if (this.tagMenuWidget.visible) {
@@ -114,9 +123,18 @@ public abstract class AnvilScreenMixin extends ForgingScreen<AnvilScreenHandler>
 		} else {
 			this.backgroundWidth = 176;
 		}
+		
+		//
+
+		this.addDrawableChild(this.tagMenuWidget);
+		this.addDrawable(this.infoWidget);
+		this.addDrawable(this.tipsWidget);
+		this.addDrawableChild(this.tagButtonWidget);
+		
+		//
 
 		this.x = (this.width - this.backgroundWidth) / 2;
-		this.updateWidgetsPositions();
+		this.updateWidgets();
 	}
 
 	//? if =1.20.1 {
@@ -127,16 +145,17 @@ public abstract class AnvilScreenMixin extends ForgingScreen<AnvilScreenHandler>
 	*///?}
 
 	@Unique
-	private void updateWidgetsPositions() {
-		MyTotemDollConfig config = MyTotemDollClient.getConfig();
+	private void updateWidgets() {
+		MyTotemDollConfig config = MyTotemDollConfig.getInstance();
 		if (!config.isModEnabled() || this.tagButtonWidget == null || this.tagMenuWidget == null || this.infoWidget == null || this.tipsWidget == null) {
 			return;
 		}
 
+		//
+
 		int tagMenuX = this.x + 176 + 1;
 		int tagMenuY = this.y;
-
-		this.tagMenuWidget.setPosition(tagMenuX, tagMenuY);
+		this.tagMenuWidget.setPosition(tagMenuX + 10, tagMenuY + 33);
 
 		ItemStack stackOne = this.handler.getSlot(0).getStack();
 		ItemStack stackTwo = this.handler.getSlot(2).getStack();
@@ -146,10 +165,14 @@ public abstract class AnvilScreenMixin extends ForgingScreen<AnvilScreenHandler>
 			this.tagMenuWidget.updateCustomModelTagButtons(result);
 		}
 
-		int infoWidgetX = this.tagMenuWidget.getX() + this.tagMenuWidget.getWidth() + 2;
-		int infoWidgetY = this.tagMenuWidget.getWidgetY() + 2;
+		//
+
+		int infoWidgetX = tagMenuX + 50 + 2;
+		int infoWidgetY = tagMenuY + 2;
 		this.infoWidget.setPosition(infoWidgetX, infoWidgetY);
 		this.tipsWidget.setPosition(infoWidgetX, infoWidgetY + this.infoWidget.getHeight() + 4);
+
+		//
 
 		Vec2i pos = config.getTagButtonPos();
 		this.tagButtonWidget.setPosition(pos.getX() + this.x, pos.getY() + this.y);
@@ -157,27 +180,42 @@ public abstract class AnvilScreenMixin extends ForgingScreen<AnvilScreenHandler>
 		this.tagButtonWidget.setOriginY(this.y);
 	}
 
-	@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;fill(IIIII)V"), method = "drawForeground")
+	@WrapOperation(
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;fill(IIIII)V"),
+			method = "drawForeground"
+	)
 	private void swapBackgroundValue(DrawContext instance, int x1, int y1, int x2, int y2, int color, Operation<Void> original) {
-		if (!MyTotemDollClient.getConfig().isModEnabled()) {
+		if (!MyTotemDollConfig.getInstance().isModEnabled()) {
 			original.call(instance, x1, y1, x2, y2, color);
 			return;
 		}
 		original.call(instance, x1 - this.backgroundWidth + 176, y1, x2 - this.backgroundWidth + 176, y2, color);
 	}
 
-	@Inject(at = @At("TAIL"), method = "drawBackground")
+	@Inject(
+			at = @At("TAIL"),
+			method = "drawBackground"
+	)
 	private void updateWidgetPositions(DrawContext context, float delta, int mouseX, int mouseY, CallbackInfo ci) {
-		if (!MyTotemDollClient.getConfig().isModEnabled()) {
+		if (!MyTotemDollConfig.getInstance().isModEnabled()) {
 			return;
 		}
-		this.updateWidgetsPositions();
+		this.updateWidgets();
+		if (this.tagMenuWidget != null && this.tagMenuWidget.visible) {
+			int x = this.x + 176 + 1;
+			int y = this.y;
+			DrawUtils.drawTexture(context, TagMenuWidget.BACKGROUND, x, y, 0, 0, 50, 166, 50, 166);
+			DrawUtils.drawCenteredText(context, x + 9, y + 9 + 6, 32, MyTotemDoll.text("tag_menu.title"));
+		}
 	}
 
 	//? if >=1.21.6 {
-	@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTextWithShadow(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/Text;III)V"), method = "drawForeground")
+	@WrapOperation(
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTextWithShadow(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/Text;III)V"),
+			method = "drawForeground"
+	)
 	private void swapBackgroundValue(DrawContext instance, TextRenderer textRenderer, Text text, int x, int y, int color, Operation<Integer> original) {
-		if (!MyTotemDollClient.getConfig().isModEnabled()) {
+		if (!MyTotemDollConfig.getInstance().isModEnabled()) {
 			original.call(instance, textRenderer, text, x, y, color);
 			return;
 		}
@@ -186,7 +224,7 @@ public abstract class AnvilScreenMixin extends ForgingScreen<AnvilScreenHandler>
 	//?} else {
 	/*@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTextWithShadow(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/Text;III)I"), method = "drawForeground")
 	private int swapBackgroundValue(DrawContext instance, TextRenderer textRenderer, Text text, int x, int y, int color, Operation<Integer> original) {
-		if (!MyTotemDollClient.getConfig().isModEnabled()) {
+		if (!MyTotemDollConfig.getInstance().isModEnabled()) {
 			return original.call(instance, textRenderer, text, x, y, color);
 		}
 		return original.call(instance, textRenderer, text, x - this.backgroundWidth + 176, y, color);
@@ -196,7 +234,7 @@ public abstract class AnvilScreenMixin extends ForgingScreen<AnvilScreenHandler>
 	//? <1.21 {
 	/*@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V"), method = "drawInvalidRecipeArrow")
 	private void swapBackgroundValue(DrawContext instance, Identifier identifier, int x, int y, int a, int b, int c, int d, Operation<Void> original) {
-		if (!MyTotemDollClient.getConfig().isModEnabled()) {
+		if (!MyTotemDollConfig.getInstance().isModEnabled()) {
 			original.call(instance, identifier, x, y, a, b, c, d);
 		}
 		original.call(instance, identifier, x, y, a - this.backgroundWidth + 176, b, c, d);
@@ -205,11 +243,11 @@ public abstract class AnvilScreenMixin extends ForgingScreen<AnvilScreenHandler>
 
 	@Inject(at = @At("HEAD"), method = "onSlotUpdate")
 	private void checkTotem(ScreenHandler handler, int slotId, ItemStack stack, CallbackInfo ci) {
-		if (!MyTotemDollClient.getConfig().isModEnabled() || this.tagButtonWidget == null || this.tagMenuWidget == null || this.infoWidget == null || this.tipsWidget == null) {
+		if (!MyTotemDollConfig.getInstance().isModEnabled() || this.tagButtonWidget == null || this.tagMenuWidget == null) {
 			return;
 		}
 		if (slotId == 0) {
-			this.tagButtonWidget.visible = stack.isOf(Items.TOTEM_OF_UNDYING);
+			this.tagButtonWidget.visible = MyTotemDollClient.canProcess(stack);
 			if (!this.tagButtonWidget.visible && this.tagMenuWidget.visible) {
 				this.tagButtonWidget.setPressed(false, true);
 			}

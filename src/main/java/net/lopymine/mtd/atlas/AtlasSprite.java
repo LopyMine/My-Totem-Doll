@@ -1,10 +1,11 @@
 package net.lopymine.mtd.atlas;
 
 import java.io.*;
-import java.util.Objects;
+import java.util.*;
 import lombok.*;
 import net.lopymine.mtd.atlas.stitch.OnSpriteUploaded;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.resource.metadata.AnimationResourceMetadata;
 import net.minecraft.client.texture.*;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.*;
@@ -69,7 +70,11 @@ public class AtlasSprite {
 		int min = Math.min(width, height);
 
 		SpriteDimensions dimensions = animated ? new SpriteDimensions(min, min) : new SpriteDimensions(width, height);
-		SpriteContents contents = new SpriteContents(sprite.getSpriteId(), dimensions, image, metadata);
+		//? if >=1.21.9 {
+		SpriteContents contents = new SpriteContents(sprite.getSpriteId(), dimensions, image, metadata.decode(AnimationResourceMetadata.SERIALIZER), List.of());
+		//?} else {
+		/*SpriteContents contents = new SpriteContents(sprite.getSpriteId(), dimensions, image, metadata);
+		*///?}
 		sprite.setContents(contents);
 	}
 
