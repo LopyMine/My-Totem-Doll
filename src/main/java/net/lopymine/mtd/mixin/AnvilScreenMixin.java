@@ -68,7 +68,7 @@ public abstract class AnvilScreenMixin extends ForgingScreen<AnvilScreenHandler>
 
 		ItemStack stackOne = this.handler.getSlot(0).getStack();
 		ItemStack stackTwo = this.handler.getSlot(2).getStack();
-		boolean bl = MyTotemDollClient.canProcess(stackOne);
+		boolean bl = MyTotemDollClient.canProcess(stackOne) && !stackOne.isEmpty();
 
 		//
 

@@ -3,6 +3,7 @@ package net.lopymine.mtd.yacl.custom.screen;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.utils.*;
 import net.lopymine.mtd.config.MyTotemDollConfig;
+import net.lopymine.mtd.doll.model.TotemDollModel;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -131,7 +132,11 @@ public class TotemDollModelSelectionScreen extends Screen {
 
 	private void close(boolean applyCurrent) {
 		if (applyCurrent && this.selectedModelId != null) {
-			this.option.requestSet(this.selectedModelId);
+			if (this.totemDollModelPreviewWidget.getFailedLoadingStatusCode() != 0) {
+				this.option.requestSet(TotemDollModel.THREE_D_MODEL_id);
+			} else {
+				this.option.requestSet(this.selectedModelId);
+			}
 		}
 
 		this.close();
@@ -217,7 +222,7 @@ public class TotemDollModelSelectionScreen extends Screen {
 	}
 
 	private MutableDimension<Integer> getModelPreviewDimension(MutableDimension<Integer> modelPanelDimension) {
-		int v = (int) (Math.min(modelPanelDimension.width(), modelPanelDimension.height()) / 1.5F);
+		int v = Math.min(modelPanelDimension.width(), modelPanelDimension.height());
 
 		return Dimension.ofInt(modelPanelDimension.x() + ((modelPanelDimension.width() - v) / 2), modelPanelDimension.y() + ((modelPanelDimension.height() - v) / 2), v, v);
 	}
