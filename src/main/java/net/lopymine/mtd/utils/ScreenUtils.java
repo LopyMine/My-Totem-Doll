@@ -33,7 +33,10 @@ public class ScreenUtils {
 	}
 	//?} else {
 	/*public static boolean hasControlDown() {
-		if (MyTotemDollClient.IS_MAC) {
+		if (IS_MAC == null) {
+			IS_MAC = Util.getOperatingSystem() == OperatingSystem.OSX;
+		}
+		if (IS_MAC) {
 			return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), 343) || InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), 347);
 		} else {
 			return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), 341) || InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), 345);
