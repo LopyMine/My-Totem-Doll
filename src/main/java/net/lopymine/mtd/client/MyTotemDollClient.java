@@ -22,8 +22,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class MyTotemDollClient implements ClientModInitializer {
 
-	public static final boolean IS_MAC = Util.getOperatingSystem() == OperatingSystem.OSX;
-
 	public static Logger LOGGER = LoggerFactory.getLogger(MyTotemDoll.MOD_NAME + "/Client");
 
 	@Override
