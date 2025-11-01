@@ -1,1 +1,11 @@
-- Fixed the "Holding Player" option in some cases
+- Ported to 1.21.9+ (and dropped support for 1.21.2–3)
+- Fixed issues with custom YACL screen
+- Added caching for player's uuids. Now downloading skins will happen much faster.
+- Added model name in totem's info (tooltip)
+- Added compatibility with a newer version of BlockBench, now mod supports 4.10 and 5.+ model formats
+- Fixed rendering items in Hand Rendering category
+- Fixed issue with saving options from Hand Rendering to config
+- Some fixes in models
+- Added ja_jp by elinka47
+- Added compatibility for vanilla resource packs which changes totem's model by renaming
+- A lot of other little stuff, you know it.
