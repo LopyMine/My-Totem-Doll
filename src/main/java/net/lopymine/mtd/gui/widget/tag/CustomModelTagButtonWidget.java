@@ -1,16 +1,20 @@
 package net.lopymine.mtd.gui.widget.tag;
 
 import lombok.*;
+import net.lopymine.mtd.doll.data.*;
+import net.lopymine.mtd.model.base.MModel;
+import net.lopymine.mtd.utils.ScreenUtils;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
 import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.config.MyTotemDollConfig;
-import net.lopymine.mtd.doll.data.TotemDollData;
 import net.lopymine.mtd.doll.manager.StandardTotemDollManager;
 import net.lopymine.mtd.doll.renderer.TotemDollRenderer;
 import net.lopymine.mtd.gui.tooltip.preview.TotemDollPreviewTooltipData;
@@ -38,15 +42,17 @@ public class CustomModelTagButtonWidget extends TagButtonWidget {
 	}
 
 	public void updateData(TotemDollData data) {
-		if (this.model == null || this.data == data || data == null) {
+		if (data == null) {
 			return;
 		}
-		this.data = data.copy();
-		this.data.setStandardMModel(this.model);
+		this.data.getRenderProperties().copyFrom(data.getRenderProperties());
 	}
 
 	@Override
 	public void /*? if >=1.21 {*/renderWidget/*?} else {*//*renderButton*//*?}*/(DrawContext context, int mouseX, int mouseY, float delta) {
+		if (this.model != null) {
+			this.data.setFrameMModel(this.model);
+		}
 		super./*? if >=1.21 {*/renderWidget/*?} else {*//*renderButton*//*?}*/(context, mouseX, mouseY, delta);
 		if (!this.tooltipDataActive) {
 			this.tooltipData = null;
@@ -57,7 +63,7 @@ public class CustomModelTagButtonWidget extends TagButtonWidget {
 	@Override
 	protected void renderIcon(DrawContext context, int x, int y) {
 		context.enableScissor(this.getX() + 1, this.getY() + 1, this.getX() + this.getWidth() - 1, this.getY() + this.getHeight() - 1);
-		TotemDollRenderer.renderPreview(context, x, y, this.getWidth(), this.getHeight(),  Math.min(this.getWidth(), this.getHeight()), this.getData().refreshAndApplyRenderProperties());
+		TotemDollRenderer.renderPreview(context, x, y, this.getWidth(), this.getHeight(),  Math.min(this.getWidth(), this.getHeight()), this.getData());
 		context.disableScissor();
 	}
 
@@ -80,11 +86,11 @@ public class CustomModelTagButtonWidget extends TagButtonWidget {
 			return false;
 		}
 		int amount = ((int) verticalAmount) > 0 ? 1 : -1;
-		MyTotemDollConfig config = MyTotemDollClient.getConfig();
-		if (Screen.hasShiftDown()) {
+		MyTotemDollConfig config = MyTotemDollConfig.getInstance();
+		if (ScreenUtils.hasShiftDown()) {
 			config.setBetterTagMenuTooltipSize(MathHelper.clamp(config.getBetterTagMenuTooltipSize() + (amount * 2), 60, 500));
 			return true;
-		} else if (Screen.hasControlDown()) {
+		} else if (ScreenUtils.hasControlDown()) {
 			config.setTagMenuTooltipModelScale(MathHelper.clamp(config.getTagMenuTooltipModelScale() + (amount / 12F), 0.1F, 10F));
 			return true;
 		}

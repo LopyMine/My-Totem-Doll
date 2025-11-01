@@ -13,8 +13,8 @@ import net.lopymine.mtd.yacl.custom.simple.SimpleYACLScreen;
 public class YACLConfigurationScreen {
 
 	public static Screen createScreen(Screen parent) {
-		MyTotemDollConfig defConfig = new MyTotemDollConfig();
-		MyTotemDollConfig config = MyTotemDollClient.getConfig();
+		MyTotemDollConfig defConfig = MyTotemDollConfig.getNewInstance();
+		MyTotemDollConfig config = MyTotemDollConfig.getInstance();
 
 		return SimpleYACLScreen.startBuilder(parent, config::save)
 				.categories(GeneralCategory.get(defConfig, config))

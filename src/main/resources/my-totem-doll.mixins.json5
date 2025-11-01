@@ -3,9 +3,7 @@
     "package": "net.lopymine.mtd.mixin",
     "refmap": "${mod_id}.refmap.json",
     "compatibilityLevel": "JAVA_${java}",
-    "mixins": [
-	    "modmenu.FabricModMixin"
-    ],
+    "mixins": [],
     "client": [
 	    //? if <=1.21.3 {
 	    /*"ItemRendererMixin",
@@ -30,6 +28,14 @@
 	    "DrawContextMixin",
 	    "InGameOverlayRendererMixin",
 	    "GuiRendererMixin",
+	    //?}
+
+	    //? if >=1.21.4 {
+	    "SelectItemModelMixin",
+	    //?}
+
+	    //? if >=1.21.9 {
+	    "ItemPickupParticleMixin",
 	    //?}
 
 	    "accessor.DilationAccessor",

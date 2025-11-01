@@ -4,6 +4,7 @@ import com.google.gson.*;
 import lombok.*;
 
 
+import net.lopymine.mtd.utils.*;
 import net.minecraft.util.Identifier;
 import org.slf4j.*;
 import com.mojang.serialization.*;
@@ -48,8 +49,8 @@ public class MyTotemDollConfig {
 	).apply(instance, MyTotemDollConfig::new));
 
 	private static final File CONFIG_FILE = FabricLoader.getInstance().getConfigDir().resolve(MyTotemDoll.MOD_ID + ".json5").toFile();
-	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 	private static final Logger LOGGER = LoggerFactory.getLogger(MyTotemDoll.MOD_NAME + "/Config");
+	private static MyTotemDollConfig INSTANCE;
 
 	private boolean modEnabled;
 	private boolean debugLogEnabled;
@@ -66,60 +67,31 @@ public class MyTotemDollConfig {
 	private boolean firstRun;
 	private boolean supportOtherModsTotems;
 
-	public MyTotemDollConfig() {
-		this.modEnabled                  = true;
-		this.debugLogEnabled             = false;
-		this.renderingConfig             = RenderingConfig.getNewInstance().get();
-		this.standardTotemDollSkinValue  = "";
-		this.standardTotemDollSkinType   = TotemDollSkinType.STEVE;
-		this.standardTotemDollModelValue = TotemDollModel.TWO_D_MODEL_ID;
-		this.standardTotemDollArmsType   = TotemDollArmsType.WIDE;
-		this.tagButtonPos                = new Vec2i(155, 48);
-		this.useVanillaTotemModel        = false;
-		this.betterTagMenuTooltipSize    = 60;
-		this.tagMenuTooltipModelScale    = 1.0F;
-		this.parallelTasksCount          = 6;
-		this.firstRun                    = true;
-		this.supportOtherModsTotems      = true;
+	private MyTotemDollConfig() {
+		throw new IllegalArgumentException();
 	}
 
 	public static MyTotemDollConfig getInstance() {
-		return MyTotemDollConfig.read();
+		return INSTANCE == null ? reload() : INSTANCE;
 	}
 
-	private static @NotNull MyTotemDollConfig create() {
-		MyTotemDollConfig config = new MyTotemDollConfig();
-		try (FileWriter writer = new FileWriter(CONFIG_FILE, StandardCharsets.UTF_8)) {
-			String json = GSON.toJson(CODEC.encode(config, JsonOps.INSTANCE, JsonOps.INSTANCE.empty())/*? if >=1.20.5 {*/.getOrThrow());/*?} else*//*.getOrThrow(false, LOGGER::error));*/
-			writer.write(json);
-		} catch (Exception e) {
-			LOGGER.error("Failed to create config", e);
-		}
-		return config;
+	public static MyTotemDollConfig reload() {
+		return INSTANCE = MyTotemDollConfig.read();
+	}
+
+	public static MyTotemDollConfig getNewInstance() {
+		return CodecUtils.parseNewInstanceHacky(CODEC);
 	}
 
 	private static MyTotemDollConfig read() {
-		if (!CONFIG_FILE.exists()) {
-			return MyTotemDollConfig.create();
-		}
+		return ConfigUtils.readConfig(CODEC, CONFIG_FILE, LOGGER);
+	}
 
-		try (FileReader reader = new FileReader(CONFIG_FILE, StandardCharsets.UTF_8)) {
-			return CODEC.decode(JsonOps.INSTANCE, JsonParser.parseReader(reader))/*? if >=1.20.5 {*/.getOrThrow()/*?} else {*//*.getOrThrow(false, LOGGER::error)*//*?}*/.getFirst();
-		} catch (Exception e) {
-			LOGGER.error("Failed to read config", e);
-		}
-		return MyTotemDollConfig.create();
+	public void saveAsync() {
+		CompletableFuture.runAsync(this::save);
 	}
 
 	public void save() {
-		MyTotemDollClient.setConfig(this);
-		CompletableFuture.runAsync(() -> {
-			try (FileWriter writer = new FileWriter(CONFIG_FILE, StandardCharsets.UTF_8)) {
-				String json = GSON.toJson(CODEC.encode(this, JsonOps.INSTANCE, JsonOps.INSTANCE.empty())/*? if >=1.20.5 {*/.getOrThrow());/*?} else*//*.getOrThrow(false, LOGGER::error));*/
-				writer.write(json);
-			} catch (Exception e) {
-				LOGGER.error("Failed to save config", e);
-			}
-		});
+		ConfigUtils.saveConfig(this, CODEC, CONFIG_FILE, LOGGER);
 	}
 }

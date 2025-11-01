@@ -45,4 +45,15 @@ public class DrawContextExtension {
 		 *///?}
 	}
 
+	public static void drawBorder(DrawContext context, int x, int y, int width, int height, int color) {
+		//? if >=1.21.9 {
+		context.fill(x, y, x + width, y + 1, color);
+		context.fill(x, y + height - 1, x + width, y + height, color);
+		context.fill(x, y + 1, x + 1, y + height - 1, color);
+		context.fill(x + width - 1, y + 1, x + width, y + height - 1, color);
+		//?} else {
+		/*context.drawBorder(x, y, width, height, color);
+		 *///?}
+	}
+
 }

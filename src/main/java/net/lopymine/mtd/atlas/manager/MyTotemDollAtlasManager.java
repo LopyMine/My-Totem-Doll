@@ -76,9 +76,15 @@ public class MyTotemDollAtlasManager {
 		SpriteAtlasTexture atlasTexture = MyTotemDollAtlasManager.createNotRegisteredInstance();
 
 		List<SpriteContents> contents = sprites.stream().map(AtlasSprite::getContents).filter(Objects::nonNull).toList();
-		CompletableFuture<StitchResult> future = SpriteLoader.fromAtlas(atlasTexture)
+		//? if >=1.21.9 {
+		CompletableFuture<StitchResult> future = CompletableFuture.supplyAsync(
+				() -> SpriteLoader.fromAtlas(atlasTexture).stitch(contents, 0, prepareExecutor)
+		);
+		//?} else {
+		/*CompletableFuture<StitchResult> future = SpriteLoader.fromAtlas(atlasTexture)
 				.stitch(contents, 0, prepareExecutor)
 				.whenComplete();
+		*///?}
 
 		if (synchronizer != null) {
 			future = future.thenCompose(synchronizer::whenPrepared);

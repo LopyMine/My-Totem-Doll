@@ -45,14 +45,14 @@ public class StandardTotemDollManager {
 	}
 
 	public static TotemDollData overrideWithConfigValues(TotemDollData data) {
-		MyTotemDollConfig config = MyTotemDollClient.getConfig();
+		MyTotemDollConfig config = MyTotemDollConfig.getInstance();
 		data.getStandardSprites().setStandardArmsType(config.getStandardTotemDollArmsType());
 		return data;
 	}
 
 	@NotNull
 	public static TotemDollData loadStandardDoll() {
-		MyTotemDollConfig config = MyTotemDollClient.getConfig();
+		MyTotemDollConfig config = MyTotemDollConfig.getInstance();
 		TotemDollSkinType totemDollSkin = config.getStandardTotemDollSkinType();
 		String data = config.getStandardTotemDollSkinValue();
 

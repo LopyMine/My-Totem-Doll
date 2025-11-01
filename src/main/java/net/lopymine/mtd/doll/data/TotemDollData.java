@@ -3,6 +3,16 @@ package net.lopymine.mtd.doll.data;
 import lombok.*;
 import net.lopymine.mtd.model.bb.manager.BlockBenchModelManager;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
+
+//? if >=1.21.9 {
+import net.minecraft.entity.player.SkinTextures;
+import net.minecraft.entity.player.PlayerSkinType;
+import net.minecraft.util.AssetInfo.TextureAsset;
+import java.util.Optional;
+//?} elif >=1.21 {
+//import net.minecraft.client.util.SkinTextures;
+//import net.minecraft.client.util.SkinTextures.*;
+//?}
 import net.minecraft.util.Identifier;
 
 import net.lopymine.mtd.doll.model.TotemDollModel;
@@ -50,8 +60,11 @@ public class TotemDollData {
 		BlockBenchModelManager.consumeModelById(modelId, this::setStandardMModel);
 	}
 
-	public void setStandardMModel(@NotNull MModel model) {
+	public void setStandardMModel(@Nullable MModel model) {
 		this.renderProperties.setStandardMModel(model);
+		if (model == null) {
+			return;
+		}
 		this.standardModel = this.renderProperties.createStandardModel();
 	}
 
@@ -129,13 +142,19 @@ public class TotemDollData {
 			return;
 		}
 
-		//? if >=1.21 {
-		net.minecraft.client.util.SkinTextures skinTextures = playerEntity.getSkinTextures();
+		//? if >=1.21.9 {
+		SkinTextures skinTextures = playerEntity.getSkin();
+		Identifier skinTexture = skinTextures.body().texturePath();
+		Identifier capeTexture = Optional.of(skinTextures).map(SkinTextures::cape).map(TextureAsset::texturePath).orElse(null);
+		Identifier elytraTexture = Optional.of(skinTextures).map(SkinTextures::cape).map(TextureAsset::texturePath).orElse(null);
+		boolean slim = skinTextures.model() == PlayerSkinType.SLIM;
+		//?} elif >=1.21 {
+		/*SkinTextures skinTextures = playerEntity.getSkinTextures();
 		Identifier skinTexture = skinTextures.texture();
 		Identifier capeTexture = skinTextures.capeTexture();
 		Identifier elytraTexture = skinTextures.elytraTexture();
-		boolean slim = skinTextures.model() == net.minecraft.client.util.SkinTextures.Model.SLIM;
-		//?} else {
+		boolean slim = skinTextures.model() == SkinTextures.Model.SLIM;
+		*///?} else {
 		/*Identifier skinTexture = playerEntity.getSkinTexture();
 		Identifier capeTexture = playerEntity.getCapeTexture();
 		Identifier elytraTexture = playerEntity.getElytraTexture();

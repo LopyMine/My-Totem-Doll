@@ -1,5 +1,6 @@
 package net.lopymine.mtd.gui.widget.button;
 
+import net.lopymine.mtd.gui.widget.list.AbstractSearchListWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -7,18 +8,14 @@ import net.minecraft.client.gui.widget.*;
 import net.minecraft.text.*;
 
 import net.lopymine.mtd.MyTotemDoll;
-import net.lopymine.mtd.gui.widget.list.ListWithStaticHeaderWidget;
 
 import java.util.*;
+import org.jetbrains.annotations.NotNull;
 
-public class ButtonListWidget extends ListWithStaticHeaderWidget<ButtonListEntryWidget> {
-
-	public static final MutableText NOTHING_FOUND_TEXT = MyTotemDoll.text("text.nothing_found");
-	private final List<ButtonListEntryWidget> searchWidgets = new ArrayList<>();
-	private boolean searching = false;
+public class ButtonListWidget extends AbstractSearchListWidget<ButtonListEntryWidget> {
 
 	public ButtonListWidget(int x, int y, int width, int height, int buttonHeight) {
-		super(x, y, width, height - 5, buttonHeight, 1 + 5 + MinecraftClient.getInstance().textRenderer.fontHeight + 6 + 1 + 5);
+		super(x, y, width, height - 5, buttonHeight /*? if =1.20.1 {*/ /*+ 4 *//*?}*/);
 	}
 
 	@Override
@@ -36,62 +33,12 @@ public class ButtonListWidget extends ListWithStaticHeaderWidget<ButtonListEntry
 	}
 
 	@Override
-	protected void drawMenuListBackground(DrawContext context) {
-		if (this.searching && this.searchWidgets.isEmpty()) {
-			int a = (this.getWidth() - this.getRowWidth()) / 2;
-			ClickableWidget.drawScrollableText(context, MinecraftClient.getInstance().textRenderer, NOTHING_FOUND_TEXT, this.getX() + a, this.getY(), this.getX() + this.getWidth() - a, this.getY() + this.getHeight() + 4, -1);
-		}
+	protected boolean searched(String string, ButtonListEntryWidget child) {
+		return child.getWidget().getMessage().toString().contains(string);
 	}
 
 	@Override
-	protected void renderStaticHeader(DrawContext context, int x, int y) {
-		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-		int offset = (this.getWidth() - this.getRowWidth()) / 2;
-		int centerYTop = y + 6;
-		int centerYBottom = centerYTop + textRenderer.fontHeight;
-		int size = this.searching ? this.searchWidgets.size() : this.children().size();
-		int left = this.getX() + offset;
-		int right = this.getX() + this.getWidth() - offset;
-
-		ClickableWidget.drawScrollableText(context, textRenderer, MyTotemDoll.text("text.found_models", size), left, centerYTop, right, centerYBottom, -1);
-		context.fill(left + offset, centerYBottom + 5, right - offset, centerYBottom + 6, -1);
-	}
-
-	@Override
-	protected void drawSelectionHighlight(DrawContext context, int y, int entryWidth, int entryHeight, int borderColor, int fillColor) {
-	}
-
-	@Override
-	public boolean needScrollBar() {
-		return false;
-	}
-
-	@Override
-	protected int getEntryCount() {
-		return this.searching ? this.searchWidgets.size() : super.getEntryCount();
-	}
-
-	@Override
-	protected ButtonListEntryWidget getEntry(int index) {
-		return this.searching ? this.searchWidgets.get(index) : super.getEntry(index);
-	}
-
-	public void search(String string) {
-		this.setListScrollAmount(0);
-
-		if (string.isEmpty()) {
-			this.searching = false;
-			return;
-		}
-
-		this.searchWidgets.clear();
-		for (ButtonListEntryWidget child : this.children()) {
-			if (child.getWidget().getMessage().toString().contains(string)) {
-				this.searchWidgets.add(child);
-			}
-		}
-
-		this.searchWidgets.sort(Comparator.comparing(a -> a.getWidget().getMessage().getString()));
-		this.searching = true;
+	protected @NotNull Comparator<ButtonListEntryWidget> getComparator() {
+		return Comparator.comparing(a -> a.getWidget().getMessage().getString());
 	}
 }

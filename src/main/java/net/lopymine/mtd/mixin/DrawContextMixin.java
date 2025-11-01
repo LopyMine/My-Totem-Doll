@@ -32,8 +32,28 @@ public class DrawContextMixin {
 	@Final
 	private Matrix3x2fStack matrices;
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/item/ItemModelManager;clearAndUpdate(Lnet/minecraft/client/render/item/ItemRenderState;Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemDisplayContext;Lnet/minecraft/world/World;Lnet/minecraft/entity/LivingEntity;I)V", shift = Shift.AFTER), method = "drawItem(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;III)V", cancellable = true)
+	//? if >=1.21.9 {
+	@Inject(
+			at = @At(
+					value = "INVOKE",
+					target = "Lnet/minecraft/client/item/ItemModelManager;clearAndUpdate(Lnet/minecraft/client/render/item/ItemRenderState;Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemDisplayContext;Lnet/minecraft/world/World;Lnet/minecraft/util/HeldItemContext;I)V",
+					shift = Shift.AFTER
+			),
+			method = "drawItem(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;III)V",
+			cancellable = true
+	)
 	private void swapTotemRendering(LivingEntity entity, World world, ItemStack stack, int x, int y, int seed, CallbackInfo ci) {
+		this.renderDoll(stack, x, y, ci);
+	}
+	//?} else {
+	/*@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/item/ItemModelManager;clearAndUpdate(Lnet/minecraft/client/render/item/ItemRenderState;Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemDisplayContext;Lnet/minecraft/world/World;Lnet/minecraft/entity/LivingEntity;I)V", shift = Shift.AFTER), method = "drawItem(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;III)V", cancellable = true)
+	private void swapTotemRendering(LivingEntity entity, World world, ItemStack stack, int x, int y, int seed, CallbackInfo ci) {
+		this.renderDoll(stack, x, y, ci);
+	}
+	*///?}
+
+	@Unique
+	private void renderDoll(ItemStack stack, int x, int y, CallbackInfo ci) {
 		if (!TotemDollRenderer.canRender(stack)) {
 			return;
 		}

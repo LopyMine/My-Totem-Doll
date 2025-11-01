@@ -1,9 +1,7 @@
 package net.lopymine.mtd.mixin;
 
 //? if >=1.21.6 {
-import java.util.*;
 import lombok.experimental.ExtensionMethod;
-import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.doll.data.TotemDollData;
 import net.lopymine.mtd.doll.renderer.special.*;
 import net.lopymine.mtd.extension.ItemStackExtension;

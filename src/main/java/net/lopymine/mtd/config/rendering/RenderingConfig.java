@@ -14,7 +14,7 @@ public class RenderingConfig {
 
 	public static final Codec<RenderingConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			option("right_hand", HandRenderingConfig.getNewInstance(), HandRenderingConfig.CODEC, RenderingConfig::getRightHandConfig),
-			option("left_hand", HandRenderingConfig.getNewInstance(), HandRenderingConfig.CODEC, RenderingConfig::getRightHandConfig)
+			option("left_hand", HandRenderingConfig.getNewInstance(), HandRenderingConfig.CODEC, RenderingConfig::getLeftHandConfig)
 	).apply(instance, RenderingConfig::new));
 
 	private HandRenderingConfig rightHandConfig;

@@ -2,6 +2,8 @@ package net.lopymine.mtd.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import lombok.experimental.ExtensionMethod;
+import net.lopymine.mtd.config.MyTotemDollConfig;
+import net.lopymine.mtd.utils.ScreenUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.AnvilScreen;
@@ -41,7 +43,7 @@ public abstract class ItemStackMixin {
 
 	@ModifyReturnValue(at = @At("RETURN"), method = "getName")
 	private Text getName(Text original) {
-		if (!MyTotemDollClient.getConfig().isModEnabled() || !this.isOf(Items.TOTEM_OF_UNDYING)) {
+		if (!MyTotemDollConfig.getInstance().isModEnabled() || !this.isOf(Items.TOTEM_OF_UNDYING)) {
 			return original;
 		}
 		String string = original.getString();
@@ -86,7 +88,7 @@ public abstract class ItemStackMixin {
 	@Unique
 	private Optional<TooltipData> getLoadingStateTooltipData(String[] data) {
 		Screen currentScreen = MinecraftClient.getInstance().currentScreen;
-		if (!(currentScreen instanceof AnvilScreen || Screen.hasShiftDown())) {
+		if (!(currentScreen instanceof AnvilScreen || ScreenUtils.hasShiftDown())) {
 			return Optional.empty();
 		}
 		if (data.length == 0) {
@@ -103,7 +105,7 @@ public abstract class ItemStackMixin {
 			return Optional.empty();
 		}
 		String tags = data[1];
-		if (tags == null || tags.isEmpty() || !TagsManager.hasAnyTag(tags)) {
+		if (tags == null || tags.isEmpty()) {
 			return Optional.empty();
 		}
 		return Optional.of(new CombinedTooltipData(

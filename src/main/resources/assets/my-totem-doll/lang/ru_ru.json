@@ -121,7 +121,9 @@
 	"my-totem-doll.text.loading.1": "Загрузка.",
 	"my-totem-doll.text.loading.2": "Загрузка..",
 	"my-totem-doll.text.loading.3": "Загрузка...",
-	"my-totem-doll.text.loading.failed": "&c&lНеудачная загрузка!",
+	"my-totem-doll.text.loading.failed.to_load": "&c&lНеудачная загрузка!",
+	"my-totem-doll.text.loading.failed.unsupported_format": "&c&lНеподдерживаемый формат!",
+	"my-totem-doll.text.loading.failed.wrong_metadata": "&c&lНеправильные метаданные!",
 
 	"my-totem-doll.tag_menu.title": "Теги",
 	"my-totem-doll.tag_menu.custom_models.title": "Собственные модели\n \n&7[Shift]&r + &7[Scroll]&r чтобы изменить размер\nпредпросмотра.\n&7[Ctrl]&r + &7[Scroll]&r чтобы изменить размер\nмодели в режиме предпросмотра."

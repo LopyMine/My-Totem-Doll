@@ -1,17 +1,15 @@
 package net.lopymine.mtd.thread;
 
-import net.lopymine.mtd.client.MyTotemDollClient;
-
 import java.util.*;
 import java.util.concurrent.*;
+import net.lopymine.mtd.config.MyTotemDollConfig;
 
-// Basically, for now I need it only for downloading totems
 public class MyTotemDollTaskExecutor {
 
-	public static ExecutorService MAIN_EXECUTOR = Executors.newFixedThreadPool(MyTotemDollClient.getConfig().getParallelTasksCount());
+	public static ExecutorService MAIN_EXECUTOR = Executors.newFixedThreadPool(MyTotemDollConfig.getInstance().getParallelTasksCount());
 
 	public static void reload() {
-		int threadsCount = MyTotemDollClient.getConfig().getParallelTasksCount();
+		int threadsCount = MyTotemDollConfig.getInstance().getParallelTasksCount();
 		List<Runnable> runnables = MAIN_EXECUTOR.shutdownNow();
 		MAIN_EXECUTOR = Executors.newFixedThreadPool(threadsCount);
 		for (Runnable runnable : runnables) {

@@ -1,10 +1,8 @@
 accessWidener v2 named
-# 1.21.3 AW
+# 1.21.9 AW
 
 accessible field net/minecraft/client/gui/screen/Screen textRenderer Lnet/minecraft/client/font/TextRenderer;
 accessible field net/minecraft/client/gui/screen/Screen client Lnet/minecraft/client/MinecraftClient;
-
-accessible method net/minecraft/client/gui/DrawContext drawTooltip (Lnet/minecraft/client/font/TextRenderer;Ljava/util/List;IILnet/minecraft/client/gui/tooltip/TooltipPositioner;Lnet/minecraft/util/Identifier;)V
 
 accessible method net/minecraft/client/gui/widget/ClickableWidget drawScrollableText (Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/Text;IIIII)V
 
@@ -15,12 +13,18 @@ mutable field net/minecraft/client/model/ModelPart$Cuboid sides [Lnet/minecraft/
 
 extendable class net/minecraft/client/model/ModelPart
 accessible method net/minecraft/client/model/ModelPart renderCuboids (Lnet/minecraft/client/util/math/MatrixStack$Entry;Lnet/minecraft/client/render/VertexConsumer;III)V
-accessible field net/minecraft/client/gui/DrawContext vertexConsumers Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;
+
+accessible field net/minecraft/client/texture/SpriteContents image Lnet/minecraft/client/texture/NativeImage;
 
 accessible field net/minecraft/client/util/math/MatrixStack$Entry canSkipNormalization Z
 accessible field net/minecraft/client/texture/TextureManager textures Ljava/util/Map;
 
-accessible field net/minecraft/client/texture/PlayerSkinTexture cacheFile Ljava/io/File;
-accessible field net/minecraft/client/texture/PlayerSkinTexture url Ljava/lang/String;
-
 accessible field net/minecraft/client/texture/NativeImage pointer J
+
+accessible method net/minecraft/client/texture/SpriteLoader stitch (Ljava/util/List;ILjava/util/concurrent/Executor;)Lnet/minecraft/client/texture/SpriteLoader$StitchResult;
+accessible class net/minecraft/client/gui/widget/EntryListWidget$Entry
+
+accessible field net/minecraft/item/ItemStack item Lnet/minecraft/item/Item;
+accessible field net/minecraft/item/ItemStack components Lnet/minecraft/component/MergedComponentMap;
+
+accessible class net/minecraft/client/render/item/HeldItemRenderer$HandRenderType

@@ -33,6 +33,7 @@ public class WelcomeTotemDollModelPreviewWidget extends TotemDollModelPreviewWid
 
 	public WelcomeTotemDollModelPreviewWidget(int x, int y, float size, Runnable onClick) {
 		super(x, y, size);
+		this.setData(StandardTotemDollManager.getSteveDoll());
 		this.onClick = onClick;
 	}
 
@@ -61,8 +62,15 @@ public class WelcomeTotemDollModelPreviewWidget extends TotemDollModelPreviewWid
 		return -(MathHelper.cos((float) (Math.PI * progress)) - 1) / 2;
 	}
 
+	//? if >=1.21.9 {
 	@Override
+	public void onClick(Click click, boolean doubled) {
+		this.onClick.run();
+	}
+	//?} else {
+	/*@Override
 	public void onClick(double mouseX, double mouseY) {
 		this.onClick.run();
 	}
+	*///?}
 }

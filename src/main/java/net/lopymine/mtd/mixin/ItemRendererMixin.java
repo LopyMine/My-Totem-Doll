@@ -60,10 +60,7 @@ public class ItemRendererMixin {
 	private void renderDoll(ItemStack stack, ModelTransformationMode renderMode, boolean leftHanded, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, BakedModel model, CallbackInfo ci) {
 	^///?}
 		DollRenderContext context = DollRenderContext.of(renderMode);
-		if (ThingMarks.WORLD_RENDERING.get().isMarked() && TotemDollRenderer.sentRenderRequest(matrices, stack, context, vertexConsumers, light, overlay)) {
-			ci.cancel();
-		} else
-		if (TotemDollRenderer.rendered(matrices, stack, context, vertexConsumers, light, overlay)) {
+		if (TotemDollRenderer.sentRenderRequest(matrices, stack, context, light, overlay, 0, vertexConsumers)) {
 			ci.cancel();
 		}
 	}

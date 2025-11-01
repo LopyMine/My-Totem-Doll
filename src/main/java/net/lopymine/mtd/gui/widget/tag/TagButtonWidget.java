@@ -24,6 +24,10 @@ import net.minecraft.client.gui.screen.ButtonTextures;
 /*import net.lopymine.mtd.utils.ButtonTextures;
 *///?}
 
+//? if >=1.21.9 {
+import net.minecraft.client.input.AbstractInput;
+ //?}
+
 @Getter
 @Setter
 public class TagButtonWidget extends ButtonWidget {
@@ -54,9 +58,9 @@ public class TagButtonWidget extends ButtonWidget {
 	}
 
 	@Override
-	public void onPress() {
+	public void onPress(/*? if >=1.21.9 {*/ AbstractInput input /*?}*/) {
 		this.pressed = !this.pressed;
-		super.onPress();
+		super.onPress(/*? if >=1.21.9 {*/ input /*?}*/);
 	}
 
 	public void setPressed(boolean pressed) {
@@ -73,7 +77,6 @@ public class TagButtonWidget extends ButtonWidget {
 	public void setTooltip(@Nullable Text text) {
 		this.tooltipText = text;
 	}
-
 
 	@Override
 	public void /*? if >=1.21 {*/renderWidget/*?} else {*//*renderButton*//*?}*/(DrawContext context, int mouseX, int mouseY, float delta) {

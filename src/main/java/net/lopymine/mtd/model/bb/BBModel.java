@@ -98,6 +98,9 @@ public class BBModel {
 				option(DollRenderContext.D_GUI.getId(), Transformation.IDENTITY, TRANSFORMATION_CODEC, (o) -> o.getGui()),
 				option(DollRenderContext.D_GROUND.getId(), Transformation.IDENTITY, TRANSFORMATION_CODEC, (o) -> o.getGround()),
 				option(DollRenderContext.D_FIXED.getId(), Transformation.IDENTITY, TRANSFORMATION_CODEC, (o) -> o.getFixed())
+				//? if >=1.21.9 {
+				, option(DollRenderContext.D_ON_SHELF.getId(), Transformation.IDENTITY, TRANSFORMATION_CODEC, (o) -> o.getOnShelf())
+				//?}
 		).apply(instance, ModelTransformation::new));
 
 	}

@@ -123,7 +123,9 @@
 	"my-totem-doll.text.loading.1": "Loading.",
 	"my-totem-doll.text.loading.2": "Loading..",
 	"my-totem-doll.text.loading.3": "Loading...",
-	"my-totem-doll.text.loading.failed": "&c&lFailed Loading!",
+	"my-totem-doll.text.loading.failed.to_load": "&c&lFailed Loading!",
+	"my-totem-doll.text.loading.failed.unsupported_format": "&c&lUnsupported Format!",
+	"my-totem-doll.text.loading.failed.wrong_metadata": "&c&lWrong Metadata!",
 
 	"my-totem-doll.tag_menu.title": "Tags",
 	"my-totem-doll.tag_menu.custom_models.title": "Custom Models\n \n&7[Shift]&r + &7[Scroll]&r to change\ntooltip size\n&7[Ctrl]&r + &7[Scroll]&r to change\nmodel size in tooltip"

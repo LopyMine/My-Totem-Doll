@@ -1,8 +1,10 @@
 package net.lopymine.mtd.client;
 
-import lombok.*;
+import net.lopymine.mtd.cache.KnownPlayerUUIDsConfigManager;
 import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
+import net.minecraft.util.Util;
+import net.minecraft.util.Util.OperatingSystem;
 import org.slf4j.*;
 import net.fabricmc.api.ClientModInitializer;
 
@@ -20,15 +22,12 @@ import org.jetbrains.annotations.Nullable;
 
 public class MyTotemDollClient implements ClientModInitializer {
 
-	public static Logger LOGGER = LoggerFactory.getLogger(MyTotemDoll.MOD_NAME + "/Client");
+	public static final boolean IS_MAC = Util.getOperatingSystem() == OperatingSystem.OSX;
 
-	@Setter
-	@Getter
-	private static MyTotemDollConfig config;
+	public static Logger LOGGER = LoggerFactory.getLogger(MyTotemDoll.MOD_NAME + "/Client");
 
 	@Override
 	public void onInitializeClient() {
-		MyTotemDollClient.config = MyTotemDollConfig.getInstance();
 		LOGGER.info("{} Client Initialized", MyTotemDoll.MOD_NAME);
 		TagsManager.register();
 		TagsSkinProviders.register();
@@ -36,6 +35,7 @@ public class MyTotemDollClient implements ClientModInitializer {
 		MyTotemDollEvents.register();
 		MyTotemDollReloadListener.register();
 		TotemDollPlugin.register();
+		KnownPlayerUUIDsConfigManager.start();
 		//? if >=1.21.6 {
 		net.fabricmc.fabric.api.client.rendering.v1.SpecialGuiElementRegistry.register(
 				context -> new net.lopymine.mtd.doll.renderer.special.ItemGuiElementRenderer(context.vertexConsumers()));
@@ -43,10 +43,11 @@ public class MyTotemDollClient implements ClientModInitializer {
 	}
 
 	public static boolean canProcess(@Nullable ItemStack stack) {
-		return stack != null && MyTotemDollClient.getConfig().isModEnabled() && isProbablyTotem(stack);
+		return stack != null && MyTotemDollConfig.getInstance().isModEnabled() && isProbablyTotem(stack);
 	}
 
+	@SuppressWarnings("deprecation")
 	private static boolean isProbablyTotem(ItemStack stack) {
-		return stack.isOf(Items.TOTEM_OF_UNDYING) || (MyTotemDollClient.getConfig().isSupportOtherModsTotems() && Registries.ITEM.getId(stack.getItem()).getPath().contains("totem"));
+		return stack.item == Items.TOTEM_OF_UNDYING || (MyTotemDollConfig.getInstance().isSupportOtherModsTotems() && Registries.ITEM.getId(stack.getItem()).getPath().contains("totem"));
 	}
 }
