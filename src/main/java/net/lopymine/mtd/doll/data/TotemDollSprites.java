@@ -3,7 +3,6 @@ package net.lopymine.mtd.doll.data;
 import lombok.*;
 import net.lopymine.mtd.atlas.*;
 import net.lopymine.mtd.atlas.manager.*;
-import net.minecraft.util.AssetInfo.TextureAsset;
 import net.minecraft.util.Identifier;
 
 import net.lopymine.mtd.config.totem.TotemDollArmsType;
@@ -11,6 +10,12 @@ import net.lopymine.mtd.config.totem.TotemDollArmsType;
 import org.jetbrains.annotations.*;
 import static net.lopymine.mtd.atlas.manager.MyTotemDollAtlasSpriteManager.ELYTRA_SPRITE;
 import static net.lopymine.mtd.atlas.manager.MyTotemDollAtlasSpriteManager.STEVE_SKIN_SPRITE;
+
+//? if >=1.21.9 {
+
+import net.minecraft.util.AssetInfo.TextureAsset;
+
+//?}
 
 @Getter
 @Setter

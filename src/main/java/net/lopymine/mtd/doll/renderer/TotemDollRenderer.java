@@ -12,7 +12,6 @@ import net.minecraft.client.network.*;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.VertexConsumerProvider.Immediate;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.*;
 
 import net.lopymine.mtd.MyTotemDoll;
@@ -32,13 +31,19 @@ import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.*;
 import org.jetbrains.annotations.*;
 
+//? if >=1.21 {
+
+import net.minecraft.component.DataComponentTypes;
+
+//?}
+
 @ExtensionMethod({ItemStackExtension.class, DrawContextExtension.class})
 public class TotemDollRenderer {
 
-	public static boolean sentRenderRequest(MatrixStack matrices, ItemStack stack, DollRenderContext context, int light, int overlay, int outlineColor) {
+	public static boolean sentRenderRequest(MatrixStack matrices, ItemStack stack, DollRenderContext context, int light, int overlay, int outlineColor, @Nullable VertexConsumerProvider provider) {
 		if (canRender(stack)) {
 			TotemDollData totemDollData = stack.getTotemDollData(false);
-			TotemDollRenderRequestsCollector.getInstance().requestRender(matrices, totemDollData, stack.getPlayerEntity(), context, light, overlay, outlineColor);
+			TotemDollRenderRequestsCollector.getInstance().requestRender(matrices, totemDollData, stack.getPlayerEntity(), context, light, overlay, outlineColor, provider);
 			if (!ThingMarks.WORLD_RENDERING.get().isMarked()) {
 				TotemDollRenderRequestsCollector.getInstance().render();
 			}

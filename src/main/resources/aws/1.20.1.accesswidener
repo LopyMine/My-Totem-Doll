@@ -27,3 +27,7 @@ accessible field net/minecraft/client/texture/PlayerSkinTexture cacheFile Ljava/
 accessible field net/minecraft/client/texture/PlayerSkinTexture url Ljava/lang/String;
 
 accessible field net/minecraft/client/texture/NativeImage pointer J
+
+accessible field net/minecraft/item/ItemStack item Lnet/minecraft/item/Item;
+
+accessible class net/minecraft/client/render/item/HeldItemRenderer$HandRenderType

@@ -1,5 +1,6 @@
 package net.lopymine.mtd.mixin;
 
+//? if >=1.21.9 {
 import net.lopymine.mtd.utils.mixin.ItemRenderStateWithStack;
 import net.minecraft.client.particle.ItemPickupParticle;
 import net.minecraft.client.render.entity.state.*;
@@ -21,3 +22,4 @@ public class ItemPickupParticleMixin {
 	}
 
 }
+//?}

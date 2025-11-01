@@ -127,4 +127,11 @@ public abstract class AbstractVersionedEntryListWidget<E extends Entry<E>> exten
 	}
 
 	*///?}
+
+	//? if =1.20.1 {
+	/*@Override
+	protected int getScrollbarPositionX() {
+		return super.getScrollbarPositionX() + this.getX();
+	}
+	*///?}
 }

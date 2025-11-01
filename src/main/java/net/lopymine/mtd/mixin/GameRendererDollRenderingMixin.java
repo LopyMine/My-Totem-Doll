@@ -24,24 +24,24 @@ public class GameRendererDollRenderingMixin {
 	//?} elif >=1.21.2 && <=1.21.8 {
 	/*@Inject(at = @At("HEAD"), method = "renderEntities")
 	private void beforeDollRendering(CallbackInfo ci) {
-		ThingMarks.WORLD_RENDERINddG.get().setMarked(true);
+		ThingMarks.WORLD_RENDERING.get().setMarked(true);
 	}
 
 	@Inject(at = @At("TAIL"), method = "renderEntities")
 	private void afterDollRendering(CallbackInfo ci) {
 		TotemDollRenderRequestsCollector.getInstance().render();
-		ThingMarks.WORLD_RENDERddING.get().setMarked(false);
+		ThingMarks.WORLD_RENDERING.get().setMarked(false);
 	}
 	*///?} else {
 	/*@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;getEntities()Ljava/lang/Iterable;"), method = "render")
 	private void beforeDollRendering(CallbackInfo ci) {
-		ThingMarks.WORLD_RENDERddING.get().setMarked(true);
+		ThingMarks.WORLD_RENDERING.get().setMarked(true);
 	}
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;drawCurrentLayer()V", ordinal = 0), method = "render")
 	private void afterDollRendering(CallbackInfo ci) {
 		TotemDollRenderRequestsCollector.getInstance().render();
-		ThingMarks.WORLD_RENDERddING.get().setMarked(false);
+		ThingMarks.WORLD_RENDERING.get().setMarked(false);
 	}
 	*///?}
 

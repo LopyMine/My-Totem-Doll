@@ -5,7 +5,6 @@ import lombok.experimental.ExtensionMethod;
 import net.lopymine.mtd.extension.DrawContextExtension;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.*;
-import net.minecraft.client.font.MultilineText.Alignment;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ClickableWidget;
 
@@ -21,6 +20,12 @@ import net.lopymine.mtd.utils.ColorUtils;
 import net.lopymine.mtd.utils.plugin.TotemDollPlugin;
 
 import org.jetbrains.annotations.Nullable;
+
+//? if >=1.21.9 {
+
+import net.minecraft.client.font.MultilineText.Alignment;
+
+//?}
 
 @ExtensionMethod(DrawContextExtension.class)
 public class TotemDollPreviewRenderer implements ImageRenderer {

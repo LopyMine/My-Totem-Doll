@@ -32,6 +32,10 @@ public class TagMenuWidget extends AbstractVersionedEntryListWidget<TagRow> {
 	public TagMenuWidget(int x, int y, Renamer renamer) {
 		super(x, y, 30, 125, 16);
 
+		//? if <=1.21.8 {
+		/*this.headerHeight = -2;
+		*///?}
+
 		List<Tag> list = TagsManager.getRegisteredTags().values().stream().toList();
 		for (int i = 0; i < list.size(); i += 2) {
 			List<Tag> tags = getRangeOfList(list, i);
@@ -61,6 +65,13 @@ public class TagMenuWidget extends AbstractVersionedEntryListWidget<TagRow> {
 			this.addEntry(new TagRow(tagRowWidget));
 		}
 	}
+
+	//? if <=1.21.8 {
+	/*@Override
+	public int getRowLeft() {
+		return this.getX() + this.width / 2 - this.getRowWidth() / 2;
+	}
+	*///?}
 
 	@Override
 	public int getRowWidth() {
@@ -179,7 +190,9 @@ public class TagMenuWidget extends AbstractVersionedEntryListWidget<TagRow> {
 	@Override
 	public void setPosition(int x, int y) {
 		super.setPosition(x, y);
+		//? if >=1.21.4 {
 		this.setScrollY(this.getScrollY());
+		//?}
 	}
 
 	public interface Renamer {
@@ -209,8 +222,6 @@ public class TagMenuWidget extends AbstractVersionedEntryListWidget<TagRow> {
 		}
 
 		//? if >=1.21.9 {
-
-
 		@Override
 		public void setX(int x) {
 			super.setX(x);

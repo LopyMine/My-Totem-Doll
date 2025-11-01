@@ -14,13 +14,13 @@ import net.minecraft.util.profiler.*;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 //?}
 
-public class MyTotemDollReloadListener implements /*? if >=1.21.9 {*/ ResourceReloader /*?} else {*//* IdentifiableResourceReloadListener *//*?}*/ {
+public class MyTotemDollReloadListener implements /*? if >=1.21.9 {*/ ResourceReloader /*?} else {*/ /*IdentifiableResourceReloadListener *//*?}*/ {
 
 	public static void register() {
 		//? if >=1.21.9 {
 		ResourceLoader.get(ResourceType.CLIENT_RESOURCES).registerReloader(getFabricId(), new MyTotemDollReloadListener());
 		//?} else {
-		/*ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new InventoryParticlesClientReloadListener());
+		/*ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new MyTotemDollReloadListener());
 		 *///?}
 	}
 

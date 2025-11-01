@@ -20,11 +20,7 @@ public class FabricModMixin {
 
 	//? if >=1.21 {
 	@Dynamic
-	@Inject(
-			at = @At("RETURN"),
-			method = "getContributors",
-			remap = false
-	)
+	@Inject(at = @At("RETURN"), method = "getContributors", remap = false)
 	private void addMoreContributors(CallbackInfoReturnable<Map<String, Collection<String>>> cir) {
 		if (!MyTotemDoll.MOD_ID.equals(this.metadata.getId())) {
 			return;
@@ -37,17 +33,17 @@ public class FabricModMixin {
 
 	@Unique
 	private void addBuiltinCustomModelAuthor(Map<String, Collection<String>> map, @SuppressWarnings("all") String nickname, List<String> models) {
-		map.put(nickname + " " + Arrays.toString(models.toArray()), List.of("Model Author"));
+		map.put(nickname + " " + Arrays.toString(models.toArray()), List.of("Community Model Author"));
 	}
 	//?} else {
 	/*@Inject(at = @At("RETURN"), method = "getContributors", remap = false)
 	private void addMoreContributors(CallbackInfoReturnable<List<String>> cir) {
-			if (!MyTotemDollв.MOD_ID.equals(this.metadata.getId())) {
+		if (!MyTotemDoll.MOD_ID.equals(this.metadata.getId())) {
 			return;
 		}
 		List<String> list = cir.getReturnValue();
 		list.add(" ");
-		list.add("Model Authors");
+		list.add("Community Model Authors");
 		MODEL_AUTHORS.forEach((nickname, models) -> {
 			list.add(nickname + " " + Arrays.toString(models.toArray()));
 		});

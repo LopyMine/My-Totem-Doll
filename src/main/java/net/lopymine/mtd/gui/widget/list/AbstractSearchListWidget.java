@@ -56,7 +56,7 @@ public abstract class AbstractSearchListWidget<E extends Entry<E>> extends Abstr
 
 	//?} else {
 	/*@Override
-		protected ResourcePackEntryWidget getEntry(int index) {
+		protected E getEntry(int index) {
 		return this.searching ? this.searchWidgets.get(index) : super.getEntry(index);
 	}
 	*///?}

@@ -34,7 +34,8 @@ public abstract class EntryListWidgetMixin {
 		return !(((EntryListWidget<?>) (Object) this) instanceof AbstractVersionedEntryListWidget<?>);
 	}
 
-	@WrapOperation(
+	//? if >=1.21.9 {
+		@WrapOperation(
 			at = @At(
 					value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/EntryListWidget$Entry;getHeight()I"
 			),
@@ -55,4 +56,28 @@ public abstract class EntryListWidgetMixin {
 	private boolean noScrollbar(EntryListWidget<?> instance, DrawContext context, int a, int b) {
 		return !(((EntryListWidget<?>) (Object) this) instanceof AbstractVersionedEntryListWidget<?>);
 	}
+	//?}
+
+	//? if >=1.21.4 && <=1.21.8 {
+	/*@WrapWithCondition(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/EntryListWidget;drawScrollbar(Lnet/minecraft/client/gui/DrawContext;)V"), method = "renderWidget")
+	private boolean noScrollbar(EntryListWidget<?> instance, DrawContext context) {
+		return !(((EntryListWidget<?>) (Object) this) instanceof AbstractVersionedEntryListWidget<?>);
+	}*///?} elif >=1.21 && <=1.21.8 {
+	/*@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/EntryListWidget;isScrollbarVisible()Z"), method = "renderWidget")
+	private boolean noScrollbar(EntryListWidget<?> instance, Operation<Boolean> original) {
+		if (((EntryListWidget<?>) (Object) this) instanceof AbstractVersionedEntryListWidget<?>) {
+			return false;
+		}
+		return original.call(instance);
+	}
+	*///?} elif <=1.21.8 {
+	/*@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/EntryListWidget;getMaxScroll()I"), method = "render")
+	private int noScrollbar(EntryListWidget<?> instance, Operation<Integer> original) {
+		if (((EntryListWidget<?>) (Object) this) instanceof AbstractVersionedEntryListWidget<?>) {
+			return 0;
+		}
+		return original.call(instance);
+	}
+	*///?}
+
 }

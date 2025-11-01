@@ -11,7 +11,7 @@ public class ScreenUtils {
 		return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow(), 340) || InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow(), 344);
 	}
 	//?} else {
-	/*public static boolean hasControlDown() {
+	/*public static boolean hasShiftDown() {
 		return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), 340) || InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), 344);
 	}
 	*///?}
@@ -26,7 +26,7 @@ public class ScreenUtils {
 	}
 	//?} else {
 	/*public static boolean hasControlDown() {
-		if (InventoryParticlesClient.IS_MAC) {
+		if (MyTotemDollClient.IS_MAC) {
 			return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), 343) || InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), 347);
 		} else {
 			return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), 341) || InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), 345);

@@ -3,13 +3,11 @@ package net.lopymine.mtd.gui.screen;
 import net.lopymine.mtd.utils.texture.PlayerSkinUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.MultilineText;
-import net.minecraft.client.font.MultilineText.Alignment;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.screen.*;
 import net.minecraft.util.Identifier;
 
 import net.lopymine.mtd.MyTotemDoll;
-import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.config.MyTotemDollConfig;
 import net.lopymine.mtd.doll.model.TotemDollModel;
 import net.lopymine.mtd.gui.*;
@@ -18,6 +16,12 @@ import net.lopymine.mtd.gui.widget.preview.WelcomeTotemDollModelPreviewWidget;
 import net.lopymine.mtd.utils.DrawUtils;
 
 import org.jetbrains.annotations.NotNull;
+
+//? if >=1.21.9 {
+
+import net.minecraft.client.font.MultilineText.Alignment;
+
+//?}
 
 public class WelcomeScreen extends Screen {
 

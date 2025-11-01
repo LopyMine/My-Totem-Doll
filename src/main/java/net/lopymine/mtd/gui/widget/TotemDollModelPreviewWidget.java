@@ -23,7 +23,7 @@ public class TotemDollModelPreviewWidget extends ClickableWidget {
 
 	private final float size;
 
-	private final TotemDollData data;
+	private TotemDollData data;
 
 	private boolean loading;
 	private int failedLoadingStatusCode = 0;

@@ -13,9 +13,16 @@ import org.spongepowered.asm.mixin.injection.At;
 public class TextureManagerMixin {
 
 	//? if <=1.21.3 {
-	/*@WrapOperation(at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V", remap = false), method = "loadTexture")
+	/*@WrapOperation(
+			at = @At(
+					value = "INVOKE",
+					target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V",
+					remap = false
+			),
+			method = "loadTexture"
+	)
 	private void suppressMTDWarning(Logger instance, String s, Object a, Object o, Operation<Void> original) {
-		if (!(a instanceodf Identifier id)) {
+		if (!(a instanceof Identifier id)) {
 			original.call(instance, s, a, o);
 			return;
 		}

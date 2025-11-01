@@ -11,7 +11,6 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.component.ComponentType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.*;
-import net.minecraft.util.HeldItemContext;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.*;
@@ -24,6 +23,10 @@ import net.lopymine.mtd.utils.mixin.ItemRenderStateWithStack;
 import net.lopymine.mtd.utils.plugin.TotemDollPlugin;
 
 import java.util.function.Supplier;
+
+//? if >=1.21.9 {
+import net.minecraft.util.HeldItemContext;
+//?}
 
 @ExtensionMethod(ItemStackExtension.class)
 @Mixin(ItemModelManager.class)
@@ -52,14 +55,23 @@ public class ItemModelManagerMixin {
 		return this.changeModel(stack, () -> original.call(stack, componentType));
 	}
 	//?} else {
-	/*@Inject(at = @At("HEAD"), method = "update(Lnet/minecraft/client/render/item/ItemRenderState;Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ModelTransformationMode;Lnet/minecraft/world/World;Lnet/minecraft/entity/LivingEntity;I)V")
+	/*@Inject(
+			at = @At("HEAD"),
+			method = "update(Lnet/minecraft/client/render/item/ItemRenderState;Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ModelTransformationMode;Lnet/minecraft/world/World;Lnet/minecraft/entity/LivingEntity;I)V"
+	)
 	private void captureEntityForDoll(ItemRenderState renderState, ItemStack stack, ModelTransformationMode transformationMode, World world, LivingEntity entity, int seed, CallbackInfo ci) {
-		this.captureEntddity(stack, entity, renderState);
+		this.captureEntity(stack, entity, renderState);
 	}
 
-	@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;get(Lnet/minecraft/component/ComponentType;)Ljava/lang/Object;"), method = "update(Lnet/minecraft/client/render/item/ItemRenderState;Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ModelTransformationMode;Lnet/minecraft/world/World;Lnet/minecraft/entity/LivingEntity;I)V")
+	@WrapOperation(
+			at = @At(
+					value = "INVOKE",
+					target = "Lnet/minecraft/item/ItemStack;get(Lnet/minecraft/component/ComponentType;)Ljava/lang/Object;"
+			),
+			method = "update(Lnet/minecraft/client/render/item/ItemRenderState;Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ModelTransformationMode;Lnet/minecraft/world/World;Lnet/minecraft/entity/LivingEntity;I)V"
+	)
 	private Object swapItemModel(ItemStack stack, ComponentType<?> componentType, Operation<?> original) {
-		return this.changdddeModel(stack, () -> original.call(stack, componentType));
+		return this.changeModel(stack, () -> original.call(stack, componentType));
 	}
 	*///?}
 

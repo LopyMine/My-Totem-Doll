@@ -2,16 +2,20 @@ package net.lopymine.mtd.gui.tooltip.info;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.*;
-import net.minecraft.client.font.MultilineText.Alignment;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 
 import net.minecraft.text.*;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.ColorHelper;
 
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.utils.*;
+
+//? if >=1.21.9 {
+
+import net.minecraft.client.font.MultilineText.Alignment;
+
+//?}
 
 public class InfoTooltipComponent implements TooltipComponent {
 
@@ -28,7 +32,7 @@ public class InfoTooltipComponent implements TooltipComponent {
 
 	@Override
 	public int getHeight(/*? >=1.21.2 {*/TextRenderer textRenderer/*?}*/) {
-		return (this.text./*? if >=1.21.9 {*/ getLineCount /*?} else {*//* count *//*?}*/() * 10) + 26 + 2 + 5 + 2 + 5;
+		return (this.text./*? if >=1.21.9 {*/ getLineCount /*?} else {*/ /*count *//*?}*/() * 10) + 26 + 2 + 5 + 2 + 5;
 	}
 
 	@Override

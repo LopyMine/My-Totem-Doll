@@ -26,25 +26,43 @@ public class SpriteContentsMixin {
 		original.call(instance, target, source, mipLevel, depth, offsetX, offsetY, width, height, skipPixels, skipRows);
 	}
 	//?} elif >=1.21.5 {
-	/*@WrapOperation(at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/CommandEncoder;writeToTexture(Lcom/mojang/blaze3d/textures/GpuTexture;Lnet/minecraft/client/texture/NativeImage;IIIIIII)V"), method = "upload(IIII[Lnet/minecraft/client/texture/NativeImage;Lcom/mojang/blaze3d/textures/GpuTexture;)V")
+	/*@WrapOperation(
+			at = @At(
+					value = "INVOKE",
+					target = "Lcom/mojang/blaze3d/systems/CommandEncoder;writeToTexture(Lcom/mojang/blaze3d/textures/GpuTexture;Lnet/minecraft/client/texture/NativeImage;IIIIIII)V"
+			),
+			method = "upload(IIII[Lnet/minecraft/client/texture/NativeImage;Lcom/mojang/blaze3d/textures/GpuTexture;)V"
+	)
 	private void validateImageBeforeUpload(com.mojang.blaze3d.systems.CommandEncoder instance, com.mojang.blaze3d.textures.GpuTexture target, NativeImage source, int mipLevel, int intoX, int intoY, int width, int height, int x, int y, Operation<Void> original) {
-		if (source.pointeвr == 0L) {
+		if (source.pointer == 0L) {
 			throw new IllegalArgumentException(TEXT);
 		}
 		original.call(instance, target, source, mipLevel, intoX, intoY, width, height, x, y);
 	}
 	*///?} elif >=1.21.4 {
-	/*@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/texture/NativeImage;upload(IIIIIIIZ)V"), method = "upload(IIII[Lnet/minecraft/client/texture/NativeImage;)V")
+	/*@WrapOperation(
+			at = @At(
+					value = "INVOKE",
+					target = "Lnet/minecraft/client/texture/NativeImage;upload(IIIIIIIZ)V"
+			),
+			method = "upload(IIII[Lnet/minecraft/client/texture/NativeImage;)V"
+	)
 	private void validateImageBeforeUpload(NativeImage instance, int level, int offsetX, int offsetY, int unpackSkipPixels, int unpackSkipRows, int width, int height, boolean blur, Operation<Void> original) {
-		if (instance.pointedr == 0L) {
+		if (instance.pointer == 0L) {
 			throw new IllegalArgumentException(TEXT);
 		}
 		original.call(instance, level, offsetX, offsetY, unpackSkipPixels, unpackSkipRows, width, height, blur);
 	}
 	*///?} else {
-	/*@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/texture/NativeImage;upload(IIIIIIIZZ)V"), method = "upload(IIII[Lnet/minecraft/client/texture/NativeImage;)V")
+	/*@WrapOperation(
+			at = @At(
+					value = "INVOKE",
+					target = "Lnet/minecraft/client/texture/NativeImage;upload(IIIIIIIZZ)V"
+			),
+			method = "upload(IIII[Lnet/minecraft/client/texture/NativeImage;)V"
+	)
 	private void validateImageBeforeUpload(NativeImage instance, int level, int offsetX, int offsetY, int unpackSkipPixels, int unpackSkipRows, int width, int height, boolean mipmap, boolean close, Operation<Void> original) {
-		if (instance.pointedr == 0L) {
+		if (instance.pointer == 0L) {
 			throw new IllegalArgumentException(TEXT);
 		}
 		original.call(instance, level, offsetX, offsetY, unpackSkipPixels, unpackSkipRows, width, height, mipmap, close);

@@ -194,7 +194,12 @@ public class BlockBenchModelManager {
 		BBCubeFaces cubeFaces = new BBCubeFaces(new HashMap<>());
 
 		for (Direction direction : Direction.values()) {
-			JsonObject face = faces.get(direction.getId()).getAsJsonObject();
+			//? if >=1.21.5 {
+			String id = direction.getId();
+			//?} else {
+			/*String id = direction.getName();
+			*///?}
+			JsonObject face = faces.get(id).getAsJsonObject();
 			if (face.has("texture") && face.get("texture").isJsonNull()) {
 				continue;
 			}

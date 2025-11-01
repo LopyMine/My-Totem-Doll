@@ -7,13 +7,18 @@ import net.minecraft.client.gui.render.SpecialGuiElementRenderer;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.DiffuseLighting.Type;
 import net.minecraft.client.render.VertexConsumerProvider.Immediate;
-import net.minecraft.client.render.command.*;
 import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.*;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
+
+//? if >=1.21.9 {
+
+import net.minecraft.client.render.command.*;
+
+//?}
 
 public class ItemGuiElementRenderer extends SpecialGuiElementRenderer<ItemGuiRenderState> {
 
@@ -64,7 +69,7 @@ public class ItemGuiElementRenderer extends SpecialGuiElementRenderer<ItemGuiRen
 
 	public void renderItem(@Nullable LivingEntity entity, ItemStack stack, ItemDisplayContext displayContext, MatrixStack matrices, VertexConsumerProvider vertexConsumers, @Nullable World world, int light, int overlay, int seed) {
 		MinecraftClient.getInstance().getItemModelManager().clearAndUpdate(this.itemRenderState, stack, displayContext, world, entity, seed);
-		//? if >1.21.9 {
+		//? if >=1.21.9 {
 		RenderDispatcher dispatcher = MinecraftClient.getInstance().gameRenderer.getEntityRenderDispatcher();
 		this.itemRenderState.render(matrices, dispatcher.getQueue(), light, overlay, 0);
 		dispatcher.render();

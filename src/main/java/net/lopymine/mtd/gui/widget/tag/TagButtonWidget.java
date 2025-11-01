@@ -6,7 +6,6 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.*;
 import net.minecraft.client.gui.tooltip.*;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.input.AbstractInput;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -24,6 +23,10 @@ import net.minecraft.client.gui.screen.ButtonTextures;
 //?} else {
 /*import net.lopymine.mtd.utils.ButtonTextures;
 *///?}
+
+//? if >=1.21.9 {
+import net.minecraft.client.input.AbstractInput;
+ //?}
 
 @Getter
 @Setter

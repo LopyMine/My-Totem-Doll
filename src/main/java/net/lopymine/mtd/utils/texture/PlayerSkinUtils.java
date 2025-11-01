@@ -206,11 +206,11 @@ public class PlayerSkinUtils {
 						}
 						case ELYTRA -> MyTotemDollAtlasSpriteManager.registerSpecialSkinSprite(id, false, textures::setElytraSprite);
 					}
+
+					MyTotemDollAtlasManager.stitchAndUpdate(MyTotemDollAtlasSpriteManager.getSprites(), null);
 				});
 			});
 		}, false);
-		MyTotemDollAtlasManager.stitchAndUpdate(MyTotemDollAtlasSpriteManager.getSprites(), null);
-
 		*///?}
 	}
 }

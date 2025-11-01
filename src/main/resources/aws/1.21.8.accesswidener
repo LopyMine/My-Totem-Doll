@@ -22,3 +22,8 @@ accessible field net/minecraft/client/util/math/MatrixStack$Entry canSkipNormali
 accessible field net/minecraft/client/texture/TextureManager textures Ljava/util/Map;
 
 accessible field net/minecraft/client/texture/NativeImage pointer J
+
+accessible field net/minecraft/item/ItemStack item Lnet/minecraft/item/Item;
+accessible field net/minecraft/item/ItemStack components Lnet/minecraft/component/MergedComponentMap;
+
+accessible class net/minecraft/client/render/item/HeldItemRenderer$HandRenderType

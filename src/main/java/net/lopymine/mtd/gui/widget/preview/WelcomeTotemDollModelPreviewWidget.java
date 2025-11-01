@@ -33,6 +33,7 @@ public class WelcomeTotemDollModelPreviewWidget extends TotemDollModelPreviewWid
 
 	public WelcomeTotemDollModelPreviewWidget(int x, int y, float size, Runnable onClick) {
 		super(x, y, size);
+		this.setData(StandardTotemDollManager.getSteveDoll());
 		this.onClick = onClick;
 	}
 
