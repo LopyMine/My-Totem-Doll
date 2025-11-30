@@ -174,7 +174,7 @@ public class TotemDollModel extends /*? if >=1.21.9 {*/ Model<Object> /*?} else 
 		private final TotemDollModel model;
 
 		public Drawer(TotemDollModel model) {
-			this.model         = model;
+			this.model = model;
 		}
 
 		public void requestDrawingPartWithSprite(String part, AtlasSprite sprite) {
@@ -182,13 +182,18 @@ public class TotemDollModel extends /*? if >=1.21.9 {*/ Model<Object> /*?} else 
 		}
 
 		public void draw(MatrixStack matrices, VertexConsumerProvider provider, AtlasSprite mainTexture, int light, int overlay, /*? if >=1.21 {*/int color/*?} else {*//*float red, float green, float blue, float alpha *//*?}*/) {
+			LockableAtlasTexture atlasTexture = MyTotemDollAtlasManager.getNullableAtlasTexture();
+			if (atlasTexture == null) {
+				MyTotemDollClient.LOGGER.error("Game tried to render doll model, but atlas not initialized yet!");
+				return;
+			}
+
 			MModelCollection leftArm = this.model.getLeftArm();
 			MModelCollection rightArm = this.model.getRightArm();
 
 			enableIfPresent(leftArm);
 			enableIfPresent(rightArm);
 
-			LockableAtlasTexture atlasTexture = MyTotemDollAtlasManager.getAtlasTexture();
 			RenderLayer renderLayer = MyTotemDollAtlasManager.getRenderLayer();
 
 			boolean wasLocked = atlasTexture.isLocked();

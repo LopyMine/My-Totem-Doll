@@ -4,6 +4,7 @@ import java.util.*;
 import lombok.experimental.ExtensionMethod;
 import net.lopymine.mtd.atlas.LockableAtlasTexture;
 import net.lopymine.mtd.atlas.manager.MyTotemDollAtlasManager;
+import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.doll.data.*;
 import net.lopymine.mtd.doll.model.TotemDollModel;
 import net.lopymine.mtd.doll.renderer.*;
@@ -40,7 +41,11 @@ public class TotemDollRenderRequestsCollector {
 	}
 
 	public void render() {
-		LockableAtlasTexture atlasTexture = MyTotemDollAtlasManager.getAtlasTexture();
+		LockableAtlasTexture atlasTexture = MyTotemDollAtlasManager.getNullableAtlasTexture();
+		if (atlasTexture == null) {
+			MyTotemDollClient.LOGGER.error("Game tried to render doll model requests, but atlas not initialized yet!");
+			return;
+		}
 		atlasTexture.setLocked(true);
 
 		Immediate mainProvider = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();

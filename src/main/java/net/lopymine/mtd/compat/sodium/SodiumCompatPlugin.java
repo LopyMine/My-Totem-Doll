@@ -2,8 +2,8 @@ package net.lopymine.mtd.compat.sodium;
 
 import net.fabricmc.loader.api.*;
 
-import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.compat.CompatPlugin;
+import org.spongepowered.asm.service.MixinService;
 
 public class SodiumCompatPlugin extends CompatPlugin {
 
@@ -46,7 +46,7 @@ public class SodiumCompatPlugin extends CompatPlugin {
 		// CubeMixin
 
 		boolean bl = currentVersion.compareTo(hotVersion) < 0;
-		MyTotemDollClient.LOGGER.info("[SodiumCompatPlugin] [{}] Detected Sodium, current version older than hot: {}", mixinName, bl);
+		MixinService.getService().getLogger("[MyTotemDoll: SodiumCompatPlugin]").info("[{}] Detected Sodium, current version older than hot: {}", mixinName, bl);
 		return bl;
 	}
 

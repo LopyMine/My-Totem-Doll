@@ -1,1 +1,3 @@
-- Quick hotfix for owolib support
+- Fixed compatibility with Xaero`s Maps and other mods
+- Fixed models transformation in new shelfs
+- (Probably) Fixed issue when game crashes on startup

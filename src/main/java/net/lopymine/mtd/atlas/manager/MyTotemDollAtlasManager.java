@@ -3,7 +3,6 @@ package net.lopymine.mtd.atlas.manager;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import net.fabricmc.loader.api.FabricLoader;
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.atlas.*;
 import net.lopymine.mtd.atlas.stitch.*;
@@ -35,22 +34,17 @@ public class MyTotemDollAtlasManager {
 		return ATLAS_RENDER_LAYER;
 	}
 
-	@NotNull
-	public static LockableAtlasTexture getAtlasTexture() {
-		if (ATLAS_TEXTURE == null) {
-			return setAtlas(createNotRegisteredInstance());
-		}
+	public static LockableAtlasTexture getNullableAtlasTexture() {
 		return ATLAS_TEXTURE;
 	}
 
-	@NotNull
-	public static LockableAtlasTexture setAtlas(@NotNull SpriteAtlasTexture texture) {
+	public static void setAtlas(@NotNull SpriteAtlasTexture texture) {
 		if (ATLAS_TEXTURE != null && ATLAS_TEXTURE.isLocked()) {
 			LockableAtlasTexture atlasTexture = new LockableAtlasTexture(texture);
 			ATLAS_TEXTURE.setUnlockHook(() -> set(atlasTexture));
-			return atlasTexture;
+			return;
 		}
-		return set(new LockableAtlasTexture(texture));
+		set(new LockableAtlasTexture(texture));
 	}
 
 	@NotNull

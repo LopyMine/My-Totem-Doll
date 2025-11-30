@@ -23,7 +23,7 @@ public abstract class CompatPlugin implements IMixinConfigPlugin {
 
 	@Override
 	public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-		return FabricLoader.getInstance().isModLoaded(getCompatModId());
+		return FabricLoader.getInstance().isModLoaded(this.getCompatModId());
 	}
 
 	@Override

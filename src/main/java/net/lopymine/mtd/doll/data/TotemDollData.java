@@ -10,9 +10,9 @@ import net.minecraft.entity.player.PlayerSkinType;
 import net.minecraft.util.AssetInfo.TextureAsset;
 import java.util.Optional;
 //?} elif >=1.21 {
-//import net.minecraft.client.util.SkinTextures;
-//import net.minecraft.client.util.SkinTextures.*;
-//?}
+/*import net.minecraft.client.util.SkinTextures;
+import net.minecraft.client.util.SkinTextures.*;
+*///?}
 import net.minecraft.util.Identifier;
 
 import net.lopymine.mtd.doll.model.TotemDollModel;
