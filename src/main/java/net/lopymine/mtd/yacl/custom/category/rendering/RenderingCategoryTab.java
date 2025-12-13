@@ -31,7 +31,7 @@ public class RenderingCategoryTab implements TabExt {
 	private final Tooltip tooltip;
 	private final SearchFieldWidget searchField;
 	private final ScreenRect rightPaneDim;
-	//? if !(1.21.7 || 1.21.8 || 1.20.1) {
+	//? if !1.20.1 {
 	private WidgetAndType<OptionListWidget> optionList;
 	//?} else {
 	/*public ListHolderWidget<OptionListWidget> optionList;
@@ -78,14 +78,14 @@ public class RenderingCategoryTab implements TabExt {
 				paddedWidth - 2, 18,
 				Text.translatable("gui.recipebook.search_hint"),
 				Text.translatable("gui.recipebook.search_hint"),
-				//? if !(1.21.7 || 1.21.8 || 1.20.1) {
+				//? if !1.20.1 {
 				(searchQuery) -> this.optionList.getType().updateSearchQuery(searchQuery)
 				//?} else {
 				/*searchQuery -> optionList.getList().updateSearchQuery(searchQuery)
 				*///?}
 		);
 
-		//? if !(1.21.7 || 1.21.8 || 1.20.1) {
+		//? if !1.20.1 {
 		this.optionList = YACLSelectionList.asWidget(new OptionListWidget(
 				screen,
 				category,
@@ -113,7 +113,7 @@ public class RenderingCategoryTab implements TabExt {
 
 	@Override
 	public void forEachChild(Consumer<ClickableWidget> consumer) {
-		consumer.accept(this.optionList/*? if !(1.21.7 || 1.21.8 || 1.20.1) {*/.getWidget() /*?}*/);
+		consumer.accept(this.optionList/*? if !1.20.1 {*/.getWidget() /*?}*/);
 		consumer.accept(this.saveFinishedButton);
 		consumer.accept(this.cancelResetButton);
 		consumer.accept(this.undoButton);
@@ -155,7 +155,7 @@ public class RenderingCategoryTab implements TabExt {
 
 	@Override
 	public void refreshGrid(ScreenRect area) {
-		//? if !(1.21.7 || 1.21.8 || 1.20.1) {
+		//? if !1.20.1 {
 		ScreenRect rect = new ScreenRect(area.position(), area.width() / 3 * 2, area.height());
 		this.optionList.getType().setX(rect.getLeft());
 		this.optionList.getType().setY(rect.getTop() + 1);

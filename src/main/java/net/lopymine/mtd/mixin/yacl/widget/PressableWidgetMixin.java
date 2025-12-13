@@ -24,9 +24,17 @@ public abstract class PressableWidgetMixin extends ClickableWidget implements Dr
 		super(x, y, width, height, message);
 	}
 
-	//? if >=1.21.6 {
-
-	@WrapOperation(method = RENDER_METHOD, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/util/Identifier;IIIII)V"))
+	//? if >=1.21.11 {
+	@WrapOperation(method = "drawButton", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/util/Identifier;IIIII)V"))
+	private void renderTransparencyWidget(DrawContext instance, com.mojang.blaze3d.pipeline.RenderPipeline pipeline, Identifier sprite, int x, int y, int width, int height, int color, Operation<Void> original) {
+		if (YACLConfigurationScreen.notOpen(MinecraftClient.getInstance().currentScreen)) {
+			original.call(instance, pipeline, sprite, x, y, width, height, color);
+			return;
+		}
+		BackgroundRenderer.drawTransparencyWidgetBackground(instance, this.getX(), this.getY(), this.getWidth(), this.getHeight(), this.active, this.isSelected());
+	}
+	//?} elif >=1.21.6 {
+	/*@WrapOperation(method = RENDER_METHOD, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/util/Identifier;IIIII)V"))
 	private void renderTransparencyWidget(DrawContext instance, com.mojang.blaze3d.pipeline.RenderPipeline renderPipeline, Identifier identifier, int x, int y, int width, int height, int color, Operation<Void> original) {
 		if (YACLConfigurationScreen.notOpen(MinecraftClient.getInstance().currentScreen)) {
 			original.call(instance, renderPipeline, identifier, x, y, width, height, color);
@@ -35,7 +43,7 @@ public abstract class PressableWidgetMixin extends ClickableWidget implements Dr
 		BackgroundRenderer.drawTransparencyWidgetBackground(instance, x, y, width, height, this.active, this.isSelected());
 	}
 
-	//?} elif >=1.21.2 {
+	*///?} elif >=1.21.2 {
 	/*@WrapOperation(method = RENDER_METHOD, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Ljava/util/function/Function;Lnet/minecraft/util/Identifier;IIIII)V"))
 	private void renderTransparencyWidget(DrawContext instance, Function<?, ?> function, Identifier identifier, int x, int y, int width, int height, int color, Operation<Void> original) {
 		if (YACLConfigurationScreen.notOpen(MinecraftClient.getInstance().currentScreen)) {

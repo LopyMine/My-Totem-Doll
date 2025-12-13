@@ -17,10 +17,14 @@ import net.lopymine.mtd.utils.DrawUtils;
 
 import org.jetbrains.annotations.NotNull;
 
-//? if >=1.21.9 {
+//? if >=1.21.11 {
+import net.minecraft.client.font.Alignment;
+//?}
 
+//? if >=1.21.9 && <=1.21.10 {
+/*
 import net.minecraft.client.font.MultilineText.Alignment;
-
+*/
 //?}
 
 public class WelcomeScreen extends Screen {
@@ -102,9 +106,11 @@ public class WelcomeScreen extends Screen {
 		*///?}
 
 		BackgroundRenderer.drawTransparencyWidgetBackground(context, this.textArea.getX(), this.textArea.getY(), this.textArea.getWidth(), this.textArea.getHeight(), true, false);
-		//? if >=1.21.9 {
-		this.text.draw(context, Alignment.CENTER, this.textArea.getX() + (this.textArea.getWidth() / 2), this.textArea.getY() + 5, 9, true, -1);
-		//?} else {
+		//? if >=1.21.11 {
+		this.text.draw(Alignment.CENTER, this.textArea.getX() + (this.textArea.getWidth() / 2), this.textArea.getY() + 5, 9, context.getTextConsumer());
+		//?} elif >=1.21.9 {
+		/*this.text.draw(context, Alignment.CENTER, this.textArea.getX() + (this.textArea.getWidth() / 2), this.textArea.getY() + 5, 9, true, -1);
+		*///?} else {
 		/*this.text.drawCenterWithShadow(context, this.textArea.getX() + (this.textArea.getWidth() / 2), this.textArea.getY() + 5, 9, -1);
 		*///?}
 
@@ -112,13 +118,13 @@ public class WelcomeScreen extends Screen {
 		BackgroundRenderer.drawTransparencyWidgetBackground(context, this.firstDollArea.getX(), this.firstDollArea.getY(), this.firstDollArea.getWidth(), this.firstDollArea.getHeight(), true, firstOver);
 		this.firstDollPreviewWidget.render(context, mouseX, mouseY, delta);
 
-		DrawUtils.drawCenteredText(context, this.firstDollArea.getX() + 10, this.firstDollArea.getY() + 10, this.firstDollArea.getWidth() - 20, MyTotemDoll.text("welcome_screen.option.3d"));
+		DrawUtils.drawCenteredText(context, MyTotemDoll.text("welcome_screen.option.3d"), this.firstDollArea.getX() + 10, this.firstDollArea.getY() + 10, this.firstDollArea.getWidth() - 20);
 
 		boolean secondOver = this.secondDollArea.over(mouseX, mouseY);
 		BackgroundRenderer.drawTransparencyWidgetBackground(context, this.secondDollArea.getX(), this.secondDollArea.getY(), this.secondDollArea.getWidth(), this.secondDollArea.getHeight(), true, secondOver);
 		this.secondDollPreviewWidget.render(context, mouseX, mouseY, delta);
 
-		DrawUtils.drawCenteredText(context, this.secondDollArea.getX() + 10, this.secondDollArea.getY() + 10, this.secondDollArea.getWidth() - 20, MyTotemDoll.text("welcome_screen.option.2d"));
+		DrawUtils.drawCenteredText(context, MyTotemDoll.text("welcome_screen.option.2d"), this.secondDollArea.getX() + 10, this.secondDollArea.getY() + 10, this.secondDollArea.getWidth() - 20);
 	}
 
 	@Override

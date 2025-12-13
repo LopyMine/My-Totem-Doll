@@ -3,6 +3,7 @@ package net.lopymine.mtd.yacl.custom.controller.totem;
 import dev.isxander.yacl3.api.utils.Dimension;
 import dev.isxander.yacl3.gui.YACLScreen;
 import dev.isxander.yacl3.gui.controllers.ControllerWidget;
+import net.lopymine.mtd.utils.DrawUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.*;
@@ -43,7 +44,7 @@ public class TotemDollModelControllerElement extends ControllerWidget<TotemDollM
 
 		int width = textRenderer.getWidth(valueText);
 		if (this.getDimension().x() + this.getXPadding() + width > this.getDimension().xLimit() - this.getXPadding()) {
-			ClickableWidget.drawScrollableText(graphics, textRenderer, valueText, this.getDimension().x() + this.getXPadding(), this.getDimension().y(), this.getDimension().xLimit() - this.getXPadding(), this.getDimension().yLimit(), -1);
+			DrawUtils.drawText(graphics, valueText, this.getDimension().x() + this.getXPadding(), this.getDimension().y(), this.getDimension().width() - this.getXPadding(), this.getDimension().height());
 			return;
 		}
 		super.drawValueText(graphics, mouseX, mouseY, delta);

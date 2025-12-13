@@ -40,7 +40,11 @@ public class DrawUtils {
 		);
 	}
 
-	public static void drawCenteredText(DrawContext context, int x, int y, int width, Text text) {
+	public static void drawCenteredText(DrawContext context, Text text, int x, int y, int width) {
+		drawCenteredText(context, text, x, y, width, MinecraftClient.getInstance().textRenderer.fontHeight);
+	}
+
+	public static void drawCenteredText(DrawContext context, Text text, int x, int y, int width, int height) {
 		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 		int textWidth = textRenderer.getWidth(text);
 
@@ -49,19 +53,28 @@ public class DrawUtils {
 		int end = centerX + (textWidth / 2);
 
 		if (start < x || end > x + width) {
-			ClickableWidget.drawScrollableText(context, textRenderer, text, x, y, x + width, y + textRenderer.fontHeight, -1);
+			drawScrollableText(context, x, y, width, height, text);
 		} else {
-			context.drawText(textRenderer, text, start, y, -1, true);
+			context.drawText(textRenderer, text, start, y + height / 2 - (textRenderer.fontHeight / 2), -1, true);
 		}
 	}
 
-	public static void drawText(DrawContext context, int x, int y, int width, Text text) {
+	public static void drawText(DrawContext context, Text text, int x, int y, int width, int height) {
 		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 		int textWidth = textRenderer.getWidth(text);
 		if (x + textWidth > x + width) {
-			ClickableWidget.drawScrollableText(context, textRenderer, text, x, y, x + width, y + textRenderer.fontHeight, -1);
+			drawScrollableText(context, x, y, width, height, text);
 		} else {
-			context.drawText(textRenderer, text, x, y, -1, true);
+			context.drawText(textRenderer, text, x, y + height / 2 - (textRenderer.fontHeight / 2), -1, true);
 		}
+	}
+
+	private static void drawScrollableText(DrawContext context, int x, int y, int width, int height, Text text) {
+		//? if >=1.21.11 {
+		context.getTextConsumer().text(text, x, x + width, y, y + height);
+		//?} else {
+		/*TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+		ClickableWidget.drawScrollableText(context, textRenderer, text, x, y, x + width, y + height, -1);
+		*///?}
 	}
 }

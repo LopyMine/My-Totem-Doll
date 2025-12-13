@@ -47,7 +47,11 @@ public class TotemDollModel extends /*? if >=1.21.9 {*/ Model<Object> /*?} else 
 	private Drawer drawer;
 
 	public TotemDollModel(MModel root, boolean slim) {
-		super(/*? >=1.21.2 {*/ root, /*?}*/RenderLayer::getEntityTranslucent);
+		//? if >=1.21.11 {
+		super(root, RenderLayers::entityTranslucent);
+		//?} else {
+		/*super(/^? >=1.21.2 {^/ root, /^?}^/RenderLayer::getEntityTranslucent);
+		*///?}
 
 		this.head         = root.findModels("head");
 		this.body         = root.findModels("body");

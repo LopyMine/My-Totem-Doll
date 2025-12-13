@@ -1,3 +1,2 @@
-- Fixed compatibility with Xaero`s Maps and other mods
-- Fixed models transformation in new shelfs
-- (Probably) Fixed issue when game crashes on startup
+- Fixed compatibility with newer YACL version
+- Ported to 1.21.11

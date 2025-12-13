@@ -15,11 +15,9 @@ import net.lopymine.mtd.yacl.custom.screen.*;
 @Mixin(YetAnotherConfigLibImpl.class)
 public class YetAnotherConfigLibImplMixin implements BetterYACLScreenConfig {
 
-	@Dynamic
 	@Unique
 	private boolean enabled;
 
-	@Dynamic
 	@ModifyReturnValue(at = @At("RETURN"), method = "generateScreen")
 	private Screen swapScreen(Screen original, @Local(argsOnly = true) Screen parent) {
 		if (!this.enabled) {

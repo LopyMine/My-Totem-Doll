@@ -4,6 +4,7 @@ import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.utils.*;
 import net.lopymine.mtd.config.MyTotemDollConfig;
 import net.lopymine.mtd.doll.model.TotemDollModel;
+import net.lopymine.mtd.utils.DrawUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -161,10 +162,10 @@ public class TotemDollModelSelectionScreen extends Screen {
 		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 
 		// Title
-		ClickableWidget.drawScrollableText(context, textRenderer, this.getTitle(), this.titleDimension.x() + 2, this.titleDimension.y(), this.titleDimension.xLimit() - 2, this.titleDimension.yLimit(), -1);
+		DrawUtils.drawCenteredText(context, this.getTitle(), this.titleDimension.x() + 2, this.titleDimension.y(), this.titleDimension.width() - 2, this.titleDimension.height());
 
 		// List Title
-		ClickableWidget.drawScrollableText(context, textRenderer, MyTotemDoll.text("text.found_models", this.listWidget.getEntryCount()), this.listTitleDimension.x() + 2, this.listTitleDimension.y(), this.listTitleDimension.xLimit() - 2, this.listTitleDimension.yLimit(), -1);
+		DrawUtils.drawCenteredText(context, MyTotemDoll.text("text.found_models", this.listWidget.getEntryCount()), this.listTitleDimension.x() + 2, this.listTitleDimension.y(), this.listTitleDimension.width() - 2, this.listTitleDimension.height());
 
 		// "Full Model Path" text
 		MutableText fullModelPathText = MyTotemDoll.text("text.full_model_path");
@@ -172,7 +173,7 @@ public class TotemDollModelSelectionScreen extends Screen {
 		int offset = 10;
 
 		if (this.modelPathDimension.x() + a + offset > this.modelPathDimension.xLimit() - offset) {
-			ClickableWidget.drawScrollableText(context, textRenderer, fullModelPathText, this.modelPathDimension.x() + offset, this.modelPathDimension.y() + offset, this.modelPathDimension.xLimit() - offset, this.modelPathDimension.y() + textRenderer.fontHeight + offset, -1);
+			DrawUtils.drawText(context, fullModelPathText, this.modelPathDimension.x() + offset, this.modelPathDimension.y() + offset, this.modelPathDimension.width() - offset, textRenderer.fontHeight + offset);
 		} else {
 			context.drawText(textRenderer, fullModelPathText, this.modelPathDimension.x() + offset, this.modelPathDimension.y() + offset, -1, true);
 		}
@@ -183,7 +184,7 @@ public class TotemDollModelSelectionScreen extends Screen {
 		Text text = this.selectedModel == null ? Text.literal("...").formatted(Formatting.GRAY) : this.selectedModel;
 		int width = textRenderer.getWidth(text);
 		if (this.modelPathDimension.x() + width + offset > this.modelPathDimension.xLimit() - offset) {
-			ClickableWidget.drawScrollableText(context, textRenderer, text, this.modelPathDimension.x() + offset, this.modelPathDimension.yLimit() - textRenderer.fontHeight - offset, this.modelPathDimension.xLimit() - offset, this.modelPathDimension.yLimit() - offset, -1);
+			DrawUtils.drawText(context, text, this.modelPathDimension.x() + offset, this.modelPathDimension.yLimit() - textRenderer.fontHeight - offset, this.modelPathDimension.width() - offset, textRenderer.fontHeight);
 		} else {
 			context.drawText(textRenderer, text, this.modelPathDimension.x() + offset, this.modelPathDimension.yLimit() - textRenderer.fontHeight - offset, -1, true);
 		}

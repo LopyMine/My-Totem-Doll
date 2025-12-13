@@ -5,7 +5,7 @@ import java.util.*;
 import lombok.*;
 import net.lopymine.mtd.atlas.stitch.OnSpriteUploaded;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.resource.metadata.AnimationResourceMetadata;
+import net.minecraft.client.resource.metadata.*;
 import net.minecraft.client.texture.*;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.*;
@@ -70,9 +70,13 @@ public class AtlasSprite {
 		int min = Math.min(width, height);
 
 		SpriteDimensions dimensions = animated ? new SpriteDimensions(min, min) : new SpriteDimensions(width, height);
-		//? if >=1.21.9 {
-		SpriteContents contents = new SpriteContents(sprite.getSpriteId(), dimensions, image, metadata.decode(AnimationResourceMetadata.SERIALIZER), List.of());
-		//?} else {
+		//? if >=1.21.11 {
+		Optional<AnimationResourceMetadata> decode = metadata.decode(AnimationResourceMetadata.SERIALIZER);
+		Optional<TextureResourceMetadata> decode2 = metadata.decode(TextureResourceMetadata.SERIALIZER);
+		SpriteContents contents = new SpriteContents(sprite.getSpriteId(), dimensions, image, decode, List.of(), decode2);
+		//?} elif >=1.21.9 {
+		/*SpriteContents contents = new SpriteContents(sprite.getSpriteId(), dimensions, image, metadata.decode(AnimationResourceMetadata.SERIALIZER), List.of());
+		*///?} else {
 		/*SpriteContents contents = new SpriteContents(sprite.getSpriteId(), dimensions, image, metadata);
 		*///?}
 		sprite.setContents(contents);

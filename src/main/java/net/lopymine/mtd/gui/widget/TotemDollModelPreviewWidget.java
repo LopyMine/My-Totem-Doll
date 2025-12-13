@@ -49,7 +49,7 @@ public class TotemDollModelPreviewWidget extends ClickableWidget {
 		int halfOfSize = (int) this.size / 2;
 		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 		//context.fill(this.getX(), this.getY(), this.getX() + 1, this.getY() + 1, -1);
-		DrawUtils.drawCenteredText(context, this.getX(), this.getY() + halfOfSize - (textRenderer.fontHeight / 2), (int) this.size, this.getLoadingText(Util.getMeasuringTimeMs()));
+		DrawUtils.drawCenteredText(context, this.getLoadingText(Util.getMeasuringTimeMs()), this.getX(), this.getY() + halfOfSize - (textRenderer.fontHeight / 2), (int) this.size);
 	}
 
 	protected void renderPreview(DrawContext context) {

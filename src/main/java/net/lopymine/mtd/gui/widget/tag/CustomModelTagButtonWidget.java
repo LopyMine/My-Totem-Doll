@@ -70,7 +70,7 @@ public class CustomModelTagButtonWidget extends TagButtonWidget {
 	@Override
 	public @Nullable TooltipComponent getTooltipComponent() {
 		if (this.model == null) {
-			return TooltipComponent.of(Text.of("Unknown Model").asOrderedText());
+			return TooltipComponent.of(net.minecraft.text.Text.of("Unknown Model").asOrderedText());
 		}
 		if (this.tooltipData == null) {
 			this.tooltipData = this.data.copy();

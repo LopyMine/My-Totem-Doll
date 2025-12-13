@@ -9,7 +9,7 @@ import net.lopymine.mtd.atlas.stitch.*;
 import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.thread.MyTotemDollTaskExecutor;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.*;
 import net.minecraft.client.texture.*;
 import net.minecraft.client.texture.SpriteLoader.StitchResult;
 import net.minecraft.resource.*;
@@ -21,7 +21,11 @@ public class MyTotemDollAtlasManager {
 	private static final StitchHooksManager STITCH_HOOKS_MANAGER = new StitchHooksManager();
 	private static final AtomicInteger LATEST_ATLAS_VERSION = new AtomicInteger();
 	public static final Identifier ATLAS_ID = MyTotemDoll.id("main_atlas.png");
-	public static final RenderLayer ATLAS_RENDER_LAYER = RenderLayer.getEntityTranslucent(ATLAS_ID);
+	//? if >=1.21.11 {
+	public static final RenderLayer ATLAS_RENDER_LAYER = RenderLayers.entityTranslucent(ATLAS_ID);
+	//?} else {
+	/*public static final RenderLayer ATLAS_RENDER_LAYER = RenderLayer.getEntityTranslucent(ATLAS_ID);
+	*///?}
 	@Nullable
 	private static LockableAtlasTexture ATLAS_TEXTURE;
 
@@ -103,7 +107,11 @@ public class MyTotemDollAtlasManager {
 				MyTotemDollClient.LOGGER.warn("Skipped atlas stitching, waiting \"{}\"", latestAtlasVersion);
 				return;
 			}
-			this.atlas.upload(result);
+			//? if >=1.21.11 {
+			this.atlas.create(result);
+			//?} else {
+			/*this.atlas.upload(result);
+			*///?}
 			this.atlasSprites.forEach(AtlasSprite::markUploaded);
 			MyTotemDollAtlasManager.setAtlas(this.atlas);
 			STITCH_HOOKS_MANAGER.runAllHooks();

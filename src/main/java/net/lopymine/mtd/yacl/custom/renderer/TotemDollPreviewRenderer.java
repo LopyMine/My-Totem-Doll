@@ -3,6 +3,7 @@ package net.lopymine.mtd.yacl.custom.renderer;
 import dev.isxander.yacl3.gui.image.ImageRenderer;
 import lombok.experimental.ExtensionMethod;
 import net.lopymine.mtd.extension.DrawContextExtension;
+import net.lopymine.mtd.utils.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.*;
 import net.minecraft.client.gui.DrawContext;
@@ -16,15 +17,18 @@ import net.lopymine.mtd.doll.data.TotemDollData;
 import net.lopymine.mtd.doll.renderer.TotemDollRenderer;
 import net.lopymine.mtd.doll.manager.StandardTotemDollManager;
 import net.lopymine.mtd.gui.BackgroundRenderer;
-import net.lopymine.mtd.utils.ColorUtils;
 import net.lopymine.mtd.utils.plugin.TotemDollPlugin;
 
 import org.jetbrains.annotations.Nullable;
 
-//? if >=1.21.9 {
+//? if >=1.21.11 {
+import net.minecraft.client.font.Alignment;
+//?}
 
+//? if >=1.21.9 && <=1.21.10 {
+/*
 import net.minecraft.client.font.MultilineText.Alignment;
-
+*/
 //?}
 
 @ExtensionMethod(DrawContextExtension.class)
@@ -87,9 +91,11 @@ public class TotemDollPreviewRenderer implements ImageRenderer {
 
 		context.push();
 		context.translate(0, 0, 10);
-		//? if >=1.21.9 {
-		int i = this.suggestionText.draw(context, Alignment.LEFT, x + 5, y + 5, 10, false, suggestionColor);
-		//?} else {
+		//? if >=1.21.11 {
+		int i = this.suggestionText.draw(Alignment.LEFT, x + 5, y + 5, 10, context.getTextConsumer());
+		//?} elif >=1.21.9 {
+		/*int i = this.suggestionText.draw(context, Alignment.LEFT, x + 5, y + 5, 10, false, suggestionColor);
+		*///?} else {
 		/*int i = this.suggestionText.draw(context, x + 5, y + 5, 10, suggestionColor);
 		*///?}
 		context.translate(0, 0, -5);
@@ -108,11 +114,9 @@ public class TotemDollPreviewRenderer implements ImageRenderer {
 	}
 
 	private void renderDollStatus(DrawContext context, int x, int y, int width) {
-		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-
 		BackgroundRenderer.drawTransparencyWidgetBackground(context, x, y, width, 30, true, true);
 
-		ClickableWidget.drawScrollableText(context, textRenderer, MyTotemDoll.text("text.status").append(this.data.getStandardSprites().getState().getText()), x + 2, y, x + width - 2, y + 30, -1);
+		DrawUtils.drawCenteredText(context, MyTotemDoll.text("text.status").append(this.data.getStandardSprites().getState().getText()), x + 2, y + 15, x + width - 2);
 	}
 
 	private int renderDoll(DrawContext context, int x, int y, int size) {

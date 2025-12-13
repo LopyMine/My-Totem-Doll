@@ -54,8 +54,10 @@ public abstract class AnvilScreenMixin extends ForgingScreen<AnvilScreenHandler>
 		super(handler, playerInventory, title, texture);
 	}
 
-	@Shadow
+	//? if <=1.21.10 {
+	/*@Shadow
 	public abstract void resize(MinecraftClient client, int width, int height);
+	*///?}
 
 	@Shadow
 	protected abstract void setup();
@@ -110,8 +112,12 @@ public abstract class AnvilScreenMixin extends ForgingScreen<AnvilScreenHandler>
 				0,
 				0,
 				(b) -> {
-			this.currentVisibleState = b.isPressed();
-			this.resize(this.client, this.width, this.height);
+					this.currentVisibleState = b.isPressed();
+					//? if >=1.21.11 {
+					this.resize(this.width, this.height);
+					//?} else {
+					/*this.resize(this.client, this.width, this.height);
+					*///?}
 		});
 		this.tagButtonWidget.visible = bl;
 		this.tagButtonWidget.setPressed(this.tagMenuWidget.visible);
@@ -205,7 +211,7 @@ public abstract class AnvilScreenMixin extends ForgingScreen<AnvilScreenHandler>
 			int x = this.x + 176 + 1;
 			int y = this.y;
 			DrawUtils.drawTexture(context, TagMenuWidget.BACKGROUND, x, y, 0, 0, 50, 166, 50, 166);
-			DrawUtils.drawCenteredText(context, x + 9, y + 9 + 6, 32, MyTotemDoll.text("tag_menu.title"));
+			DrawUtils.drawCenteredText(context, MyTotemDoll.text("tag_menu.title"), x + 9, y + 9 + 6, 32);
 		}
 	}
 

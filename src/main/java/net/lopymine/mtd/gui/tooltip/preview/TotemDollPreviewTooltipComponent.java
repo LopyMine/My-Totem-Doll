@@ -2,6 +2,7 @@ package net.lopymine.mtd.gui.tooltip.preview;
 
 import lombok.experimental.ExtensionMethod;
 import net.lopymine.mtd.doll.renderer.*;
+import net.lopymine.mtd.utils.DrawUtils;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
@@ -54,7 +55,7 @@ public class TotemDollPreviewTooltipComponent implements TooltipComponent {
 
 		context.enableScissor(x, y, x + width, y + height);
 		if (textWidth > width) {
-			ClickableWidget.drawScrollableText(context, textRenderer, text, x, y, x + width, y + 10, -1);
+			DrawUtils.drawText(context, text, x, y, width, 10);
 		} else {
 			context.drawText(textRenderer, text, x, y + 1, -1, true);
 		}

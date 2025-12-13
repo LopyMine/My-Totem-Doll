@@ -6,7 +6,6 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.*;
 import net.minecraft.client.gui.tooltip.*;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import net.lopymine.mtd.MyTotemDoll;
@@ -47,11 +46,11 @@ public class TagButtonWidget extends ButtonWidget {
 
 	private boolean pressed;
 	@Nullable
-	private Text tooltipText;
+	private net.minecraft.text.Text tooltipText;
 	private boolean canBeHovered = true;
 
 	public TagButtonWidget(Tag tag, int x, int y, TagPressAction pressAction) {
-		super(x, y, 14, 14, Text.of(""), (widget) -> pressAction.onPress((TagButtonWidget) widget), ButtonWidget.DEFAULT_NARRATION_SUPPLIER);
+		super(x, y, 14, 14, net.minecraft.text.Text.of(""), (widget) -> pressAction.onPress((TagButtonWidget) widget), ButtonWidget.DEFAULT_NARRATION_SUPPLIER);
 		this.tag          = tag;
 		this.text         = String.valueOf(tag.getTag());
 		this.icon         = TagsManager.getTagIcon(this.text.charAt(0));
@@ -74,12 +73,23 @@ public class TagButtonWidget extends ButtonWidget {
 		}
 	}
 
-	public void setTooltip(@Nullable Text text) {
+	public void setTooltip(@Nullable net.minecraft.text.Text text) {
 		this.tooltipText = text;
 	}
 
+	//? if >=1.21.11 {
 	@Override
-	public void /*? if >=1.21 {*/renderWidget/*?} else {*//*renderButton*//*?}*/(DrawContext context, int mouseX, int mouseY, float delta) {
+	protected void drawIcon(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+		this.renderPlease(context);
+	}
+	//?} else {
+	/*@Override
+	public void /^? if >=1.21 {^/renderWidget/^?} else {^//^renderButton^//^?}^/(DrawContext context, int mouseX, int mouseY, float delta) {
+		this.renderPlease(context);
+	}
+	*///?}
+
+	private void renderPlease(DrawContext context) {
 		this.renderButton(context, this.getX(), this.getY());
 		this.requestTooltip();
 	}

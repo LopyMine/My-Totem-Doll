@@ -11,10 +11,14 @@ import net.minecraft.util.Identifier;
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.utils.*;
 
-//? if >=1.21.9 {
+//? if >=1.21.11 {
+import net.minecraft.client.font.Alignment;
+//?}
 
+//? if >=1.21.9 && <=1.21.10 {
+/*
 import net.minecraft.client.font.MultilineText.Alignment;
-
+*/
 //?}
 
 public class InfoTooltipComponent implements TooltipComponent {
@@ -46,9 +50,11 @@ public class InfoTooltipComponent implements TooltipComponent {
 		int titleWidth = textRenderer.getWidth(this.title);
 		context.drawText(textRenderer, this.title, x + (((width) / 2) - (titleWidth / 2)), y + 8, -1, false);
 		DrawUtils.drawTexture(context, SEPARATOR, x, y + 24, 0, 0, 150, 5, 150, 5);
-		//? if >=1.21.9 {
-		this.text.draw(context, Alignment.LEFT, x + 5, y + 26 + 2 + 5 + 2, 10, true, -1);
-		//?} else {
+		//? if >=1.21.11 {
+		this.text.draw(Alignment.LEFT, x + 5, y + 26 + 2 + 5 + 2, 10, context.getTextConsumer());
+		//?} elif >=1.21.9 {
+		/*this.text.draw(context, Alignment.LEFT, x + 5, y + 26 + 2 + 5 + 2, 10, true, -1);
+		*///?} else {
 		/*this.text.draw(context, x + 5, y + 26 + 2 + 5 + 2, 10, -1);
 		*///?}
 	}

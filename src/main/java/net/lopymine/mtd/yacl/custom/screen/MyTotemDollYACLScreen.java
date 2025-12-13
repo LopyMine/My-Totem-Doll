@@ -38,8 +38,4 @@ public class MyTotemDollYACLScreen extends YACLScreen {
 		return true;
 	}
 
-	@Override
-	public void resize(MinecraftClient client, int width, int height) {
-		super.resize(client, width, height);
-	}
 }

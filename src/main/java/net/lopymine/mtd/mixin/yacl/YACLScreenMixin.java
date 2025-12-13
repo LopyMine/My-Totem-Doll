@@ -33,11 +33,9 @@ public abstract class YACLScreenMixin extends Screen {
 		super(title);
 	}
 
-	@Dynamic
 	@Shadow
 	public abstract void close();
 
-	@Dynamic
 	@ModifyReturnValue(at = @At("RETURN"), method = "pendingChanges", remap = false)
 	private boolean alwaysTrueBecauseYouCannotUseSaveButtonWithInstantOptionsImVerySadThatINeedThatDoYouAgreeWithMeYeahNoYepNopeWtf(boolean original) {
 		if (YACLConfigurationScreen.notOpen(this)) {
@@ -46,8 +44,7 @@ public abstract class YACLScreenMixin extends Screen {
 		return true;
 	}
 
-	@Dynamic
-	@Inject(at = @At(value = "HEAD"), method = "lambda$init$4", remap = false, cancellable = true)
+	@Inject(at = @At(value = "HEAD"), method = /*? if =1.20.1 {*/ /*"lambda$init$4" *//*?} else {*/ "lambda$init$0" /*?}*/, remap = false, cancellable = true)
 	private void addCustomTabProviding(ConfigCategory category, CallbackInfoReturnable<TabExt> cir) {
 		if (category instanceof CustomTabProvider customTabProvider) {
 			YACLScreen screen = (YACLScreen) (Object) this;
