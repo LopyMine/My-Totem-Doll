@@ -124,6 +124,8 @@
 		"my-totem-doll.text.loading.2": "読み込み中..",
 		"my-totem-doll.text.loading.3": "読み込み中...",
 		"my-totem-doll.text.loading.failed": "&c&l読み込み失敗！",
+	    "my-totem-doll.text.loading.failed.unsupported_format": "&c& l対応していない形式です！",
+        "my-totem-doll.text.loading.failed.wrong_metadata": "&c&lメタデータが正しくありません！",
 
 		"my-totem-doll.tag_menu.title": "タグ",
 		"my-totem-doll.tag_menu.custom_models.title": "カスタムモデルは&7[Shift]&r+&7[スクロール]&rでツールチップのサイズを変更 &7[Ctrl]&r+&7[Scroll]&rでツールチップ内のモデルサイズを変更"
