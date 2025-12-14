@@ -16,6 +16,7 @@ public class YetAnotherConfigLibImplBuilderMixin implements BetterYACLScreenBuil
 	@Unique
 	private boolean enabled;
 
+	@Dynamic
 	@ModifyReturnValue(at = @At("RETURN"), method = "build", remap = false)
 	private YetAnotherConfigLib swapScreen(YetAnotherConfigLib original) {
 		if (!enabled) {

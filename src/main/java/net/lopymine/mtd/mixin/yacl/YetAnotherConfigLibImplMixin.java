@@ -18,6 +18,7 @@ public class YetAnotherConfigLibImplMixin implements BetterYACLScreenConfig {
 	@Unique
 	private boolean enabled;
 
+	@Dynamic
 	@ModifyReturnValue(at = @At("RETURN"), method = "generateScreen")
 	private Screen swapScreen(Screen original, @Local(argsOnly = true) Screen parent) {
 		if (!this.enabled) {

@@ -1,3 +1,4 @@
 - Fixed compatibility with newer YACL version
 - Ported to 1.21.11
-- Fixed searching in Standard Model Selection Screen
+- Fixed searching in the Standard Model Selection Screen
+- Fixed compatibility with Controlify mod
