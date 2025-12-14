@@ -116,7 +116,7 @@ public class TotemDollPreviewRenderer implements ImageRenderer {
 	private void renderDollStatus(DrawContext context, int x, int y, int width) {
 		BackgroundRenderer.drawTransparencyWidgetBackground(context, x, y, width, 30, true, true);
 
-		DrawUtils.drawCenteredText(context, MyTotemDoll.text("text.status").append(this.data.getStandardSprites().getState().getText()), x + 2, y + 15, x + width - 2);
+		DrawUtils.drawCenteredText(context, MyTotemDoll.text("text.status").append(this.data.getStandardSprites().getState().getText()), x + 2, y + 15, width - 2);
 	}
 
 	private int renderDoll(DrawContext context, int x, int y, int size) {

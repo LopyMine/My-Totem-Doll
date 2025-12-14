@@ -25,3 +25,5 @@ accessible field net/minecraft/item/ItemStack item Lnet/minecraft/item/Item;
 accessible field net/minecraft/item/ItemStack components Lnet/minecraft/component/MergedComponentMap;
 
 accessible class net/minecraft/client/render/item/HeldItemRenderer$HandRenderType
+
+accessible field net/minecraft/client/gui/widget/EntryListWidget children Ljava/util/List;

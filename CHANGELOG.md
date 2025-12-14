@@ -1,2 +1,3 @@
 - Fixed compatibility with newer YACL version
 - Ported to 1.21.11
+- Fixed searching in Standard Model Selection Screen

@@ -41,7 +41,7 @@ public class DrawUtils {
 	}
 
 	public static void drawCenteredText(DrawContext context, Text text, int x, int y, int width) {
-		drawCenteredText(context, text, x, y, width, MinecraftClient.getInstance().textRenderer.fontHeight);
+		drawCenteredText(context, text, x, y, width, 0);
 	}
 
 	public static void drawCenteredText(DrawContext context, Text text, int x, int y, int width, int height) {

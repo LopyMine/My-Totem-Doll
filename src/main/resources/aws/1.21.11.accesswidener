@@ -28,3 +28,5 @@ accessible field net/minecraft/item/ItemStack components Lnet/minecraft/componen
 accessible class net/minecraft/client/render/item/HeldItemRenderer$HandRenderType
 
 extendable method net/minecraft/client/gui/widget/PressableWidget renderWidget (Lnet/minecraft/client/gui/DrawContext;IIF)V
+
+accessible field net/minecraft/client/gui/widget/EntryListWidget children Ljava/util/List;

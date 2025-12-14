@@ -211,7 +211,7 @@ public abstract class AnvilScreenMixin extends ForgingScreen<AnvilScreenHandler>
 			int x = this.x + 176 + 1;
 			int y = this.y;
 			DrawUtils.drawTexture(context, TagMenuWidget.BACKGROUND, x, y, 0, 0, 50, 166, 50, 166);
-			DrawUtils.drawCenteredText(context, MyTotemDoll.text("tag_menu.title"), x + 9, y + 9 + 6, 32);
+			DrawUtils.drawCenteredText(context, MyTotemDoll.text("tag_menu.title"), x + 9, y + 9 + 6 + 3, 32);
 		}
 	}
 
