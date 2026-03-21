@@ -40,6 +40,12 @@ dependencies {
 	}
 }
 
+stonecutter {
+	replacements.string(current.parsed >= "26.1") {
+		replace("atlas.location()", "atlas.location()")
+	}
+}
+
 String prop(String key) {
 	return findProperty(key).toString()
 }
