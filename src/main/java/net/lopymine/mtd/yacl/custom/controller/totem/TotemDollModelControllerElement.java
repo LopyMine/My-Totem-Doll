@@ -36,7 +36,7 @@ public class TotemDollModelControllerElement extends ControllerWidget<TotemDollM
 	}
 
 	@Override
-	protected void drawValueText(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	protected void extractValueText(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		Font textRenderer = Minecraft.getInstance().font;
 		Component valueText = this.getValueText();
 
@@ -45,7 +45,7 @@ public class TotemDollModelControllerElement extends ControllerWidget<TotemDollM
 			DrawUtils.drawText(graphics, valueText, this.getDimension().x() + this.getXPadding(), this.getDimension().y(), this.getDimension().width() - this.getXPadding(), this.getDimension().height());
 			return;
 		}
-		super.drawValueText(graphics, mouseX, mouseY, delta);
+		super.extractValueText(graphics, mouseX, mouseY, delta);
 	}
 
 	@Override

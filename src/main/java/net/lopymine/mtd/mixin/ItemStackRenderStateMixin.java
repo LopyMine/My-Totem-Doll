@@ -28,7 +28,7 @@ public class ItemStackRenderStateMixin implements ItemRenderStateWithStack {
 	private boolean shouldClear = true;
 
 	@Inject(at = @At("HEAD"), method = "submit", cancellable = true)
-	private void render(PoseStack matrices, SubmitNodeCollector queue, int light, int overlay, int outlineColor, CallbackInfo ci) {
+	private void renderRenderState(PoseStack matrices, SubmitNodeCollector queue, int light, int overlay, int outlineColor, CallbackInfo ci) {
 		this.renderDoll(matrices, light, overlay, outlineColor, null, ci);
 	}
 

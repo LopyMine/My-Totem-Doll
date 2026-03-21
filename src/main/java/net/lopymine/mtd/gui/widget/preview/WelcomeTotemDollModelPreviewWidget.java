@@ -4,7 +4,7 @@ import lombok.*;
 import net.lopymine.mtd.doll.manager.StandardTotemDollManager;
 import net.lopymine.mtd.doll.renderer.TotemDollRenderer;
 import net.lopymine.mtd.gui.widget.TotemDollModelPreviewWidget;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.util.Mth;
 
@@ -24,7 +24,7 @@ public class WelcomeTotemDollModelPreviewWidget extends TotemDollModelPreviewWid
 	}
 
 	@Override
-	protected void renderPreview(GuiGraphics context) {
+	protected void renderPreview(GuiGraphicsExtractor context) {
 		long a = this.isHovered() ? 1L : -1L;
 		long time = this.getHoverTime() + a;
 		if (time < this.getMaxHoverTime() && time > 0L) {

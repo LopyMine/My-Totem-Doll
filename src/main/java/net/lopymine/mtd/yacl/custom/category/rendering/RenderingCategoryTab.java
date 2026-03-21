@@ -11,7 +11,7 @@ import net.lopymine.mtd.utils.DrawUtils;
 import net.lopymine.mtd.yacl.custom.TransparencySprites;
 import net.lopymine.mtd.yacl.custom.screen.MyTotemDollYACLScreen;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
@@ -104,7 +104,7 @@ public class RenderingCategoryTab implements TabExt {
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics context) {
+	public void renderBackground(GuiGraphicsExtractor context) {
 		// right pane darker db
 		DrawUtils.drawTexture(context, TransparencySprites.getMenuListBackgroundTexture(), this.rightPaneDim.left(), this.rightPaneDim.top(), this.rightPaneDim.right() + 2, this.rightPaneDim.bottom() + 2, this.rightPaneDim.width() + 2, this.rightPaneDim.height() + 2, 32, 32);
 

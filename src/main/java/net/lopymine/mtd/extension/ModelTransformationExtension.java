@@ -1,6 +1,6 @@
 package net.lopymine.mtd.extension;
 
-import net.minecraft.client.renderer.block.model.*;
+import net.minecraft.client.resources.model.cuboid.*;
 
 public class ModelTransformationExtension {
 

@@ -34,7 +34,7 @@ public class TotemDollPreviewTooltipComponent implements ClientTooltipComponent 
 	}
 
 	@Override
-	public void renderImage(Font textRenderer, int x, int y, int w, int h, GuiGraphics context) {
+	public void extractImage(Font textRenderer, int x, int y, int w, int h, GuiGraphicsExtractor graphics) {
 		int width = this.getWidth(textRenderer);
 		MyTotemDollConfig config = MyTotemDollConfig.getInstance();
 		float sizeOriginal = config.getBetterTagMenuTooltipSize();
@@ -43,19 +43,19 @@ public class TotemDollPreviewTooltipComponent implements ClientTooltipComponent 
 		int textWidth = textRenderer.width(text);
 
 		int height = this.getHeight(textRenderer);
-		context.enableScissor(x, y + 10 + 4 + 2, x + width, y + height - 2);
+		graphics.enableScissor(x, y + 10 + 4 + 2, x + width, y + height - 2);
 
-		TotemDollRenderer.renderPreview(context, x, y + 10, width, height - 10, size, this.data, DollRenderContext.D_TOOLTIP);
+		TotemDollRenderer.renderPreview(graphics, x, y + 10, width, height - 10, size, this.data, DollRenderContext.D_TOOLTIP);
 
-		context.disableScissor();
+		graphics.disableScissor();
 
-		context.enableScissor(x, y, x + width, y + height);
+		graphics.enableScissor(x, y, x + width, y + height);
 		if (textWidth > width) {
-			DrawUtils.drawText(context, text, x, y, width, 10);
+			DrawUtils.drawText(graphics, text, x, y, width, 10);
 		} else {
-			context.drawString(textRenderer, text, x, y + 1, -1, true);
+			graphics.text(textRenderer, text, x, y + 1, -1, true);
 		}
-		context.fill(x, y + 10 + 3, x + Math.min((textWidth - 5), width), y + 10 + 4, -1);
-		context.disableScissor();
+		graphics.fill(x, y + 10 + 3, x + Math.min((textWidth - 5), width), y + 10 + 4, -1);
+		graphics.disableScissor();
 	}
 }

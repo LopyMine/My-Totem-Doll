@@ -4,7 +4,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.*;
 import net.lopymine.mtd.gui.BackgroundRenderer;
 import net.lopymine.mtd.yacl.YACLConfigurationScreen;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -18,8 +18,8 @@ public abstract class AbstractButtonMixin extends AbstractWidget implements Rend
 		super(x, y, width, height, message);
 	}
 
-	@WrapOperation(method = "renderDefaultSprite", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIIII)V"))
-	private void renderTransparencyWidget(GuiGraphics instance, com.mojang.blaze3d.pipeline.RenderPipeline pipeline, Identifier sprite, int x, int y, int width, int height, int color, Operation<Void> original) {
+	@WrapOperation(method = "extractDefaultSprite", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIIII)V"))
+	private void renderTransparencyWidget(GuiGraphicsExtractor instance, com.mojang.blaze3d.pipeline.RenderPipeline pipeline, Identifier sprite, int x, int y, int width, int height, int color, Operation<Void> original) {
 		if (YACLConfigurationScreen.notOpen(Minecraft.getInstance().screen)) {
 			original.call(instance, pipeline, sprite, x, y, width, height, color);
 			return;

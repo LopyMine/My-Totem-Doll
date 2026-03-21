@@ -33,12 +33,11 @@ public class InfoTooltipComponent implements ClientTooltipComponent {
 	}
 
 	@Override
-	public void renderImage(Font textRenderer, int x, int y, int w, int h, GuiGraphics context) {
+	public void extractImage(Font textRenderer, int x, int y, int w, int h, GuiGraphicsExtractor graphics) {
 		int width = this.getWidth(textRenderer);
 		int titleWidth = textRenderer.width(this.title);
-		context.drawString(textRenderer, this.title, x + (((width) / 2) - (titleWidth / 2)), y + 8, -1, false);
-		DrawUtils.drawTexture(context, SEPARATOR, x, y + 24, 0, 0, 150, 5, 150, 5);
-		this.text.visitLines(TextAlignment.LEFT, x + 5, y + 26 + 2 + 5 + 2, 10, context.textRenderer());
-
+		graphics.text(textRenderer, this.title, x + (((width) / 2) - (titleWidth / 2)), y + 8, -1, false);
+		DrawUtils.drawTexture(graphics, SEPARATOR, x, y + 24, 0, 0, 150, 5, 150, 5);
+		this.text.visitLines(TextAlignment.LEFT, x + 5, y + 26 + 2 + 5 + 2, 10, graphics.textRenderer());
 	}
 }

@@ -10,14 +10,13 @@ import net.minecraft.client.gui.screens.Screen;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 
-@Pseudo
 @Mixin(YetAnotherConfigLibImpl.class)
 public class YetAnotherConfigLibImplMixin implements BetterYACLScreenConfig {
 
 	@Unique
 	private boolean enabled;
 
-	@Dynamic
+
 	@ModifyReturnValue(at = @At("RETURN"), method = "generateScreen")
 	private Screen swapScreen(Screen original, @Local(argsOnly = true) Screen parent) {
 		if (!this.enabled) {

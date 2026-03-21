@@ -36,7 +36,7 @@ public class TotemDollPreviewRenderer implements ImageRenderer {
 	}
 
 	@Override
-	public int render(GuiGraphics context, int x, int y, int renderWidth, float tickDelta) {
+	public int render(GuiGraphicsExtractor context, int x, int y, int renderWidth, float tickDelta) {
 		int offset = 5;
 		int width = renderWidth - (offset * 2);
 
@@ -68,7 +68,7 @@ public class TotemDollPreviewRenderer implements ImageRenderer {
 		}
 	}
 
-	private int renderSuggestionText(GuiGraphics context, int x, int y, int width) {
+	private int renderSuggestionText(GuiGraphicsExtractor context, int x, int y, int width) {
 		int suggestionColor = this.getSuggestionColors();
 
 		if (this.suggestionText == null) {
@@ -93,13 +93,13 @@ public class TotemDollPreviewRenderer implements ImageRenderer {
 		return STANDARD_SUGGESTION_TEXT_COLOR;
 	}
 
-	private void renderDollStatus(GuiGraphics context, int x, int y, int width) {
+	private void renderDollStatus(GuiGraphicsExtractor context, int x, int y, int width) {
 		BackgroundRenderer.drawTransparencyWidgetBackground(context, x, y, width, 30, true, true);
 
 		DrawUtils.drawCenteredText(context, MyTotemDoll.text("text.status").append(this.data.getStandardSprites().getState().getText()), x + 2, y + 15, width - 2);
 	}
 
-	private int renderDoll(GuiGraphics context, int x, int y, int size) {
+	private int renderDoll(GuiGraphicsExtractor context, int x, int y, int size) {
 		MyTotemDollConfig config = MyTotemDollConfig.getInstance();
 
 		BackgroundRenderer.drawTransparencyWidgetBackground(context, x, y, size, size, true, true);

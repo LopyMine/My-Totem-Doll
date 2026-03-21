@@ -17,7 +17,7 @@ public class GameRendererDollRenderingMixin {
 
 	@Inject(at = @At("TAIL"), method = "extractVisibleEntities")
 	private void afterDollRendering(CallbackInfo ci) {
-		TotemDollRenderRequestsCollector.getInstance().render();
+		TotemDollRenderRequestsCollector.getInstance().renderStates();
 		ThingMarks.WORLD_RENDERING.get().setMarked(false);
 	}
 

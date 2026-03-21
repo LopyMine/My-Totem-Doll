@@ -10,14 +10,13 @@ import net.lopymine.mtd.yacl.custom.category.rendering.RenderingConfigCategoryIm
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 
-@Pseudo
 @Mixin(ConfigCategoryImpl.BuilderImpl.class)
 public class ConfigCategoryImplBuilderImplMixin implements BetterYACLCategoryBuilder {
 
 	@Unique
 	private int custom = -1;
 
-	@Dynamic
+
 	@ModifyReturnValue(at = @At("RETURN"), method = "build", remap = false)
 	private ConfigCategory swapCategory(ConfigCategory original) {
 		if (this.custom == -1) {

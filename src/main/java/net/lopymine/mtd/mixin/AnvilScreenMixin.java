@@ -168,10 +168,10 @@ public abstract class AnvilScreenMixin extends ItemCombinerScreen<AnvilMenu> imp
 	}
 
 	@WrapOperation(
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;fill(IIIII)V"),
-			method = "renderLabels"
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;fill(IIIII)V"),
+			method = "extractLabels"
 	)
-	private void swapBackgroundValue(GuiGraphics instance, int x1, int y1, int x2, int y2, int color, Operation<Void> original) {
+	private void swapBackgroundValue(GuiGraphicsExtractor instance, int x1, int y1, int x2, int y2, int color, Operation<Void> original) {
 		if (!MyTotemDollConfig.getInstance().isModEnabled()) {
 			original.call(instance, x1, y1, x2, y2, color);
 			return;
@@ -181,9 +181,9 @@ public abstract class AnvilScreenMixin extends ItemCombinerScreen<AnvilMenu> imp
 
 	@Inject(
 			at = @At("TAIL"),
-			method = "renderBg"
+			method = "extractBackground"
 	)
-	private void updateWidgetPositions(GuiGraphics context, float delta, int mouseX, int mouseY, CallbackInfo ci) {
+	private void updateWidgetPositions(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, CallbackInfo ci) {
 		if (!MyTotemDollConfig.getInstance().isModEnabled()) {
 			return;
 		}
@@ -191,17 +191,17 @@ public abstract class AnvilScreenMixin extends ItemCombinerScreen<AnvilMenu> imp
 		if (this.tagMenuWidget != null && this.tagMenuWidget.visible) {
 			int x = this.leftPos + 176 + 1;
 			int y = this.topPos;
-			DrawUtils.drawTexture(context, TagMenuWidget.BACKGROUND, x, y, 0, 0, 50, 166, 50, 166);
-			DrawUtils.drawCenteredText(context, MyTotemDoll.text("tag_menu.title"), x + 9, y + 9 + 6 + 3, 32);
+			DrawUtils.drawTexture(graphics, TagMenuWidget.BACKGROUND, x, y, 0, 0, 50, 166, 50, 166);
+			DrawUtils.drawCenteredText(graphics, MyTotemDoll.text("tag_menu.title"), x + 9, y + 9 + 6 + 3, 32);
 		}
 	}
 
 
 	@WrapOperation(
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;III)V"),
-			method = "renderLabels"
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;text(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;III)V"),
+			method = "extractLabels"
 	)
-	private void swapBackgroundValue(GuiGraphics instance, Font textRenderer, Component text, int x, int y, int color, Operation<Integer> original) {
+	private void swapBackgroundValue(GuiGraphicsExtractor instance, Font textRenderer, Component text, int x, int y, int color, Operation<Integer> original) {
 		if (!MyTotemDollConfig.getInstance().isModEnabled()) {
 			original.call(instance, textRenderer, text, x, y, color);
 			return;

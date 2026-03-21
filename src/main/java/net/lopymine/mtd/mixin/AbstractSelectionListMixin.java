@@ -4,7 +4,7 @@ import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapoperation.*;
 import net.lopymine.mtd.gui.widget.button.ButtonListWidget;
 import net.lopymine.mtd.gui.widget.list.AbstractVersionedEntryListWidget;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractSelectionList;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -15,22 +15,22 @@ public abstract class AbstractSelectionListMixin {
 	@WrapWithCondition(
 			at = @At(
 					value = "INVOKE",
-					target = "Lnet/minecraft/client/gui/components/AbstractSelectionList;enableScissor(Lnet/minecraft/client/gui/GuiGraphics;)V"
+					target = "Lnet/minecraft/client/gui/components/AbstractSelectionList;enableScissor(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V"
 			),
-			method = "renderWidget"
+			method = "extractWidgetRenderState"
 	)
-	private boolean disableScissorEnabling(AbstractSelectionList<?> instance, GuiGraphics context) {
+	private boolean disableScissorEnabling(AbstractSelectionList<?> instance, GuiGraphicsExtractor context) {
 		return !(((AbstractSelectionList<?>) (Object) this) instanceof AbstractVersionedEntryListWidget<?>);
 	}
 
 	@WrapWithCondition(
 			at = @At(
 					value = "INVOKE",
-					target = "Lnet/minecraft/client/gui/GuiGraphics;disableScissor()V"
+					target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;disableScissor()V"
 			),
-			method = "renderWidget"
+			method = "extractWidgetRenderState"
 	)
-	private boolean disableScissorDisabling(GuiGraphics instance) {
+	private boolean disableScissorDisabling(GuiGraphicsExtractor instance) {
 		return !(((AbstractSelectionList<?>) (Object) this) instanceof AbstractVersionedEntryListWidget<?>);
 	}
 

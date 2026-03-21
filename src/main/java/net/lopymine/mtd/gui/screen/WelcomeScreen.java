@@ -75,23 +75,23 @@ public class WelcomeScreen extends Screen {
 	}
 
 	@Override
-	public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.render(context, mouseX, mouseY, delta);
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+		super.extractRenderState(graphics, mouseX, mouseY, delta);
 
-		BackgroundRenderer.drawTransparencyWidgetBackground(context, this.textArea.getX(), this.textArea.getY(), this.textArea.getWidth(), this.textArea.getHeight(), true, false);
-		this.text.visitLines(TextAlignment.CENTER, this.textArea.getX() + (this.textArea.getWidth() / 2), this.textArea.getY() + 5, 9, context.textRenderer());
+		BackgroundRenderer.drawTransparencyWidgetBackground(graphics, this.textArea.getX(), this.textArea.getY(), this.textArea.getWidth(), this.textArea.getHeight(), true, false);
+		this.text.visitLines(TextAlignment.CENTER, this.textArea.getX() + (this.textArea.getWidth() / 2), this.textArea.getY() + 5, 9, graphics.textRenderer());
 
 		boolean firstOver = this.firstDollArea.over(mouseX, mouseY);
-		BackgroundRenderer.drawTransparencyWidgetBackground(context, this.firstDollArea.getX(), this.firstDollArea.getY(), this.firstDollArea.getWidth(), this.firstDollArea.getHeight(), true, firstOver);
-		this.firstDollPreviewWidget.render(context, mouseX, mouseY, delta);
+		BackgroundRenderer.drawTransparencyWidgetBackground(graphics, this.firstDollArea.getX(), this.firstDollArea.getY(), this.firstDollArea.getWidth(), this.firstDollArea.getHeight(), true, firstOver);
+		this.firstDollPreviewWidget.extractRenderState(graphics, mouseX, mouseY, delta);
 
-		DrawUtils.drawCenteredText(context, MyTotemDoll.text("welcome_screen.option.3d"), this.firstDollArea.getX() + 10, this.firstDollArea.getY() + 10, this.firstDollArea.getWidth() - 20);
+		DrawUtils.drawCenteredText(graphics, MyTotemDoll.text("welcome_screen.option.3d"), this.firstDollArea.getX() + 10, this.firstDollArea.getY() + 10, this.firstDollArea.getWidth() - 20);
 
 		boolean secondOver = this.secondDollArea.over(mouseX, mouseY);
-		BackgroundRenderer.drawTransparencyWidgetBackground(context, this.secondDollArea.getX(), this.secondDollArea.getY(), this.secondDollArea.getWidth(), this.secondDollArea.getHeight(), true, secondOver);
-		this.secondDollPreviewWidget.render(context, mouseX, mouseY, delta);
+		BackgroundRenderer.drawTransparencyWidgetBackground(graphics, this.secondDollArea.getX(), this.secondDollArea.getY(), this.secondDollArea.getWidth(), this.secondDollArea.getHeight(), true, secondOver);
+		this.secondDollPreviewWidget.extractRenderState(graphics, mouseX, mouseY, delta);
 
-		DrawUtils.drawCenteredText(context, MyTotemDoll.text("welcome_screen.option.2d"), this.secondDollArea.getX() + 10, this.secondDollArea.getY() + 10, this.secondDollArea.getWidth() - 20);
+		DrawUtils.drawCenteredText(graphics, MyTotemDoll.text("welcome_screen.option.2d"), this.secondDollArea.getX() + 10, this.secondDollArea.getY() + 10, this.secondDollArea.getWidth() - 20);
 	}
 
 	@Override

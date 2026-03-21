@@ -2,7 +2,7 @@ package net.lopymine.mtd.gui.widget.list;
 
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList.Entry;
 
@@ -15,25 +15,30 @@ public abstract class AbstractVersionedEntryListWidget<E extends Entry<E>> exten
 	}
 
 	@Override
-	protected void renderSelection(GuiGraphics context, E entry, int color) {
+	protected void extractScrollbar(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+
 	}
 
 	@Override
-	protected void renderListSeparators(GuiGraphics context) {
+	protected void extractSelection(GuiGraphicsExtractor context, E entry, int color) {
 	}
 
 	@Override
-	protected void renderListItems(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	protected void extractListSeparators(GuiGraphicsExtractor context) {
+	}
+
+	@Override
+	protected void extractListItems(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
 		this.startScissor(context);
-		super.renderListItems(context, mouseX, mouseY, delta);
+		super.extractListItems(context, mouseX, mouseY, delta);
 		this.endScissor(context);
 	}
 
-	protected void endScissor(GuiGraphics context) {
+	protected void endScissor(GuiGraphicsExtractor context) {
 		context.disableScissor();
 	}
 
-	protected void startScissor(GuiGraphics context) {
+	protected void startScissor(GuiGraphicsExtractor context) {
 		context.enableScissor(0, this.getY() + 2, this.getX() + this.getWidth(), this.getY() + this.getHeight() - 2);
 	}
 

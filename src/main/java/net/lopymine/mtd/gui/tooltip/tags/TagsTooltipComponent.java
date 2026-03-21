@@ -56,17 +56,17 @@ public class TagsTooltipComponent implements ClientTooltipComponent {
 	}
 
 	@Override
-	public void renderImage(Font textRenderer, int x, int y, int w, int h, GuiGraphics context) {
+	public void extractImage(Font textRenderer, int x, int y, int w, int h, GuiGraphicsExtractor graphics) {
 		int yOffset = 0;
 
 		int space = textRenderer.width(CommonComponents.space());
 		for (Entry<Identifier, Component> entry : this.rows.entrySet()) {
-			DrawUtils.drawTexture(context, entry.getKey(), x + space, y + yOffset - 1, 0, 0, 10, 10, 10, 10);
-			context.drawString(textRenderer, entry.getValue(), x + space + 10 + 4, y + yOffset, -1, true);
+			DrawUtils.drawTexture(graphics, entry.getKey(), x + space, y + yOffset - 1, 0, 0, 10, 10, 10, 10);
+			graphics.text(textRenderer, entry.getValue(), x + space + 10 + 4, y + yOffset, -1, true);
 			yOffset += 10;
 		}
 		if (this.modelTagName != null) {
-			context.drawString(textRenderer, this.modelTagName, x + space, y + yOffset, -1, true);
+			graphics.text(textRenderer, this.modelTagName, x + space, y + yOffset, -1, true);
 		}
 	}
 }

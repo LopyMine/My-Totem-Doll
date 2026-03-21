@@ -2,7 +2,7 @@ package net.lopymine.mtd.gui.widget.button;
 
 import java.util.List;
 import lombok.Getter;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Button.OnPress;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList.Entry;
@@ -31,8 +31,8 @@ public class ButtonListEntryWidget extends Entry<ButtonListEntryWidget> {
 	}
 
 	@Override
-	public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
-		this.widget.render(context, mouseX, mouseY, deltaTicks);
+	public void extractContent(GuiGraphicsExtractor context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		this.widget.extractRenderState(context, mouseX, mouseY, deltaTicks);
 	}
 
 	@Override

@@ -4,13 +4,13 @@ import lombok.experimental.ExtensionMethod;
 import net.lopymine.mtd.extension.DrawContextExtension;
 import net.lopymine.mtd.utils.DrawUtils;
 import net.lopymine.mtd.yacl.custom.TransparencySprites;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 
 @ExtensionMethod(DrawContextExtension.class)
 public class BackgroundRenderer {
 
-	public static void drawTransparencyWidgetBackground(GuiGraphics context, int x, int y, int width, int height, boolean enabled, boolean hovered) {
+	public static void drawTransparencyWidgetBackground(GuiGraphicsExtractor context, int x, int y, int width, int height, boolean enabled, boolean hovered) {
 		Identifier menuBackgroundTexture = enabled ? TransparencySprites.getMenuListBackgroundTexture() : TransparencySprites.DARKER_MENU_BACKGROUND_TEXTURE;
 		Identifier menuSeparatorTexture = TransparencySprites.getMenuSeparatorTexture();
 		drawTransparencyBackground(context, x, y, width, height, menuBackgroundTexture, menuSeparatorTexture, true, true, true, true);
@@ -19,36 +19,36 @@ public class BackgroundRenderer {
 		}
 	}
 
-	public static void drawTransparencyWidgetBackground(GuiGraphics context, int x, int y, int width, int height, boolean enabled, int borderColor) {
+	public static void drawTransparencyWidgetBackground(GuiGraphicsExtractor context, int x, int y, int width, int height, boolean enabled, int borderColor) {
 		Identifier menuBackgroundTexture = enabled ? TransparencySprites.getMenuListBackgroundTexture() : TransparencySprites.DARKER_MENU_BACKGROUND_TEXTURE;
 		Identifier menuSeparatorTexture = TransparencySprites.getMenuSeparatorTexture();
 		drawTransparencyBackground(context, x, y, width, height, menuBackgroundTexture, menuSeparatorTexture, true, true, true, true);
 		context.drawBorder(x, y, width, height, borderColor);
 	}
 
-	public static void drawTransparencyBackground(GuiGraphics context, int x, int y, int width, int height, boolean list) {
+	public static void drawTransparencyBackground(GuiGraphicsExtractor context, int x, int y, int width, int height, boolean list) {
 		drawTransparencyBackground(context, x, y, width, height, list, true, true, true, true);
 	}
 
-	public static void drawTransparencyBackground(GuiGraphics context, int x, int y, int width, int height, boolean list, boolean up) {
+	public static void drawTransparencyBackground(GuiGraphicsExtractor context, int x, int y, int width, int height, boolean list, boolean up) {
 		drawTransparencyBackground(context, x, y, width, height, list, up, true, true, true);
 	}
 
-	public static void drawTransparencyBackground(GuiGraphics context, int x, int y, int width, int height, boolean list, boolean up, boolean bottom) {
+	public static void drawTransparencyBackground(GuiGraphicsExtractor context, int x, int y, int width, int height, boolean list, boolean up, boolean bottom) {
 		drawTransparencyBackground(context, x, y, width, height, list, up, bottom, true, true);
 	}
 
-	public static void drawTransparencyBackground(GuiGraphics context, int x, int y, int width, int height, boolean list, boolean up, boolean bottom, boolean right) {
+	public static void drawTransparencyBackground(GuiGraphicsExtractor context, int x, int y, int width, int height, boolean list, boolean up, boolean bottom, boolean right) {
 		drawTransparencyBackground(context, x, y, width, height, list, up, bottom, right, true);
 	}
 
-	public static void drawTransparencyBackground(GuiGraphics context, int x, int y, int width, int height, boolean list, boolean up, boolean bottom, boolean right, boolean left) {
+	public static void drawTransparencyBackground(GuiGraphicsExtractor context, int x, int y, int width, int height, boolean list, boolean up, boolean bottom, boolean right, boolean left) {
 		Identifier menuBackgroundTexture = list ? TransparencySprites.getMenuListBackgroundTexture() : TransparencySprites.getMenuBackgroundTexture();
 		Identifier menuSeparatorTexture = TransparencySprites.getMenuSeparatorTexture();
 		drawTransparencyBackground(context, x, y, width, height, menuBackgroundTexture, menuSeparatorTexture, up, bottom, right, left);
 	}
 
-	public static void drawTransparencyBackground(GuiGraphics context, int x, int y, int width, int height, Identifier backgroundTexture, Identifier separatorTexture, boolean up, boolean bottom, boolean right, boolean left) {
+	public static void drawTransparencyBackground(GuiGraphicsExtractor context, int x, int y, int width, int height, Identifier backgroundTexture, Identifier separatorTexture, boolean up, boolean bottom, boolean right, boolean left) {
 		// BACKGROUND
 		DrawUtils.drawTexture(context, backgroundTexture, x + 2, y + 2, 0, 0, width - 4, height - 4, 32, 32);
 

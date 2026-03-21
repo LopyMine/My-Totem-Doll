@@ -12,7 +12,7 @@ import net.lopymine.mtd.model.bb.*;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.resources.model.cuboid.ItemTransforms;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.*;
 import net.minecraft.resources.Identifier;

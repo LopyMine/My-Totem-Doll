@@ -1,9 +1,11 @@
 package net.lopymine.mtd.client.event;
 
+import java.util.List;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.ClientTooltipComponentCallback;
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.atlas.manager.*;
+import net.lopymine.mtd.doll.data.*;
 import net.lopymine.mtd.gui.tooltip.combined.*;
 import net.lopymine.mtd.gui.tooltip.info.*;
 import net.lopymine.mtd.gui.tooltip.preview.*;
@@ -21,29 +23,27 @@ public class MyTotemDollEvents {
 	}
 
 	private static void registerTooltipCallbacks() {
-		TooltipComponentCallback.EVENT.register((data -> {
-			if (data instanceof TagsTooltipData(String tags)) {
-				return new TagsTooltipComponent(tags);
+		ClientTooltipComponentCallback.EVENT.register((data) -> {
+			if (data instanceof TagsTooltipData tooltipData) {
+				return new TagsTooltipComponent(tooltipData.tags());
 			}
-			if (data instanceof InfoTooltipData(String key, int color)) {
-				return new InfoTooltipComponent(key, color);
+			if (data instanceof InfoTooltipData tooltipData) {
+				return new InfoTooltipComponent(tooltipData.key(), tooltipData.color());
 			}
-			if (data instanceof LoadingStateTooltipData(net.lopymine.mtd.doll.data.LoadingState state)) {
-				return ClientTooltipComponent.create(MyTotemDoll.text("text.status").append(state.getText()).getVisualOrderText());
+			if (data instanceof LoadingStateTooltipData tooltipData) {
+				return ClientTooltipComponent.create(MyTotemDoll.text("text.status").append(tooltipData.state().getText()).getVisualOrderText());
 			}
-			if (data instanceof CombinedTooltipData(java.util.List<ClientTooltipComponent> list)) {
-				return new CombinedTooltipComponent(list);
+			if (data instanceof CombinedTooltipData tooltipData) {
+				return new CombinedTooltipComponent(tooltipData.list());
 			}
-			if (data instanceof TotemDollPreviewTooltipData(
-					net.lopymine.mtd.doll.data.TotemDollData data1, net.minecraft.resources.Identifier model
-			)) {
-				return new TotemDollPreviewTooltipComponent(data1, model);
+			if (data instanceof TotemDollPreviewTooltipData tooltipData) {
+				return new TotemDollPreviewTooltipComponent(tooltipData.data(), tooltipData.model());
 			}
-			if (data instanceof WrappedTextTooltipData(net.minecraft.network.chat.Component text)) {
-				return new WrappedTextTooltipComponent(text);
+			if (data instanceof WrappedTextTooltipData tooltipData) {
+				return new WrappedTextTooltipComponent(tooltipData.text());
 			}
 			return null;
-		}));
+		});
 	}
 
 	private static void registerLifecycleEvents() {

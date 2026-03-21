@@ -5,8 +5,8 @@ import net.lopymine.mtd.doll.data.TotemDollData;
 import net.lopymine.mtd.doll.renderer.special.*;
 import net.lopymine.mtd.extension.ItemStackExtension;
 import net.minecraft.client.gui.render.GuiRenderer;
-import net.minecraft.client.gui.render.state.GuiRenderState;
-import net.minecraft.client.gui.render.state.pip.PictureInPictureRenderState;
+import net.minecraft.client.renderer.state.gui.GuiRenderState;
+import net.minecraft.client.renderer.state.gui.pip.PictureInPictureRenderState;
 import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
@@ -16,13 +16,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(GuiRenderer.class)
 public class GuiRendererMixin {
 
-	@Shadow
-	@Final
-	GuiRenderState renderState;
 
 	@Shadow
 	@Final
 	private BufferSource bufferSource;
+
+	@Shadow @Final private GuiRenderState renderState;
 
 	@Inject(at = @At("HEAD"), method = "preparePictureInPictureState", cancellable = true)
 	private void renderDoll(PictureInPictureRenderState elementState, int windowScaleFactor, CallbackInfo ci) {

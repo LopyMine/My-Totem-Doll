@@ -10,7 +10,7 @@ public class MyTotemDoll implements ModInitializer {
 	public static final String MOD_NAME = /*$ mod_name*/ "My Totem Doll";
 	public static final String MOD_ID = /*$ mod_id*/ "my-totem-doll";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);
-	public static final String YACL_DEPEND_VERSION = /*$ yacl*/ "3.8.2+1.21.11-fabric";
+	public static final String YACL_DEPEND_VERSION = /*$ yacl*/ "3.9.0+26.1-fabric";
 
 	public static Identifier id(String path) {
 		return Identifier.fromNamespaceAndPath(MOD_ID, path);

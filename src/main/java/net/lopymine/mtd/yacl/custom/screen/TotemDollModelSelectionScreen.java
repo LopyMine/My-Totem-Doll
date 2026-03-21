@@ -141,9 +141,11 @@ public class TotemDollModelSelectionScreen extends Screen {
 		return modelPathDimension.withX(modelPathDimension.xLimit() + o).withY(textFieldDimension.yLimit() + o).withWidth(textFieldDimension.width()).withHeight(h).clone();
 	}
 
+
+
 	@Override
-	public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.renderBackground(context, mouseX, mouseY, delta);
+	public void extractBackground(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
+		super.extractBackground(context, mouseX, mouseY, delta);
 
 		for (Dimension<Integer> dimension : this.dimensions) {
 			BackgroundRenderer.drawTransparencyBackground(context, dimension.x(), dimension.y(), dimension.width(), dimension.height(), true);
@@ -151,8 +153,8 @@ public class TotemDollModelSelectionScreen extends Screen {
 	}
 
 	@Override
-	public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.render(context, mouseX, mouseY, delta);
+	public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
+		super.extractRenderState(context, mouseX, mouseY, delta);
 		Font textRenderer = Minecraft.getInstance().font;
 
 		// Title
@@ -169,7 +171,7 @@ public class TotemDollModelSelectionScreen extends Screen {
 		if (this.modelPathDimension.x() + a + offset > this.modelPathDimension.xLimit() - offset) {
 			DrawUtils.drawText(context, fullModelPathText, this.modelPathDimension.x() + offset, this.modelPathDimension.y() + offset, this.modelPathDimension.width() - offset, textRenderer.lineHeight + offset);
 		} else {
-			context.drawString(textRenderer, fullModelPathText, this.modelPathDimension.x() + offset, this.modelPathDimension.y() + offset, -1, true);
+			context.text(textRenderer, fullModelPathText, this.modelPathDimension.x() + offset, this.modelPathDimension.y() + offset, -1, true);
 		}
 
 		// Model Path Text
@@ -180,7 +182,7 @@ public class TotemDollModelSelectionScreen extends Screen {
 		if (this.modelPathDimension.x() + width + offset > this.modelPathDimension.xLimit() - offset) {
 			DrawUtils.drawText(context, text, this.modelPathDimension.x() + offset, this.modelPathDimension.yLimit() - textRenderer.lineHeight - offset, this.modelPathDimension.width() - offset, textRenderer.lineHeight);
 		} else {
-			context.drawString(textRenderer, text, this.modelPathDimension.x() + offset, this.modelPathDimension.yLimit() - textRenderer.lineHeight - offset, -1, true);
+			context.text(textRenderer, text, this.modelPathDimension.x() + offset, this.modelPathDimension.yLimit() - textRenderer.lineHeight - offset, -1, true);
 		}
 
 		context.disableScissor();
@@ -189,14 +191,14 @@ public class TotemDollModelSelectionScreen extends Screen {
 		context.enableScissor(this.modelPanelDimension.x(), this.modelPanelDimension.y(), this.modelPanelDimension.xLimit(), this.modelPanelDimension.yLimit());
 
 		Component selectedModelNameText = this.selectedModelName == null ? MyTotemDoll.text("text.standard_doll") : this.selectedModelName;
-		context.drawString(textRenderer, selectedModelNameText, this.modelPanelDimension.x() + offset, this.modelPanelDimension.y() + offset, -1, true);
+		context.text(textRenderer, selectedModelNameText, this.modelPanelDimension.x() + offset, this.modelPanelDimension.y() + offset, -1, true);
 
 		// Underline for this text
 		context.fill(this.modelPanelDimension.x() + offset, this.modelPanelDimension.y() + offset + textRenderer.lineHeight + 3, this.modelPanelDimension.x() + offset + Math.min((textRenderer.width(selectedModelNameText) + 5), this.modelPanelDimension.width() - (offset * 2)), this.modelPanelDimension.y() + offset + textRenderer.lineHeight + 4, -1);
 		context.disableScissor();
 
 		// Model Preview
-		this.totemDollModelPreviewWidget.render(context, mouseX, mouseY, delta);
+		this.totemDollModelPreviewWidget.extractRenderState(context, mouseX, mouseY, delta);
 	}
 
 	private void setSelectedModel(Identifier modelId, String pack, String modelName) {

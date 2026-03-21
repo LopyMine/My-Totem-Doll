@@ -7,7 +7,7 @@ import lombok.experimental.ExtensionMethod;
 import net.lopymine.mtd.extension.DrawContextExtension;
 import net.lopymine.mtd.utils.DrawUtils;
 import net.lopymine.mtd.yacl.custom.TransparencySprites;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.*;
@@ -23,7 +23,7 @@ public class BetterCategoryTab extends CategoryTab {
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics context) {
+	public void renderBackground(GuiGraphicsExtractor context) {
 		// right pane darker db
 		DrawUtils.drawTexture(context, TransparencySprites.getMenuListBackgroundTexture(), rightPaneDim.left(), rightPaneDim.top(), rightPaneDim.right() + 2, rightPaneDim.bottom() + 2, rightPaneDim.width() + 2, rightPaneDim.height() + 2, 32, 32);
 

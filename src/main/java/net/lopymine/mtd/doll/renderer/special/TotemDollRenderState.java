@@ -3,7 +3,7 @@ package net.lopymine.mtd.doll.renderer.special;
 import net.lopymine.mtd.doll.data.TotemDollData;
 import net.lopymine.mtd.doll.renderer.DollRenderContext;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
-import net.minecraft.client.gui.render.state.pip.PictureInPictureRenderState;
+import net.minecraft.client.renderer.state.gui.pip.PictureInPictureRenderState;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2f;

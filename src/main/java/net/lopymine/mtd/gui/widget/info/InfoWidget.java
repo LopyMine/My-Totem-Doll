@@ -40,7 +40,7 @@ public class InfoWidget implements Renderable {
 	}
 
 	@Override
-	public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
 		if (!this.isVisible()) {
 			return;
 		}
@@ -55,8 +55,6 @@ public class InfoWidget implements Renderable {
 	public void requestTooltip() {
 		Minecraft client = Minecraft.getInstance();
 		Screen screen = client.screen;
-		Font textRenderer = client.font;
-
 		if (!(screen instanceof IRequestableTooltipScreen tooltipScreen)) {
 			return;
 		}

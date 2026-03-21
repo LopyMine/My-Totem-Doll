@@ -4,7 +4,7 @@ import java.util.*;
 import lombok.*;
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.utils.DrawUtils;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList.Entry;
 import net.minecraft.client.gui.components.events.*;
 import net.minecraft.network.chat.MutableComponent;
@@ -24,11 +24,11 @@ public abstract class AbstractSearchListWidget<E extends Entry<E>> extends Abstr
 	}
 
 	@Override
-	protected void renderListItems(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	protected void extractListItems(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
 		this.startScissor(context);
 		for (E entry : this.getWidgets()) {
 			if (entry.getY() + entry.getHeight() >= this.getY() && entry.getY() <= this.getBottom()) {
-				this.renderItem(context, mouseX, mouseY, delta, entry);
+				this.extractItem(context, mouseX, mouseY, delta, entry);
 			}
 		}
 		this.endScissor(context);
@@ -53,7 +53,7 @@ public abstract class AbstractSearchListWidget<E extends Entry<E>> extends Abstr
 	}
 
 	@Override
-	protected void renderListBackground(GuiGraphics context) {
+	protected void extractListBackground(GuiGraphicsExtractor context) {
 		if (this.searching && this.children.isEmpty()) {
 			int a = (this.getWidth() - this.getRowWidth()) / 2;
 			DrawUtils.drawText(context, NOTHING_FOUND_TEXT, this.getX() + a, this.getY(), this.getWidth() - a, this.getHeight() + 4);

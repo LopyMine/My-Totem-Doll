@@ -19,7 +19,7 @@ import net.lopymine.mtd.thing.ThingMarks;
 import net.lopymine.mtd.utils.*;
 import net.lopymine.mtd.utils.plugin.TotemDollPlugin;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
@@ -39,7 +39,7 @@ public class TotemDollRenderer {
 			TotemDollData totemDollData = stack.getTotemDollData(false);
 			TotemDollRenderRequestsCollector.getInstance().requestRender(matrices, totemDollData, stack.getPlayerEntity(), context, light, overlay, outlineColor, provider);
 			if (!ThingMarks.WORLD_RENDERING.get().isMarked()) {
-				TotemDollRenderRequestsCollector.getInstance().render();
+				TotemDollRenderRequestsCollector.getInstance().renderStates();
 			}
 			return true;
 		}
@@ -71,19 +71,19 @@ public class TotemDollRenderer {
 		matrices.popPose();
 	}
 
-	public static void renderPreview(GuiGraphics context, int x, int y, int width, int height, float size, @Nullable TotemDollData data) {
+	public static void renderPreview(GuiGraphicsExtractor context, int x, int y, int width, int height, float size, @Nullable TotemDollData data) {
 		renderPreview(context, x, y, width, height, size, data, DollRenderContext.D_PREVIEW);
 	}
 
-	public static void renderPreview(GuiGraphics context, int x, int y, int width, int height, float size, @Nullable TotemDollData data, DollRenderContext renderContext) {
+	public static void renderPreview(GuiGraphicsExtractor context, int x, int y, int width, int height, float size, @Nullable TotemDollData data, DollRenderContext renderContext) {
 		if (data == null) {
 			long currentTime = Util.getMillis();
 			float rotationSpeed = 0.05f;
 			float rotation = (currentTime * rotationSpeed) % 360;
-			context.guiRenderState.submitPicturesInPictureState(new net.lopymine.mtd.doll.renderer.special.ItemGuiRenderState(Items.TOTEM_OF_UNDYING.getDefaultInstance(), x, y, width, height, size, Axis.YP.rotationDegrees(rotation), context.scissorStack.peek()));
+			context.guiRenderState.addPicturesInPictureState(new net.lopymine.mtd.doll.renderer.special.ItemGuiRenderState(Items.TOTEM_OF_UNDYING.getDefaultInstance(), x, y, width, height, size, Axis.YP.rotationDegrees(rotation), context.scissorStack.peek()));
 		} else {
 			data.getRenderProperties().setRenderContext(renderContext);
-			context.guiRenderState.submitPicturesInPictureState(net.lopymine.mtd.doll.renderer.special.TotemDollRenderState.getPreview(data, x, y, width, height, size, context.scissorStack.peek()));
+			context.guiRenderState.addPicturesInPictureState(net.lopymine.mtd.doll.renderer.special.TotemDollRenderState.getPreview(data, x, y, width, height, size, context.scissorStack.peek()));
 		}
 	}
 

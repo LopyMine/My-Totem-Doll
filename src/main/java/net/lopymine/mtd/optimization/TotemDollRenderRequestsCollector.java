@@ -37,7 +37,7 @@ public class TotemDollRenderRequestsCollector {
 		this.requests.add(new TotemDollRenderRequest(entry.copy(), data, data.getRenderProperties().copy(), holdingPlayer, context, light, overlay, outlineColor, provider));
 	}
 
-	public void render() {
+	public void renderStates() {
 		LockableAtlasTexture atlasTexture = MyTotemDollAtlasManager.getNullableAtlasTexture();
 		if (atlasTexture == null) {
 			MyTotemDollClient.LOGGER.error("Game tried to render doll model requests, but atlas not initialized yet!");

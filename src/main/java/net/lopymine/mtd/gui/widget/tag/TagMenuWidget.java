@@ -115,7 +115,7 @@ public class TagMenuWidget extends AbstractVersionedEntryListWidget<TagRow> {
 	}
 
 	@Override
-	protected void renderListBackground(GuiGraphics context) {
+	protected void extractListBackground(GuiGraphicsExtractor context) {
 		//DrawUtils.drawTexture(context, BACKGROUND, this.getX(), this.getY(), 0, 0, 50, 166, 50, 166);
 	}
 
@@ -225,10 +225,10 @@ public class TagMenuWidget extends AbstractVersionedEntryListWidget<TagRow> {
 		}
 
 		@Override
-		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		public void extractContent(GuiGraphicsExtractor context, int mouseX, int mouseY, boolean hovered, float tickDelta) {
 			for (TagButtonWidget widget : this.buttons) {
 				widget.setCanBeHovered(hovered);
-				widget.render(context, mouseX, mouseY, tickDelta);
+				widget.extractRenderState(context, mouseX, mouseY, tickDelta);
 			}
 		}
 	}
@@ -245,11 +245,11 @@ public class TagMenuWidget extends AbstractVersionedEntryListWidget<TagRow> {
 		}
 
 		@Override
-		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		public void extractContent(GuiGraphicsExtractor context, int mouseX, int mouseY, boolean hovered, float tickDelta) {
 			this.render(context, this.getY(), this.getX(), this.getHeight(), hovered);
 		}
 
-		private void render(GuiGraphics context, int y, int x, int entryHeight, boolean hovered) {
+		private void render(GuiGraphicsExtractor context, int y, int x, int entryHeight, boolean hovered) {
 			Minecraft client = Minecraft.getInstance();
 			Font textRenderer = client.font;
 

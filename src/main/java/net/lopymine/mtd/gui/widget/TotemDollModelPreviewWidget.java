@@ -34,24 +34,24 @@ public class TotemDollModelPreviewWidget extends AbstractWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		context.enableScissor(this.getX(), this.getY(), (this.getX() + this.getWidth()), this.getY() + this.getHeight());
+	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+		graphics.enableScissor(this.getX(), this.getY(), (this.getX() + this.getWidth()), this.getY() + this.getHeight());
 		if (this.loading) {
-			this.renderLoadingText(context);
+			this.renderLoadingText(graphics);
 		} else {
-			this.renderPreview(context);
+			this.renderPreview(graphics);
 		}
-		context.disableScissor();
+		graphics.disableScissor();
 	}
 
-	protected void renderLoadingText(GuiGraphics context) {
+	protected void renderLoadingText(GuiGraphicsExtractor context) {
 		int halfOfSize = (int) this.size / 2;
 		Font textRenderer = Minecraft.getInstance().font;
 		//context.fill(this.getX(), this.getY(), this.getX() + 1, this.getY() + 1, -1);
 		DrawUtils.drawCenteredText(context, this.getLoadingText(Util.getMillis()), this.getX(), this.getY() + halfOfSize - (textRenderer.lineHeight / 2), (int) this.size);
 	}
 
-	protected void renderPreview(GuiGraphics context) {
+	protected void renderPreview(GuiGraphicsExtractor context) {
 		TotemDollRenderer.renderPreview(context, this.getX(), this.getY(), (int) this.getSize(), (int) this.getSize(), this.getSize() / 1.5F, this.getData().refreshAndApplyRenderProperties());
 	}
 

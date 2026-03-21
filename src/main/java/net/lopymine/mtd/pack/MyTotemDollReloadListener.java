@@ -15,7 +15,7 @@ import net.minecraft.util.profiling.*;
 public class MyTotemDollReloadListener implements PreparableReloadListener {
 
 	public static void register() {
-		ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloader(getFabricId(), new MyTotemDollReloadListener());
+		ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloadListener(getFabricId(), new MyTotemDollReloadListener());
 	}
 
 	public static Identifier getFabricId() {

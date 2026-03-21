@@ -20,7 +20,7 @@ import static net.lopymine.mtd.utils.CodecUtils.option;
 @ExtensionMethod(DilationExtension.class)
 public class BBCube {
 
-	public static Codec<CubeDeformation> DILATION_CODEC = Codec.FLOAT.xmap(CubeDeformation::new, dilation -> dilation.getRadiusX());
+	public static final Codec<CubeDeformation> DILATION_CODEC = Codec.FLOAT.xmap(CubeDeformation::new, dilation -> dilation.getRadiusX());
 
 	public static final Codec<BBCube> CODEC = RecordCodecBuilder.create(inst -> inst.group(
 			option("name", Codec.STRING, BBCube::getName),

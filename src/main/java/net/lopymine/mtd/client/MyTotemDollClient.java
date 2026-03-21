@@ -1,7 +1,7 @@
 package net.lopymine.mtd.client;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.SpecialGuiElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.PictureInPictureRendererRegistry;
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.cache.KnownPlayerUUIDsConfigManager;
 import net.lopymine.mtd.client.command.MyTotemDollCommandManager;
@@ -9,7 +9,6 @@ import net.lopymine.mtd.client.event.MyTotemDollEvents;
 import net.lopymine.mtd.config.MyTotemDollConfig;
 import net.lopymine.mtd.pack.MyTotemDollReloadListener;
 import net.lopymine.mtd.tag.manager.*;
-import net.lopymine.mtd.utils.plugin.TotemDollPlugin;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.*;
 import org.jetbrains.annotations.Nullable;
@@ -25,7 +24,12 @@ public class MyTotemDollClient implements ClientModInitializer {
 
 	@SuppressWarnings("deprecation")
 	private static boolean isProbablyTotem(ItemStack stack) {
-		return stack.item == Items.TOTEM_OF_UNDYING || (MyTotemDollConfig.getInstance().isSupportOtherModsTotems() && BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath().contains("totem"));
+		//? if >=26.1 {
+		boolean bl = stack.item != null && stack.item.value() == Items.TOTEM_OF_UNDYING;
+		//?} else {
+		/*boolean bl = stack.item == Items.TOTEM_OF_UNDYING;
+		 *///?}
+		return bl || (MyTotemDollConfig.getInstance().isSupportOtherModsTotems() && BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath().contains("totem"));
 	}
 
 	@Override
@@ -37,6 +41,6 @@ public class MyTotemDollClient implements ClientModInitializer {
 		MyTotemDollEvents.register();
 		MyTotemDollReloadListener.register();
 		KnownPlayerUUIDsConfigManager.start();
-		SpecialGuiElementRegistry.register(context -> new net.lopymine.mtd.doll.renderer.special.ItemGuiElementRenderer(context.vertexConsumers()));
+		PictureInPictureRendererRegistry.register(context -> new net.lopymine.mtd.doll.renderer.special.ItemGuiElementRenderer(context.bufferSource()));
 	}
 }

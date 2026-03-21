@@ -32,19 +32,19 @@ public class CombinedTooltipComponent implements ClientTooltipComponent {
 	}
 
 	@Override
-	public void renderText(GuiGraphics context, Font textRenderer, int x, int y) {
+	public void extractText(GuiGraphicsExtractor graphics, Font textRenderer, int x, int y) {
 		int componentY = 0;
 		for (ClientTooltipComponent component : this.components) {
-			component.renderText(context, textRenderer, x, y + componentY);
+			component.extractText(graphics, textRenderer, x, y + componentY);
 			componentY += component.getHeight(textRenderer) + 1;
 		}
 	}
 
 	@Override
-	public void renderImage(Font textRenderer, int x, int y, int w, int h, GuiGraphics context) {
+	public void extractImage(Font textRenderer, int x, int y, int w, int h, GuiGraphicsExtractor context) {
 		int componentY = 0;
 		for (ClientTooltipComponent component : this.components) {
-			component.renderImage(textRenderer, x, y + componentY, w, h, context);
+			component.extractImage(textRenderer, x, y + componentY, w, h, context);
 			componentY += component.getHeight(textRenderer) + 1;
 		}
 	}

@@ -4,7 +4,7 @@ import lombok.*;
 import net.lopymine.mtd.config.MyTotemDollConfig;
 import net.lopymine.mtd.config.other.vector.Vec2i;
 import net.lopymine.mtd.tag.Tag;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 
 @Getter
@@ -60,11 +60,11 @@ public class DraggingTagButtonWidget extends TagButtonWidget {
 	}
 
 	@Override
-	protected void renderContents(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+	protected void extractContents(GuiGraphicsExtractor context, int mouseX, int mouseY, float deltaTicks) {
 		this.renderPlease(context, mouseX, mouseY);
 	}
 
-	private void renderPlease(GuiGraphics context, int mouseX, int mouseY) {
+	private void renderPlease(GuiGraphicsExtractor context, int mouseX, int mouseY) {
 		int x = this.isDragging() ? mouseX - (this.getWidth() / 2) : this.getX();
 		int y = this.isDragging() ? mouseY - (this.getHeight() / 2) : this.getY();
 		super.renderButton(context, x, y);

@@ -32,10 +32,10 @@ public class WrappedTextTooltipComponent implements ClientTooltipComponent {
 	}
 
 	@Override
-	public void renderImage(Font textRenderer, int x, int y, int w, int h, GuiGraphics context) {
+	public void extractImage(Font textRenderer, int x, int y, int w, int h, GuiGraphicsExtractor graphics) {
 		int offset = 0;
 		for (FormattedCharSequence text : this.texts) {
-			context.drawString(textRenderer, text, x, y + offset, -1, true);
+			graphics.text(textRenderer, text, x, y + offset, -1, true);
 			offset += 10;
 		}
 	}

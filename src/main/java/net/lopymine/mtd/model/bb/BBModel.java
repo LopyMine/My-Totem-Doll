@@ -8,7 +8,7 @@ import lombok.experimental.ExtensionMethod;
 import net.lopymine.mtd.config.other.vector.Vec3f;
 import net.lopymine.mtd.doll.renderer.DollRenderContext;
 import net.lopymine.mtd.extension.ModelTransformationExtension;
-import net.minecraft.client.renderer.block.model.*;
+import net.minecraft.client.resources.model.cuboid.*;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 import static net.lopymine.mtd.utils.CodecUtils.option;
@@ -80,6 +80,7 @@ public class BBModel {
 				option("translation", DEFAULT_TRANSLATION, Vec3f.CODEC, (o) -> new Vec3f(o.translation())),
 				option("scale", DEFAULT_SCALE, Vec3f.CODEC, (o) -> new Vec3f(o.scale()))
 		).apply(instance, Transformations::prepareTransformation));
+
 		public static final Codec<ItemTransforms> MODEL_TRANSFORMATION_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
 				option(DollRenderContext.D_THIRD_PERSON_LEFT_HAND.getId(), ItemTransform.NO_TRANSFORM, TRANSFORMATION_CODEC, (o) -> o.getTl()),
 				option(DollRenderContext.D_THIRD_PERSON_RIGHT_HAND.getId(), ItemTransform.NO_TRANSFORM, TRANSFORMATION_CODEC, (o) -> o.getTr()),

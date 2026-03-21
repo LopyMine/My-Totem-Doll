@@ -8,7 +8,7 @@ import net.lopymine.mtd.tag.manager.TagsManager;
 import net.lopymine.mtd.utils.DrawUtils;
 import net.lopymine.mtd.utils.tooltip.IRequestableTooltipScreen;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -68,25 +68,25 @@ public class TagButtonWidget extends Button {
 	}
 
 	@Override
-	protected void renderContents(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+	protected void extractContents(GuiGraphicsExtractor context, int mouseX, int mouseY, float deltaTicks) {
 		this.renderPlease(context);
 	}
 
-	private void renderPlease(GuiGraphics context) {
+	private void renderPlease(GuiGraphicsExtractor context) {
 		this.renderButton(context, this.getX(), this.getY());
 		this.requestTooltip();
 	}
 
-	protected void renderButton(GuiGraphics context, int x, int y) {
+	protected void renderButton(GuiGraphicsExtractor context, int x, int y) {
 		this.renderBackground(context, x, y);
 		this.renderIcon(context, x, y);
 	}
 
-	protected void renderIcon(GuiGraphics context, int x, int y) {
+	protected void renderIcon(GuiGraphicsExtractor context, int x, int y) {
 		DrawUtils.drawTexture(context, this.icon, x + (this.getWidth() / 2) - 5, y + (this.getHeight() / 2) - 5, 0, 0, 10, 10, 10, 10);
 	}
 
-	protected void renderBackground(GuiGraphics context, int x, int y) {
+	protected void renderBackground(GuiGraphicsExtractor context, int x, int y) {
 		Identifier texture = !this.active ? INACTIVE_TEXTURE : TEXTURES.get(this.isPressed(), this.isHovered());
 		DrawUtils.drawTexture(context, texture, x, y, 0, 0, this.width, this.height, this.width, this.height);
 	}

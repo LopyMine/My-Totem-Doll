@@ -2,6 +2,7 @@ package net.lopymine.mtd.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 import lombok.experimental.ExtensionMethod;
 import net.lopymine.mtd.MyTotemDoll;
@@ -21,6 +22,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AnvilScreen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.*;
@@ -31,12 +33,11 @@ import org.spongepowered.asm.mixin.injection.At;
 @ExtensionMethod(ItemStackExtension.class)
 public abstract class ItemStackMixin {
 
-	@Shadow
-	public abstract boolean is(Item item);
+	@Shadow public abstract boolean is(Predicate<Holder<Item>> predicate);
 
 	@ModifyReturnValue(at = @At("RETURN"), method = "getHoverName")
 	private Component getName(Component original) {
-		if (!MyTotemDollConfig.getInstance().isModEnabled() || !this.is(Items.TOTEM_OF_UNDYING)) {
+		if (!MyTotemDollConfig.getInstance().isModEnabled() || !this.is((holder) -> holder.is(Items.TOTEM_OF_UNDYING.builtInRegistryHolder().key()))) {
 			return original;
 		}
 		String string = original.getString();

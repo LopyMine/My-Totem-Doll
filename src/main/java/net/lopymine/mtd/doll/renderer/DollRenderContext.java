@@ -7,7 +7,7 @@ import lombok.experimental.ExtensionMethod;
 import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.extension.ModelTransformationExtension;
 import net.lopymine.mtd.model.base.MModel;
-import net.minecraft.client.renderer.block.model.*;
+import net.minecraft.client.resources.model.cuboid.*;
 
 @Getter
 @ExtensionMethod(ModelTransformationExtension.class)

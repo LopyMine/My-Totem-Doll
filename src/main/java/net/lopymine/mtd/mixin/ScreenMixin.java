@@ -12,16 +12,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Screen.class)
 public abstract class ScreenMixin extends AbstractContainerEventHandler implements Renderable, IRequestableTooltipScreen {
 
+	@Final
 	@Shadow
 	public Font font;
 	@Unique
 	private TooltipRequest tooltipRequest;
 
-	@Inject(at = @At("TAIL"), method = "renderWithTooltipAndSubtitles")
-	private void renderWithTooltip(GuiGraphics context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+	@Inject(at = @At("TAIL"), method = "extractRenderStateWithTooltipAndSubtitles")
+	private void renderWithTooltip(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
 		if (this.tooltipRequest != null) {
 			context.nextStratum();
-			this.tooltipRequest.render(context, mouseX, mouseY, delta);
+			this.tooltipRequest.renderRenderState(context, mouseX, mouseY, delta);
 			this.tooltipRequest = null;
 		}
 	}

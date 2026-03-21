@@ -22,7 +22,7 @@ accessible field com/mojang/blaze3d/platform/NativeImage pixels J
 accessible method net/minecraft/client/renderer/texture/SpriteLoader stitch (Ljava/util/List;ILjava/util/concurrent/Executor;)Lnet/minecraft/client/renderer/texture/SpriteLoader$Preparations;
 accessible class net/minecraft/client/gui/components/AbstractSelectionList$Entry
 
-accessible field net/minecraft/world/item/ItemStack item Lnet/minecraft/world/item/Item;
+accessible field net/minecraft/world/item/ItemStack item Lnet/minecraft/core/Holder;
 accessible field net/minecraft/world/item/ItemStack components Lnet/minecraft/core/component/PatchedDataComponentMap;
 
 accessible class net/minecraft/client/renderer/ItemInHandRenderer$HandRenderSelection
@@ -30,3 +30,6 @@ accessible class net/minecraft/client/renderer/ItemInHandRenderer$HandRenderSele
 extendable method net/minecraft/client/gui/components/AbstractButton renderWidget (Lnet/minecraft/client/gui/GuiGraphics;IIF)V
 
 accessible field net/minecraft/client/gui/components/AbstractSelectionList children Ljava/util/List;
+
+mutable field net/minecraft/client/gui/screens/inventory/AbstractContainerScreen imageWidth I
+mutable field net/minecraft/client/gui/screens/inventory/AbstractContainerScreen imageHeight I

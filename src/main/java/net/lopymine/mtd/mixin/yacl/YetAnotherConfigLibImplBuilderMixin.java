@@ -8,14 +8,12 @@ import net.lopymine.mtd.utils.mixin.yacl.*;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 
-@Pseudo
 @Mixin(YetAnotherConfigLibImpl.BuilderImpl.class)
 public class YetAnotherConfigLibImplBuilderMixin implements BetterYACLScreenBuilder {
 
 	@Unique
 	private boolean enabled;
 
-	@Dynamic
 	@ModifyReturnValue(at = @At("RETURN"), method = "build", remap = false)
 	private YetAnotherConfigLib swapScreen(YetAnotherConfigLib original) {
 		if (!enabled) {

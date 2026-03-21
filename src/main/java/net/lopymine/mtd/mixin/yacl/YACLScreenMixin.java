@@ -9,11 +9,9 @@ import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 
-@Pseudo
 @Mixin(YACLScreen.class)
 public abstract class YACLScreenMixin extends Screen {
 
-	@Dynamic
 	@Shadow(remap = false)
 	@Final
 	public YetAnotherConfigLib config;
@@ -25,7 +23,6 @@ public abstract class YACLScreenMixin extends Screen {
 	@Shadow
 	public abstract void onClose();
 
-	@Dynamic
 	@ModifyReturnValue(at = @At("RETURN"), method = "pendingChanges", remap = false)
 	private boolean alwaysTrueBecauseYouCannotUseSaveButtonWithInstantOptionsImVerySadThatINeedThatDoYouAgreeWithMeYeahNoYepNopeWtf(boolean original) {
 		if (YACLConfigurationScreen.notOpen(this)) {

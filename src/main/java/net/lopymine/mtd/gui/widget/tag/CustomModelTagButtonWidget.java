@@ -10,7 +10,7 @@ import net.lopymine.mtd.gui.tooltip.preview.TotemDollPreviewTooltipData;
 import net.lopymine.mtd.tag.*;
 import net.lopymine.mtd.tag.manager.TagsManager;
 import net.lopymine.mtd.utils.ScreenUtils;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
@@ -41,11 +41,11 @@ public class CustomModelTagButtonWidget extends TagButtonWidget {
 	}
 
 	@Override
-	public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		if (this.model != null) {
 			this.data.setFrameMModel(this.model);
 		}
-		super.renderWidget(context, mouseX, mouseY, delta);
+		super.extractContents(graphics, mouseX, mouseY, delta);
 		if (!this.tooltipDataActive) {
 			this.tooltipData = null;
 		}
@@ -53,7 +53,7 @@ public class CustomModelTagButtonWidget extends TagButtonWidget {
 	}
 
 	@Override
-	protected void renderIcon(GuiGraphics context, int x, int y) {
+	protected void renderIcon(GuiGraphicsExtractor context, int x, int y) {
 		context.enableScissor(this.getX() + 1, this.getY() + 1, this.getX() + this.getWidth() - 1, this.getY() + this.getHeight() - 1);
 		TotemDollRenderer.renderPreview(context, x, y, this.getWidth(), this.getHeight(), Math.min(this.getWidth(), this.getHeight()), this.getData());
 		context.disableScissor();
