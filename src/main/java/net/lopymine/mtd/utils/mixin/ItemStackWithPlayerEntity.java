@@ -1,10 +1,10 @@
 package net.lopymine.mtd.utils.mixin;
 
-import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.player.AbstractClientPlayer;
 
 public interface ItemStackWithPlayerEntity {
 
-	void myTotemDoll$setPlayerEntity(AbstractClientPlayerEntity player);
+	void myTotemDoll$setPlayerEntity(AbstractClientPlayer player);
 
-	AbstractClientPlayerEntity myTotemDoll$getPlayerEntity();
+	AbstractClientPlayer myTotemDoll$getPlayerEntity();
 }

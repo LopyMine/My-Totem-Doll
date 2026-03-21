@@ -1,12 +1,10 @@
 package net.lopymine.mtd.utils;
 
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-
+import java.util.function.Function;
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.yacl.custom.simple.utils.SimpleContent;
-
-import java.util.function.Function;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 
 public final class ModMenuUtils {
 
@@ -26,11 +24,11 @@ public final class ModMenuUtils {
 		return String.format("modmenu.group.%s", groupId);
 	}
 
-	public static Text getName(String key) {
+	public static Component getName(String key) {
 		return MyTotemDoll.text(key + ".name");
 	}
 
-	public static Text getDescription(String key) {
+	public static Component getDescription(String key) {
 		return MyTotemDoll.text(key + ".description");
 	}
 
@@ -38,19 +36,19 @@ public final class ModMenuUtils {
 		return MyTotemDoll.id(String.format("textures/config/%s.%s", contentId, content.getFileExtension()));
 	}
 
-	public static Text getModTitle() {
+	public static Component getModTitle() {
 		return MyTotemDoll.text("modmenu.title");
 	}
 
-	public static Function<Boolean, Text> getEnabledOrDisabledFormatter() {
+	public static Function<Boolean, Component> getEnabledOrDisabledFormatter() {
 		return state -> MyTotemDoll.text("modmenu.formatter.enabled_or_disabled." + state);
 	}
 
-	public static Text getNoConfigScreenMessage() {
+	public static Component getNoConfigScreenMessage() {
 		return MyTotemDoll.text("modmenu.no_config_library_screen.message");
 	}
 
-	public static Text getOldConfigScreenMessage(String version) {
+	public static Component getOldConfigScreenMessage(String version) {
 		return MyTotemDoll.text("modmenu.old_config_library_screen.message", version, MyTotemDoll.YACL_DEPEND_VERSION);
 	}
 }

@@ -3,20 +3,6 @@ package net.lopymine.mtd.mixin;
 import com.llamalad7.mixinextras.injector.wrapoperation.*;
 import lombok.experimental.ExtensionMethod;
 import net.lopymine.mtd.MyTotemDoll;
-import net.lopymine.mtd.utils.DrawUtils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.*;
-import net.minecraft.client.gui.screen.ingame.*;
-import net.minecraft.client.gui.widget.*;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.*;
-import net.minecraft.screen.*;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import org.spongepowered.asm.mixin.*;
-import org.spongepowered.asm.mixin.injection.*;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.config.MyTotemDollConfig;
 import net.lopymine.mtd.config.other.vector.Vec2i;
@@ -25,16 +11,27 @@ import net.lopymine.mtd.gui.widget.info.*;
 import net.lopymine.mtd.gui.widget.tag.*;
 import net.lopymine.mtd.gui.widget.tag.TagMenuWidget.Renamer;
 import net.lopymine.mtd.tag.Tag;
+import net.lopymine.mtd.utils.DrawUtils;
 import net.lopymine.mtd.utils.mixin.MTDAnvilScreen;
-
+import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.screens.inventory.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.*;
+import net.minecraft.world.item.*;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.*;
+import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(AnvilScreen.class)
 @ExtensionMethod(ItemStackExtension.class)
-public abstract class AnvilScreenMixin extends ForgingScreen<AnvilScreenHandler> implements MTDAnvilScreen {
+public abstract class AnvilScreenMixin extends ItemCombinerScreen<AnvilMenu> implements MTDAnvilScreen {
 
 	@Shadow
-	private TextFieldWidget nameField;
+	private EditBox name;
 	@Unique
 	@Nullable
 	private DraggingTagButtonWidget tagButtonWidget = null;
@@ -50,39 +47,34 @@ public abstract class AnvilScreenMixin extends ForgingScreen<AnvilScreenHandler>
 	@Unique
 	private boolean currentVisibleState = false;
 
-	public AnvilScreenMixin(AnvilScreenHandler handler, PlayerInventory playerInventory, Text title, Identifier texture) {
+	public AnvilScreenMixin(AnvilMenu handler, Inventory playerInventory, Component title, Identifier texture) {
 		super(handler, playerInventory, title, texture);
 	}
 
-	//? if <=1.21.10 {
-	/*@Shadow
-	public abstract void resize(MinecraftClient client, int width, int height);
-	*///?}
-
 	@Shadow
-	protected abstract void setup();
+	protected abstract void subInit();
 
-	@Inject(at = @At("HEAD"), method = "setup")
+	@Inject(at = @At("HEAD"), method = "subInit")
 	private void setupTagMenu(CallbackInfo ci) {
 		if (!MyTotemDollConfig.getInstance().isModEnabled()) {
 			return;
 		}
 
-		ItemStack stackOne = this.handler.getSlot(0).getStack();
-		ItemStack stackTwo = this.handler.getSlot(2).getStack();
+		ItemStack stackOne = this.menu.getSlot(0).getItem();
+		ItemStack stackTwo = this.menu.getSlot(2).getItem();
 		boolean bl = MyTotemDollClient.canProcess(stackOne) && !stackOne.isEmpty();
 
 		//
 
-		this.tagMenuWidget = new TagMenuWidget(0, 0, new Renamer() {
+		this.tagMenuWidget         = new TagMenuWidget(0, 0, new Renamer() {
 			@Override
 			public String getName() {
-				return AnvilScreenMixin.this.nameField.getText();
+				return AnvilScreenMixin.this.name.getValue();
 			}
 
 			@Override
 			public void setName(String name) {
-				AnvilScreenMixin.this.nameField.setText(name);
+				AnvilScreenMixin.this.name.setValue(name);
 			}
 		});
 		this.tagMenuWidget.visible = this.currentVisibleState;
@@ -103,52 +95,41 @@ public abstract class AnvilScreenMixin extends ForgingScreen<AnvilScreenHandler>
 		//
 
 		Vec2i originalPos = MyTotemDollConfig.getNewInstance().getTagButtonPos();
-		this.tagButtonWidget = new DraggingTagButtonWidget(
+		this.tagButtonWidget         = new DraggingTagButtonWidget(
 				Tag.simple('4'),
-				this.x,
-				this.y,
-				this.x + originalPos.getX(),
-				this.y + originalPos.getY(),
+				this.leftPos,
+				this.topPos,
+				this.leftPos + originalPos.getX(),
+				this.topPos + originalPos.getY(),
 				0,
 				0,
 				(b) -> {
 					this.currentVisibleState = b.isPressed();
-					//? if >=1.21.11 {
 					this.resize(this.width, this.height);
-					//?} else {
-					/*this.resize(this.client, this.width, this.height);
-					*///?}
-		});
+				});
 		this.tagButtonWidget.visible = bl;
 		this.tagButtonWidget.setPressed(this.tagMenuWidget.visible);
-		
+
 		//
 
 		if (this.tagMenuWidget.visible) {
-			this.backgroundWidth = 176 + this.tagMenuWidget.getWidth() + 5 + this.infoWidget.getWidth();
+			this.imageWidth = 176 + this.tagMenuWidget.getWidth() + 5 + this.infoWidget.getWidth();
 		} else {
-			this.backgroundWidth = 176;
+			this.imageWidth = 176;
 		}
-		
+
 		//
 
-		this.addDrawableChild(this.tagMenuWidget);
-		this.addDrawable(this.infoWidget);
-		this.addDrawable(this.tipsWidget);
-		this.addDrawableChild(this.tagButtonWidget);
-		
+		this.addRenderableWidget(this.tagMenuWidget);
+		this.addRenderableOnly(this.infoWidget);
+		this.addRenderableOnly(this.tipsWidget);
+		this.addRenderableWidget(this.tagButtonWidget);
+
 		//
 
-		this.x = (this.width - this.backgroundWidth) / 2;
+		this.leftPos = (this.width - this.imageWidth) / 2;
 		this.updateWidgets();
 	}
-
-	//? if =1.20.1 {
-	/*@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/TextFieldWidget;setEditable(Z)V"), method = "setup")
-	private void fixingMojangBugOmg(TextFieldWidget instance, boolean editable, Operation<Void> original) {
-		original.call(instance, this.handler.getSlot(0).hasStack());
-	}
-	*///?}
 
 	@Unique
 	private void updateWidgets() {
@@ -159,14 +140,14 @@ public abstract class AnvilScreenMixin extends ForgingScreen<AnvilScreenHandler>
 
 		//
 
-		int tagMenuX = this.x + 176 + 1;
-		int tagMenuY = this.y;
+		int tagMenuX = this.leftPos + 176 + 1;
+		int tagMenuY = this.topPos;
 		this.tagMenuWidget.setPosition(tagMenuX + 10, tagMenuY + 33);
 
-		ItemStack stackOne = this.handler.getSlot(0).getStack();
-		ItemStack stackTwo = this.handler.getSlot(2).getStack();
+		ItemStack stackOne = this.menu.getSlot(0).getItem();
+		ItemStack stackTwo = this.menu.getSlot(2).getItem();
 		ItemStack result = stackTwo.isEmpty() ? stackOne : stackTwo;
-		if (result.isOf(Items.TOTEM_OF_UNDYING)) {
+		if (result.is(Items.TOTEM_OF_UNDYING)) {
 			this.tagMenuWidget.updateButtons(result);
 			this.tagMenuWidget.updateCustomModelTagButtons(result);
 		}
@@ -181,74 +162,55 @@ public abstract class AnvilScreenMixin extends ForgingScreen<AnvilScreenHandler>
 		//
 
 		Vec2i pos = config.getTagButtonPos();
-		this.tagButtonWidget.setPosition(pos.getX() + this.x, pos.getY() + this.y);
-		this.tagButtonWidget.setOriginX(this.x);
-		this.tagButtonWidget.setOriginY(this.y);
+		this.tagButtonWidget.setPosition(pos.getX() + this.leftPos, pos.getY() + this.topPos);
+		this.tagButtonWidget.setOriginX(this.leftPos);
+		this.tagButtonWidget.setOriginY(this.topPos);
 	}
 
 	@WrapOperation(
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;fill(IIIII)V"),
-			method = "drawForeground"
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;fill(IIIII)V"),
+			method = "renderLabels"
 	)
-	private void swapBackgroundValue(DrawContext instance, int x1, int y1, int x2, int y2, int color, Operation<Void> original) {
+	private void swapBackgroundValue(GuiGraphics instance, int x1, int y1, int x2, int y2, int color, Operation<Void> original) {
 		if (!MyTotemDollConfig.getInstance().isModEnabled()) {
 			original.call(instance, x1, y1, x2, y2, color);
 			return;
 		}
-		original.call(instance, x1 - this.backgroundWidth + 176, y1, x2 - this.backgroundWidth + 176, y2, color);
+		original.call(instance, x1 - this.imageWidth + 176, y1, x2 - this.imageWidth + 176, y2, color);
 	}
 
 	@Inject(
 			at = @At("TAIL"),
-			method = "drawBackground"
+			method = "renderBg"
 	)
-	private void updateWidgetPositions(DrawContext context, float delta, int mouseX, int mouseY, CallbackInfo ci) {
+	private void updateWidgetPositions(GuiGraphics context, float delta, int mouseX, int mouseY, CallbackInfo ci) {
 		if (!MyTotemDollConfig.getInstance().isModEnabled()) {
 			return;
 		}
 		this.updateWidgets();
 		if (this.tagMenuWidget != null && this.tagMenuWidget.visible) {
-			int x = this.x + 176 + 1;
-			int y = this.y;
+			int x = this.leftPos + 176 + 1;
+			int y = this.topPos;
 			DrawUtils.drawTexture(context, TagMenuWidget.BACKGROUND, x, y, 0, 0, 50, 166, 50, 166);
 			DrawUtils.drawCenteredText(context, MyTotemDoll.text("tag_menu.title"), x + 9, y + 9 + 6 + 3, 32);
 		}
 	}
 
-	//? if >=1.21.6 {
+
 	@WrapOperation(
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTextWithShadow(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/Text;III)V"),
-			method = "drawForeground"
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;III)V"),
+			method = "renderLabels"
 	)
-	private void swapBackgroundValue(DrawContext instance, TextRenderer textRenderer, Text text, int x, int y, int color, Operation<Integer> original) {
+	private void swapBackgroundValue(GuiGraphics instance, Font textRenderer, Component text, int x, int y, int color, Operation<Integer> original) {
 		if (!MyTotemDollConfig.getInstance().isModEnabled()) {
 			original.call(instance, textRenderer, text, x, y, color);
 			return;
 		}
-		original.call(instance, textRenderer, text, x - this.backgroundWidth + 176, y, color);
+		original.call(instance, textRenderer, text, x - this.imageWidth + 176, y, color);
 	}
-	//?} else {
-	/*@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTextWithShadow(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/Text;III)I"), method = "drawForeground")
-	private int swapBackgroundValue(DrawContext instance, TextRenderer textRenderer, Text text, int x, int y, int color, Operation<Integer> original) {
-		if (!MyTotemDollConfig.getInstance().isModEnabled()) {
-			return original.call(instance, textRenderer, text, x, y, color);
-		}
-		return original.call(instance, textRenderer, text, x - this.backgroundWidth + 176, y, color);
-	}
-	*///?}
 
-	//? <1.21 {
-	/*@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V"), method = "drawInvalidRecipeArrow")
-	private void swapBackgroundValue(DrawContext instance, Identifier identifier, int x, int y, int a, int b, int c, int d, Operation<Void> original) {
-		if (!MyTotemDollConfig.getInstance().isModEnabled()) {
-			original.call(instance, identifier, x, y, a, b, c, d);
-		}
-		original.call(instance, identifier, x, y, a - this.backgroundWidth + 176, b, c, d);
-	}
-	*///?}
-
-	@Inject(at = @At("HEAD"), method = "onSlotUpdate")
-	private void checkTotem(ScreenHandler handler, int slotId, ItemStack stack, CallbackInfo ci) {
+	@Inject(at = @At("HEAD"), method = "slotChanged")
+	private void checkTotem(AbstractContainerMenu handler, int slotId, ItemStack stack, CallbackInfo ci) {
 		if (!MyTotemDollConfig.getInstance().isModEnabled() || this.tagButtonWidget == null || this.tagMenuWidget == null) {
 			return;
 		}
@@ -260,12 +222,12 @@ public abstract class AnvilScreenMixin extends ForgingScreen<AnvilScreenHandler>
 		}
 	}
 
-	@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getName()Lnet/minecraft/text/Text;"), method = "onSlotUpdate")
-	private Text swapItemName(ItemStack stack, Operation<Text> original) {
+	@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getHoverName()Lnet/minecraft/network/chat/Component;"), method = "slotChanged")
+	private Component swapItemName(ItemStack stack, Operation<Component> original) {
 		if (!MyTotemDollClient.canProcess(stack)) {
 			return original.call(stack);
 		}
-		Text customName = stack.getRealCustomName();
+		Component customName = stack.getRealCustomName();
 		if (customName == null) {
 			return original.call(stack);
 		}

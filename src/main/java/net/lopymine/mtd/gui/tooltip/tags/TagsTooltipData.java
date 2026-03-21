@@ -1,11 +1,7 @@
 package net.lopymine.mtd.gui.tooltip.tags;
 
-//? if >=1.21 {
-import net.minecraft.item.tooltip.TooltipData;
- //?} else {
-/*import net.minecraft.client.item.TooltipData;
-*///?}
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 
-public record TagsTooltipData(String tags) implements TooltipData {
+public record TagsTooltipData(String tags) implements TooltipComponent {
 
 }

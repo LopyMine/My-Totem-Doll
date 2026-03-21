@@ -1,11 +1,10 @@
 package net.lopymine.mtd.pack;
 
-import net.minecraft.resource.*;
-import net.minecraft.util.Identifier;
-
-import net.lopymine.mtd.MyTotemDoll;
-
 import java.util.*;
+import net.lopymine.mtd.MyTotemDoll;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.*;
+import net.minecraft.server.packs.resources.ResourceManager;
 
 public class TotemDollModelFinder {
 
@@ -21,15 +20,15 @@ public class TotemDollModelFinder {
 	}
 
 	public static void reload(ResourceManager resourceManager) {
-		List<ResourcePack> list = resourceManager.streamResourcePacks().filter(resourcePack -> resourcePack.getNamespaces(ResourceType.CLIENT_RESOURCES).contains(MyTotemDoll.MOD_ID)).toList();
+		List<PackResources> list = resourceManager.listPacks().filter(resourcePack -> resourcePack.getNamespaces(PackType.CLIENT_RESOURCES).contains(MyTotemDoll.MOD_ID)).toList();
 
 		FOUNDED_TOTEM_MODELS.clear();
-		for (ResourcePack pack : list) {
-			String packId = pack./*? if >=1.21 {*/getId()/*?} else {*//*getName()*//*?}*/.replace("file/", "");
-			if (packId.equals(MyTotemDoll.MOD_ID) /*? if =1.20.1 {*/ /*|| pack instanceof net.fabricmc.fabric.impl.resource.loader.FabricModResourcePack *//*?}*/) {
+		for (PackResources pack : list) {
+			String packId = pack.packId().replace("file/", "");
+			if (packId.equals(MyTotemDoll.MOD_ID)) {
 				continue;
 			}
-			pack.findResources(ResourceType.CLIENT_RESOURCES, MyTotemDoll.MOD_ID, "dolls", (id, input) -> {
+			pack.listResources(PackType.CLIENT_RESOURCES, MyTotemDoll.MOD_ID, "dolls", (id, input) -> {
 				if (!isModelPath(id)) {
 					return;
 				}

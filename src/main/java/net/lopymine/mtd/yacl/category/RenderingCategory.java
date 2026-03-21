@@ -4,7 +4,6 @@ import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.utils.OptionUtils;
 import lombok.Getter;
 import lombok.experimental.ExtensionMethod;
-
 import net.lopymine.mtd.config.MyTotemDollConfig;
 import net.lopymine.mtd.config.rendering.*;
 import net.lopymine.mtd.extension.SimpleOptionExtension;

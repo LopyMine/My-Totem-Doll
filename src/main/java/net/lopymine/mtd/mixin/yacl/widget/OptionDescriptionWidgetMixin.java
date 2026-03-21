@@ -38,7 +38,7 @@ public class OptionDescriptionWidgetMixin {
 	}
 
 	@Dynamic
-	@Inject(at = @At("TAIL"), method = /*? if >=1.21 {*/ "renderWidget" /*?} else {*/ /*"renderButton" *//*?}*/)
+	@Inject(at = @At("TAIL"), method = "renderWidget")
 	private void fixMaxScroll(CallbackInfo ci) {
 		if (this.targetScrollAmount > this.maxScrollAmount) {
 			this.targetScrollAmount = this.maxScrollAmount;

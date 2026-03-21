@@ -4,10 +4,9 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import dev.isxander.yacl3.api.YetAnotherConfigLib;
 import dev.isxander.yacl3.api.YetAnotherConfigLib.Builder;
 import dev.isxander.yacl3.impl.YetAnotherConfigLibImpl;
+import net.lopymine.mtd.utils.mixin.yacl.*;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
-
-import net.lopymine.mtd.utils.mixin.yacl.*;
 
 @Pseudo
 @Mixin(YetAnotherConfigLibImpl.BuilderImpl.class)

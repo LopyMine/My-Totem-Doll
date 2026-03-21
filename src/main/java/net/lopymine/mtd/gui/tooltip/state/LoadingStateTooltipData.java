@@ -1,13 +1,8 @@
 package net.lopymine.mtd.gui.tooltip.state;
 
-//? if >=1.21 {
-import net.minecraft.item.tooltip.TooltipData;
- //?} else {
-/*import net.minecraft.client.item.TooltipData;
-*///?}
-
 import net.lopymine.mtd.doll.data.LoadingState;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 
-public record LoadingStateTooltipData(LoadingState state) implements TooltipData {
+public record LoadingStateTooltipData(LoadingState state) implements TooltipComponent {
 
 }

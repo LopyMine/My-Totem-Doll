@@ -1,14 +1,13 @@
 package net.lopymine.mtd.mixin;
 
-//? if >=1.21.6 {
 import lombok.experimental.ExtensionMethod;
 import net.lopymine.mtd.doll.data.TotemDollData;
 import net.lopymine.mtd.doll.renderer.special.*;
 import net.lopymine.mtd.extension.ItemStackExtension;
 import net.minecraft.client.gui.render.GuiRenderer;
 import net.minecraft.client.gui.render.state.GuiRenderState;
-import net.minecraft.client.gui.render.state.special.SpecialGuiElementRenderState;
-import net.minecraft.client.render.VertexConsumerProvider.Immediate;
+import net.minecraft.client.gui.render.state.pip.PictureInPictureRenderState;
+import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -19,14 +18,14 @@ public class GuiRendererMixin {
 
 	@Shadow
 	@Final
-	GuiRenderState state;
+	GuiRenderState renderState;
 
 	@Shadow
 	@Final
-	private Immediate vertexConsumers;
+	private BufferSource bufferSource;
 
-	@Inject(at = @At("HEAD"), method = "prepareSpecialElement", cancellable = true)
-	private void renderDoll(SpecialGuiElementRenderState elementState, int windowScaleFactor, CallbackInfo ci) {
+	@Inject(at = @At("HEAD"), method = "preparePictureInPictureState", cancellable = true)
+	private void renderDoll(PictureInPictureRenderState elementState, int windowScaleFactor, CallbackInfo ci) {
 		if (!(elementState instanceof TotemDollRenderState totemDollRenderState)) {
 			return;
 		}
@@ -43,13 +42,13 @@ public class GuiRendererMixin {
 			return;
 		}
 
-		TotemDollGuiElementRenderer guiRenderer = data.getGuiRenderer(this.vertexConsumers);
+		TotemDollGuiElementRenderer guiRenderer = data.getGuiRenderer(this.bufferSource);
 		guiRenderer.setActive(true);
-		guiRenderer.render(totemDollRenderState, this.state, windowScaleFactor);
+		guiRenderer.prepare(totemDollRenderState, this.renderState, windowScaleFactor);
 		ci.cancel();
 	}
 
-	@Inject(at = @At(value = "TAIL"), method = "prepareSpecialElements")
+	@Inject(at = @At(value = "TAIL"), method = "preparePictureInPicture")
 	private void clearUnusedRenderers(CallbackInfo ci) {
 		TotemDollGuiElementRenderer.clearUnusedRenderers();
 	}
@@ -60,5 +59,3 @@ public class GuiRendererMixin {
 	}
 
 }
-
-//?}

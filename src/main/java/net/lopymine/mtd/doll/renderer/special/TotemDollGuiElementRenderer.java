@@ -1,7 +1,6 @@
 package net.lopymine.mtd.doll.renderer.special;
 
-//? if >=1.21.6 {
-
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.*;
 import lombok.*;
 import lombok.experimental.ExtensionMethod;
@@ -12,29 +11,26 @@ import net.lopymine.mtd.doll.data.TotemDollRenderProperties;
 import net.lopymine.mtd.doll.renderer.*;
 import net.lopymine.mtd.extension.ItemStackExtension;
 import net.lopymine.mtd.utils.LightningUtils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.ScreenRect;
-import net.minecraft.client.gui.render.SpecialGuiElementRenderer;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.VertexConsumerProvider.Immediate;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
+import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import org.jetbrains.annotations.NotNull;
 
 @Getter
 @Setter
 @ExtensionMethod(ItemStackExtension.class)
-public class TotemDollGuiElementRenderer extends SpecialGuiElementRenderer<TotemDollRenderState> {
+public class TotemDollGuiElementRenderer extends PictureInPictureRenderer<TotemDollRenderState> {
 
 	public static final Map<TotemDollRenderProperties, TotemDollGuiElementRenderer> PROPERTIES_RENDERERS = new HashMap<>();
 
 	private boolean active;
 
-	public TotemDollGuiElementRenderer(Immediate vertexConsumers) {
+	public TotemDollGuiElementRenderer(BufferSource vertexConsumers) {
 		super(vertexConsumers);
 	}
 
 	@NotNull
-	public static TotemDollGuiElementRenderer getRenderer(TotemDollRenderProperties renderProperties, Immediate immediate) {
+	public static TotemDollGuiElementRenderer getRenderer(TotemDollRenderProperties renderProperties, BufferSource immediate) {
 		TotemDollGuiElementRenderer renderer = PROPERTIES_RENDERERS.get(renderProperties.copy());
 		if (renderer == null) {
 			TotemDollGuiElementRenderer createdRenderer = new TotemDollGuiElementRenderer(immediate);
@@ -67,16 +63,16 @@ public class TotemDollGuiElementRenderer extends SpecialGuiElementRenderer<Totem
 	}
 
 	@Override
-	protected void render(TotemDollRenderState state, MatrixStack matrices) {
+	protected void renderToTexture(TotemDollRenderState state, PoseStack matrices) {
 		if (state.renderContext() == DollRenderContext.D_PREVIEW && state.data() != null) {
-			TotemDollRenderer.renderDataPreview(matrices, this.vertexConsumers, this.vertexConsumers::draw, state.size() + 1, state.data());
+			TotemDollRenderer.renderDataPreview(matrices, this.bufferSource, this.bufferSource::endBatch, state.size() + 1, state.data());
 		} else if (state.stack() != null) {
 			LightningUtils.disable3dLighting();
-			matrices.push();
+			matrices.pushPose();
 			matrices.scale(16F, -16F, -16F);
-			TotemDollRenderer.renderDoll(matrices, state.stack(), state.renderContext(), this.vertexConsumers, 15728880, OverlayTexture.DEFAULT_UV);
-			matrices.pop();
-			this.vertexConsumers.draw();
+			TotemDollRenderer.renderDoll(matrices, state.stack(), state.renderContext(), this.bufferSource, 15728880, OverlayTexture.NO_OVERLAY);
+			matrices.popPose();
+			this.bufferSource.endBatch();
 			LightningUtils.enable3dLighting();
 
 			if (state.stack().hasModdedModel()) {
@@ -86,18 +82,17 @@ public class TotemDollGuiElementRenderer extends SpecialGuiElementRenderer<Totem
 	}
 
 	@Override
-	public Class<TotemDollRenderState> getElementClass() {
+	public Class<TotemDollRenderState> getRenderStateClass() {
 		return TotemDollRenderState.class;
 	}
 
 	@Override
-	protected String getName() {
+	protected String getTextureLabel() {
 		return "%s-doll-special-gui-renderer".formatted(MyTotemDoll.MOD_ID);
 	}
 
 	@Override
-	protected float getYOffset(int height, int windowScaleFactor) {
+	protected float getTranslateY(int height, int windowScaleFactor) {
 		return height / 2F;
 	}
 }
-//?}

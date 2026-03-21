@@ -1,7 +1,7 @@
 package net.lopymine.mtd.atlas;
 
 import lombok.*;
-import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import org.jetbrains.annotations.NotNull;
 
 @Getter
@@ -10,11 +10,11 @@ import org.jetbrains.annotations.NotNull;
 public class LockableAtlasTexture {
 
 	@NotNull
-	private SpriteAtlasTexture atlas;
+	private TextureAtlas atlas;
 	private boolean locked;
 	private Runnable unlockHook;
 
-	public LockableAtlasTexture(@NotNull SpriteAtlasTexture atlas) {
+	public LockableAtlasTexture(@NotNull TextureAtlas atlas) {
 		this.atlas = atlas;
 	}
 

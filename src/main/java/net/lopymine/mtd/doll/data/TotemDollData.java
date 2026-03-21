@@ -1,23 +1,15 @@
 package net.lopymine.mtd.doll.data;
 
-import lombok.*;
-import net.lopymine.mtd.model.bb.manager.BlockBenchModelManager;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-
-//? if >=1.21.9 {
-import net.minecraft.entity.player.SkinTextures;
-import net.minecraft.entity.player.PlayerSkinType;
-import net.minecraft.util.AssetInfo.TextureAsset;
 import java.util.Optional;
-//?} elif >=1.21 {
-/*import net.minecraft.client.util.SkinTextures;
-import net.minecraft.client.util.SkinTextures.*;
-*///?}
-import net.minecraft.util.Identifier;
-
+import lombok.*;
 import net.lopymine.mtd.doll.model.TotemDollModel;
+import net.lopymine.mtd.doll.renderer.special.TotemDollGuiElementRenderer;
 import net.lopymine.mtd.model.base.MModel;
-
+import net.lopymine.mtd.model.bb.manager.BlockBenchModelManager;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.core.ClientAsset.Texture;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.player.*;
 import org.jetbrains.annotations.*;
 
 @Getter
@@ -137,29 +129,16 @@ public class TotemDollData {
 		this.renderProperties.setFrameSprites(frameSprites);
 	}
 
-	public void setFrameSprites(@Nullable AbstractClientPlayerEntity playerEntity) {
+	public void setFrameSprites(@Nullable AbstractClientPlayer playerEntity) {
 		if (playerEntity == null) {
 			return;
 		}
 
-		//? if >=1.21.9 {
-		SkinTextures skinTextures = playerEntity.getSkin();
+		PlayerSkin skinTextures = playerEntity.getSkin();
 		Identifier skinTexture = skinTextures.body().texturePath();
-		Identifier capeTexture = Optional.of(skinTextures).map(SkinTextures::cape).map(TextureAsset::texturePath).orElse(null);
-		Identifier elytraTexture = Optional.of(skinTextures).map(SkinTextures::cape).map(TextureAsset::texturePath).orElse(null);
-		boolean slim = skinTextures.model() == PlayerSkinType.SLIM;
-		//?} elif >=1.21 {
-		/*SkinTextures skinTextures = playerEntity.getSkinTextures();
-		Identifier skinTexture = skinTextures.texture();
-		Identifier capeTexture = skinTextures.capeTexture();
-		Identifier elytraTexture = skinTextures.elytraTexture();
-		boolean slim = skinTextures.model() == SkinTextures.Model.SLIM;
-		*///?} else {
-		/*Identifier skinTexture = playerEntity.getSkinTexture();
-		Identifier capeTexture = playerEntity.getCapeTexture();
-		Identifier elytraTexture = playerEntity.getElytraTexture();
-		boolean slim = playerEntity.getModel().equalsIgnoreCase("slim");
-		*///?}
+		Identifier capeTexture = Optional.of(skinTextures).map(PlayerSkin::cape).map(Texture::texturePath).orElse(null);
+		Identifier elytraTexture = Optional.of(skinTextures).map(PlayerSkin::cape).map(Texture::texturePath).orElse(null);
+		boolean slim = skinTextures.model() == PlayerModelType.SLIM;
 
 		this.renderProperties.setFrameSprites(skinTexture, capeTexture, elytraTexture, slim, true);
 	}
@@ -190,10 +169,10 @@ public class TotemDollData {
 		return this;
 	}
 
-	//? if >=1.21.6 {
+
 	@NotNull
-	public net.lopymine.mtd.doll.renderer.special.TotemDollGuiElementRenderer getGuiRenderer(net.minecraft.client.render.VertexConsumerProvider.Immediate immediate) {
-		return net.lopymine.mtd.doll.renderer.special.TotemDollGuiElementRenderer.getRenderer(this.renderProperties, immediate);
+	public TotemDollGuiElementRenderer getGuiRenderer(net.minecraft.client.renderer.MultiBufferSource.BufferSource immediate) {
+		return TotemDollGuiElementRenderer.getRenderer(this.renderProperties, immediate);
 	}
-	//?}
+
 }

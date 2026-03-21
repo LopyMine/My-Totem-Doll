@@ -1,9 +1,7 @@
 package net.lopymine.mtd.modmenu;
 
 import com.terraformersmc.modmenu.api.*;
-
 import net.fabricmc.loader.api.*;
-
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.yacl.YACLConfigurationScreen;

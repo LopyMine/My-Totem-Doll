@@ -1,12 +1,11 @@
 package net.lopymine.mtd.mixin;
 
-//? if >=1.21.9 {
 import net.lopymine.mtd.utils.mixin.ItemRenderStateWithStack;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ItemPickupParticle;
-import net.minecraft.client.render.entity.state.*;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.*;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.renderer.entity.state.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -15,11 +14,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ItemPickupParticleMixin {
 
 	@Inject(at = @At("TAIL"), method = "<init>")
-	private void markClear(ClientWorld world, EntityRenderState renderState, Entity collector, Vec3d velocity, CallbackInfo ci) {
-		if (renderState instanceof ItemStackEntityRenderState state) {
-			((ItemRenderStateWithStack) state.itemRenderState).myTotemDoll$shouldClear(false);
+	private void markClear(ClientLevel world, EntityRenderState renderState, Entity collector, Vec3 velocity, CallbackInfo ci) {
+		if (renderState instanceof ItemClusterRenderState state) {
+			((ItemRenderStateWithStack) state.item).myTotemDoll$shouldClear(false);
 		}
 	}
 
 }
-//?}

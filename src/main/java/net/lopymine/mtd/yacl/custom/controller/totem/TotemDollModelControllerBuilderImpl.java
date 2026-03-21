@@ -1,7 +1,7 @@
 package net.lopymine.mtd.yacl.custom.controller.totem;
 
 import dev.isxander.yacl3.api.*;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 public class TotemDollModelControllerBuilderImpl implements TotemDollModelControllerBuilder {
 

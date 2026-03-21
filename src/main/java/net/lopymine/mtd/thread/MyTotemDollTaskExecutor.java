@@ -1,6 +1,6 @@
 package net.lopymine.mtd.thread;
 
-import java.util.*;
+import java.util.List;
 import java.util.concurrent.*;
 import net.lopymine.mtd.config.MyTotemDollConfig;
 

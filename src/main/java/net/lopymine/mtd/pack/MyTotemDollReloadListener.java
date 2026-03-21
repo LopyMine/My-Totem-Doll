@@ -1,76 +1,45 @@
 package net.lopymine.mtd.pack;
 
 import java.util.concurrent.*;
-import net.lopymine.mtd.atlas.manager.*;
-import net.minecraft.resource.*;
-import net.minecraft.util.*;
-import net.fabricmc.fabric.api.resource.*;
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.lopymine.mtd.MyTotemDoll;
+import net.lopymine.mtd.atlas.manager.*;
 import net.lopymine.mtd.model.bb.manager.BlockBenchModelManager;
 import net.lopymine.mtd.tag.manager.TagsManager;
-import net.minecraft.util.profiler.*;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.*;
+import net.minecraft.util.Unit;
+import net.minecraft.util.profiling.*;
 
-//? if >=1.21.9 {
-import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
-//?}
-
-public class MyTotemDollReloadListener implements /*? if >=1.21.9 {*/ ResourceReloader /*?} else {*/ /*IdentifiableResourceReloadListener *//*?}*/ {
+public class MyTotemDollReloadListener implements PreparableReloadListener {
 
 	public static void register() {
-		//? if >=1.21.9 {
-		ResourceLoader.get(ResourceType.CLIENT_RESOURCES).registerReloader(getFabricId(), new MyTotemDollReloadListener());
-		//?} else {
-		/*ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new MyTotemDollReloadListener());
-		 *///?}
+		ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloader(getFabricId(), new MyTotemDollReloadListener());
 	}
 
-	/*? if <=1.21.8 {*//*@Override*//*?}*/
-	public /*? if >=1.21.9 {*/ static /*?}*/ Identifier getFabricId() {
+	public static Identifier getFabricId() {
 		return MyTotemDoll.id("%s-reload-listener".formatted(MyTotemDoll.MOD_ID));
 	}
 
-	//? if >=1.21.9 {
 	@Override
-	public CompletableFuture<Void> reload(Store store, Executor prepareExecutor, Synchronizer synchronizer, Executor applyExecutor) {
-		return synchronizer.whenPrepared(Unit.INSTANCE).thenRunAsync(() -> {
-			Profiler profiler = Profilers.get();
+	public CompletableFuture<Void> reload(SharedState store, Executor prepareExecutor, PreparationBarrier synchronizer, Executor applyExecutor) {
+		return synchronizer.wait(Unit.INSTANCE).thenRunAsync(() -> {
+			ProfilerFiller profiler = Profiler.get();
 			profiler.push("listener");
-			this.reloadStuff(synchronizer, store.getResourceManager(), prepareExecutor, applyExecutor);
+			this.reloadStuff(synchronizer, store.resourceManager(), prepareExecutor, applyExecutor);
 			profiler.pop();
 		}, applyExecutor);
 	}
-	//?} elif >=1.21.2 {
-	/*@Override
-	public CompletableFuture<Void> reload(Synchronizer synchronizer, ResourceManager manager, Executor prepareExecutor, Executor applyExecutor) {
-		return synchronizer.whenPrepared(Unit.INSTANCE).thenRunAsync(() -> {
-			Profiler profiler = Profilers.get();
-			profiler.push("listener");
-			this.reloadStuff(synchronizer, manager, prepareExecutor, applyExecutor);
-			profiler.pop();
-		}, applyExecutor);
-	}
-	*///?} else {
-	/*@Override
-	public CompletableFuture<Void> reload(ResourceReloader.Synchronizer synchronizer, ResourceManager manager, Profiler prepareProfiler, Profiler applyProfiler, Executor prepareExecutor, Executor applyExecutor) {
-		return synchronizer.whenPrepared(Unit.INSTANCE).thenRunAsync(() -> {
-			applyProfiler.startTick();
-			applyProfiler.push("listener");
-			this.reloadStuff(synchronizer, manager, prepareExecutor, applyExecutor);
-			applyProfiler.pop();
-			applyProfiler.endTick();
-		}, applyExecutor);
-	}
 
-	*///?}
-
-	private void reloadStuff(Synchronizer synchronizer, ResourceManager resourceManager, Executor prepareExecutor, Executor applyExecutor) {
+	private void reloadStuff(PreparationBarrier synchronizer, ResourceManager resourceManager, Executor prepareExecutor, Executor applyExecutor) {
 		this.reloadAtlas(synchronizer, prepareExecutor, applyExecutor);
 		BlockBenchModelManager.reload();
 		TotemDollModelFinder.reload(resourceManager);
 		TagsManager.reloadCustomModelIdsTags();
 	}
 
-	private void reloadAtlas(Synchronizer synchronizer, Executor prepareExecutor, Executor applyExecutor) {
+	private void reloadAtlas(PreparationBarrier synchronizer, Executor prepareExecutor, Executor applyExecutor) {
 		MyTotemDollAtlasSpriteManager.reload();
 		MyTotemDollAtlasManager.stitchAndUpdate(MyTotemDollAtlasSpriteManager.getSprites(), synchronizer, prepareExecutor, applyExecutor, null);
 	}

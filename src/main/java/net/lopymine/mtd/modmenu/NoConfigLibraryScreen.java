@@ -1,15 +1,15 @@
 package net.lopymine.mtd.modmenu;
 
 import com.google.common.collect.Sets;
-import net.minecraft.SharedConstants;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.*;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.util.Util;
-import net.lopymine.mtd.client.MyTotemDollClient;
-import net.lopymine.mtd.utils.ModMenuUtils;
 import java.net.*;
 import java.util.*;
+import net.lopymine.mtd.client.MyTotemDollClient;
+import net.lopymine.mtd.utils.ModMenuUtils;
+import net.minecraft.SharedConstants;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.*;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.util.Util;
 import org.jetbrains.annotations.*;
 
 public class NoConfigLibraryScreen {
@@ -23,13 +23,13 @@ public class NoConfigLibraryScreen {
 
 	@Contract("_ -> new")
 	public static @NotNull Screen createScreen(Screen parent) {
-		return new ConfirmScreen((open) -> NoConfigLibraryScreen.onConfirm(open, parent), ModMenuUtils.getModTitle(), ModMenuUtils.getNoConfigScreenMessage(), ScreenTexts.CONTINUE, ScreenTexts.BACK);
+		return new ConfirmScreen((open) -> NoConfigLibraryScreen.onConfirm(open, parent), ModMenuUtils.getModTitle(), ModMenuUtils.getNoConfigScreenMessage(), CommonComponents.GUI_CONTINUE, CommonComponents.GUI_BACK);
 	}
 
 	private static void onConfirm(boolean open, Screen parent) {
 		if (open) {
 			try {
-				String url = NoConfigLibraryScreen.YACL_MODRINTH_LINK + SharedConstants.getGameVersion()./*? if >=1.21.6 {*/ name() /*?} else {*//*getName()*//*?}*/;
+				String url = NoConfigLibraryScreen.YACL_MODRINTH_LINK + SharedConstants.getCurrentVersion().name();
 				URI link = new URI(url);
 				String string = link.getScheme();
 				if (string == null) {
@@ -38,16 +38,16 @@ public class NoConfigLibraryScreen {
 				if (!NoConfigLibraryScreen.ALLOWED_PROTOCOLS.contains(string.toLowerCase(Locale.ROOT))) {
 					throw new URISyntaxException(url, "Unsupported protocol: " + string.toLowerCase(Locale.ROOT));
 				}
-				Util.getOperatingSystem().open(link);
+				Util.getPlatform().openUri(link);
 			} catch (URISyntaxException e) {
 				MyTotemDollClient.LOGGER.error("Can't open YACL Modrinth page:", e);
 			}
 		} else {
-			MinecraftClient.getInstance().setScreen(parent);
+			Minecraft.getInstance().setScreen(parent);
 		}
 	}
 
 	public static Screen createScreenAboutOldVersion(Screen parent, String version) {
-		return new ConfirmScreen((open) -> NoConfigLibraryScreen.onConfirm(open, parent), ModMenuUtils.getModTitle(), ModMenuUtils.getOldConfigScreenMessage(version), ScreenTexts.CONTINUE, ScreenTexts.BACK);
+		return new ConfirmScreen((open) -> NoConfigLibraryScreen.onConfirm(open, parent), ModMenuUtils.getModTitle(), ModMenuUtils.getOldConfigScreenMessage(version), CommonComponents.GUI_CONTINUE, CommonComponents.GUI_BACK);
 	}
 }

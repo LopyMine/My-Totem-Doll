@@ -1,5 +1,6 @@
 package net.lopymine.mtd.optimization;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.*;
 import lombok.experimental.ExtensionMethod;
 import net.lopymine.mtd.atlas.LockableAtlasTexture;
@@ -9,25 +10,17 @@ import net.lopymine.mtd.doll.data.*;
 import net.lopymine.mtd.doll.model.TotemDollModel;
 import net.lopymine.mtd.doll.renderer.*;
 import net.lopymine.mtd.extension.MatrixStackEntryExtension;
-import net.lopymine.mtd.utils.*;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.render.*;
-import net.minecraft.client.render.VertexConsumerProvider.Immediate;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
 import org.jetbrains.annotations.Nullable;
-import org.joml.*;
 
 @ExtensionMethod(MatrixStackEntryExtension.class)
 public class TotemDollRenderRequestsCollector {
 
 	private static final TotemDollRenderRequestsCollector INSTANCE = new TotemDollRenderRequestsCollector();
-
-	public static TotemDollRenderRequestsCollector getInstance() {
-		return INSTANCE;
-	}
-
-	private final MatrixStack matrices = new MatrixStack();
+	private final PoseStack matrices = new PoseStack();
 	private final List<TotemDollRenderRequest> requests = new ArrayList<>();
 	private final TotemDollRenderProperties tempProperties = new TotemDollRenderProperties();
 
@@ -35,9 +28,13 @@ public class TotemDollRenderRequestsCollector {
 
 	}
 
-	public void requestRender(MatrixStack matrices, TotemDollData data, AbstractClientPlayerEntity holdingPlayer, DollRenderContext context, int light, int overlay, int outlineColor, @Nullable VertexConsumerProvider provider) {
-		MatrixStack.Entry entry = matrices.peek();
-		this.requests.add(new TotemDollRenderRequest(/*? if >=1.21 {*/ entry.copy() /*?} else {*/ /*new MatrixStack.Entry(new Matrix4f(entry.getPositionMatrix()), new Matrix3f(entry.getNormalMatrix())) *//*?}*/, data, data.getRenderProperties().copy(), holdingPlayer, context, light, overlay, outlineColor, provider));
+	public static TotemDollRenderRequestsCollector getInstance() {
+		return INSTANCE;
+	}
+
+	public void requestRender(PoseStack matrices, TotemDollData data, AbstractClientPlayer holdingPlayer, DollRenderContext context, int light, int overlay, int outlineColor, @Nullable MultiBufferSource provider) {
+		PoseStack.Pose entry = matrices.last();
+		this.requests.add(new TotemDollRenderRequest(entry.copy(), data, data.getRenderProperties().copy(), holdingPlayer, context, light, overlay, outlineColor, provider));
 	}
 
 	public void render() {
@@ -48,22 +45,22 @@ public class TotemDollRenderRequestsCollector {
 		}
 		atlasTexture.setLocked(true);
 
-		Immediate mainProvider = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
-		OutlineVertexConsumerProvider outlineProvider = MinecraftClient.getInstance().getBufferBuilders().getOutlineVertexConsumers();
+		BufferSource mainProvider = Minecraft.getInstance().renderBuffers().bufferSource();
+		OutlineBufferSource outlineProvider = Minecraft.getInstance().renderBuffers().outlineBufferSource();
 
 		for (TotemDollRenderRequest request : this.requests) {
 			this.renderRequest(request, request.provider() == null ? mainProvider : request.provider(), outlineProvider);
 		}
 
 		this.requests.clear();
-		mainProvider.drawCurrentLayer();
+		mainProvider.endLastBatch();
 		// We should draw this before unlocking, to make sure that atlas won't be changed earlier than the draw call
 		atlasTexture.setLocked(false);
 	}
 
-	private void renderRequest(TotemDollRenderRequest request, VertexConsumerProvider mainProvider, @SuppressWarnings("unused") OutlineVertexConsumerProvider outlineProvider) {
-		this.matrices.push();
-		this.matrices.peek().copyFrom(request.copyPeek());
+	private void renderRequest(TotemDollRenderRequest request, MultiBufferSource mainProvider, @SuppressWarnings("unused") OutlineBufferSource outlineProvider) {
+		this.matrices.pushPose();
+		this.matrices.last().copyFrom(request.copyPeek());
 
 		TotemDollData data = request.data();
 		this.tempProperties.copyFrom(data.getRenderProperties());
@@ -75,16 +72,16 @@ public class TotemDollRenderRequestsCollector {
 		data.getRenderProperties().applyToModel(modelToRender);
 
 		TotemDollRenderer.renderDoll(this.matrices, data, request.holdingPlayer(), request.context(), mainProvider, request.light(), request.overlay());
-		//? if >=1.21.9 {
+
 		int argb = request.outlineColor();
 		if (argb != 0) {
 			outlineProvider.setColor(argb);
 			TotemDollRenderer.renderDoll(this.matrices, data, request.holdingPlayer(), request.context(), outlineProvider, request.light(), request.overlay());
-		}//?}
+		}
 
 		data.getRenderProperties().copyFrom(this.tempProperties);
 
-		this.matrices.pop();
+		this.matrices.popPose();
 	}
 
 }

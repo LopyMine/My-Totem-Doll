@@ -1,0 +1,32 @@
+accessWidener v2 named
+# 1.21.11 AW
+
+accessible field net/minecraft/client/gui/screens/Screen font Lnet/minecraft/client/gui/Font;
+accessible field net/minecraft/client/gui/screens/Screen minecraft Lnet/minecraft/client/Minecraft;
+
+extendable class net/minecraft/world/item/ItemStack
+
+accessible field net/minecraft/client/model/geom/ModelPart$Cube polygons [Lnet/minecraft/client/model/geom/ModelPart$Polygon;
+mutable field net/minecraft/client/model/geom/ModelPart$Cube polygons [Lnet/minecraft/client/model/geom/ModelPart$Polygon;
+
+extendable class net/minecraft/client/model/geom/ModelPart
+accessible method net/minecraft/client/model/geom/ModelPart compile (Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lcom/mojang/blaze3d/vertex/VertexConsumer;III)V
+
+accessible field net/minecraft/client/renderer/texture/SpriteContents originalImage Lcom/mojang/blaze3d/platform/NativeImage;
+
+accessible field com/mojang/blaze3d/vertex/PoseStack$Pose trustedNormals Z
+accessible field net/minecraft/client/renderer/texture/TextureManager byPath Ljava/util/Map;
+
+accessible field com/mojang/blaze3d/platform/NativeImage pixels J
+
+accessible method net/minecraft/client/renderer/texture/SpriteLoader stitch (Ljava/util/List;ILjava/util/concurrent/Executor;)Lnet/minecraft/client/renderer/texture/SpriteLoader$Preparations;
+accessible class net/minecraft/client/gui/components/AbstractSelectionList$Entry
+
+accessible field net/minecraft/world/item/ItemStack item Lnet/minecraft/world/item/Item;
+accessible field net/minecraft/world/item/ItemStack components Lnet/minecraft/core/component/PatchedDataComponentMap;
+
+accessible class net/minecraft/client/renderer/ItemInHandRenderer$HandRenderSelection
+
+extendable method net/minecraft/client/gui/components/AbstractButton renderWidget (Lnet/minecraft/client/gui/GuiGraphics;IIF)V
+
+accessible field net/minecraft/client/gui/components/AbstractSelectionList children Ljava/util/List;

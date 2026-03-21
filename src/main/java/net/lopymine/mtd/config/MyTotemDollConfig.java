@@ -1,27 +1,20 @@
 package net.lopymine.mtd.config;
 
-import com.google.gson.*;
-import lombok.*;
-
-
-import net.lopymine.mtd.utils.*;
-import net.minecraft.util.Identifier;
-import org.slf4j.*;
-import com.mojang.serialization.*;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.fabricmc.loader.api.FabricLoader;
-import net.lopymine.mtd.MyTotemDoll;
-import net.lopymine.mtd.client.MyTotemDollClient;
-import net.lopymine.mtd.config.rendering.*;
-import net.lopymine.mtd.config.totem.*;
-import net.lopymine.mtd.config.other.vector.Vec2i;
-import net.lopymine.mtd.doll.model.TotemDollModel;
-import java.io.*;
-import java.nio.charset.StandardCharsets;
+import java.io.File;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import org.jetbrains.annotations.NotNull;
-
+import lombok.*;
+import net.fabricmc.loader.api.FabricLoader;
+import net.lopymine.mtd.MyTotemDoll;
+import net.lopymine.mtd.config.other.vector.Vec2i;
+import net.lopymine.mtd.config.rendering.RenderingConfig;
+import net.lopymine.mtd.config.totem.*;
+import net.lopymine.mtd.doll.model.TotemDollModel;
+import net.lopymine.mtd.utils.*;
+import net.minecraft.resources.Identifier;
+import org.slf4j.*;
 import static net.lopymine.mtd.utils.CodecUtils.option;
 
 @Getter

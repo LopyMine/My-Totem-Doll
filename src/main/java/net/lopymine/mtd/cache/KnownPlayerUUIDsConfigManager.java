@@ -33,5 +33,5 @@ public class KnownPlayerUUIDsConfigManager {
 	public static void save() {
 		requestedSave = true;
 	}
-	
+
 }

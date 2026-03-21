@@ -1,55 +1,17 @@
 package net.lopymine.mtd.extension;
 
 import dev.isxander.yacl3.api.*;
-
-import net.fabricmc.loader.api.*;
-import net.fabricmc.loader.impl.util.version.StringVersion;
-
-import java.util.*;
+import dev.isxander.yacl3.api.ListOption.Builder;
+import java.util.List;
 
 public class YACLAPIExtension {
 
-	private static final String STATE_MANAGER_VERSION = "3.6.0";
-
-	public static <A> ListOption.Builder<A> bindingE(ListOption.Builder<A> builder, Binding<List<A>> binding, boolean instant) {
-		Version currentYACLVersion = getCurrentYACLVersion();
-
-		if (currentYACLVersion.compareTo(getVersion(STATE_MANAGER_VERSION)) >= 0) {
-			builder.state(instant ? StateManager.createInstant(binding) : StateManager.createSimple(binding));
-		} else {
-			builder.binding(binding);
-			//builder.instant(instant);
-		}
-
-		return builder;
+	public static <A> void bindingE(Builder<A> builder, Binding<List<A>> binding, boolean instant) {
+		builder.state(instant ? StateManager.createInstant(binding) : StateManager.createSimple(binding));
 	}
 
-	public static <A> Option.Builder<A> bindingE(Option.Builder<A> builder, Binding<A> binding, boolean instant) {
-		Version currentYACLVersion = getCurrentYACLVersion();
-
-		if (currentYACLVersion.compareTo(getVersion(STATE_MANAGER_VERSION)) >= 0) {
-			builder.stateManager(instant ? StateManager.createInstant(binding) : StateManager.createSimple(binding));
-		} else {
-			builder.binding(binding);
-			builder.instant(instant);
-		}
-
-		return builder;
+	public static <A> void bindingE(Option.Builder<A> builder, Binding<A> binding, boolean instant) {
+		builder.stateManager(instant ? StateManager.createInstant(binding) : StateManager.createSimple(binding));
 	}
 
-	private static Version getCurrentYACLVersion() {
-		return FabricLoader.getInstance().getModContainer("yet_another_config_lib_v3").orElseThrow(
-				() -> new NoSuchElementException(
-						"Failed to find Yet Another Config Lib [YACL], this shouldn't happen! Please report this crash to discord server of My Totem Doll mod!"
-				)
-		).getMetadata().getVersion();
-	}
-
-	private static Version getVersion(String version) {
-		try {
-			return Version.parse(version);
-		} catch (Exception ignored) {
-			return new StringVersion("1.0.0");
-		}
-	}
 }

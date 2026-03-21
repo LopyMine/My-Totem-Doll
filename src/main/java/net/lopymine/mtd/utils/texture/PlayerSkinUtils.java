@@ -1,25 +1,16 @@
 package net.lopymine.mtd.utils.texture;
 
+import com.mojang.blaze3d.platform.NativeImage;
+import java.io.IOException;
 import java.net.*;
-import lombok.experimental.ExtensionMethod;
-import net.lopymine.mtd.atlas.RemappedAtlasSprite;
-import net.lopymine.mtd.atlas.manager.*;
-import net.lopymine.mtd.doll.data.*;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.texture.*;
-import net.minecraft.util.Identifier;
-
+import net.lopymine.mtd.atlas.manager.MyTotemDollAtlasSpriteManager;
 import net.lopymine.mtd.client.MyTotemDollClient;
-
-import java.io.*;
-import java.nio.file.*;
-import net.minecraft.util.math.ColorHelper;
-import org.jetbrains.annotations.*;
-
-import net.lopymine.mtd.atlas.manager.*;
-import net.lopymine.mtd.config.totem.TotemDollArmsType;
 import net.lopymine.mtd.doll.data.*;
-import net.lopymine.mtd.thread.MyTotemDollTaskExecutor;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
+import net.minecraft.world.entity.player.PlayerSkin;
+import org.jetbrains.annotations.*;
 
 public class PlayerSkinUtils {
 
@@ -47,7 +38,7 @@ public class PlayerSkinUtils {
 
 		NativeImage image;
 		try {
-			connection = (HttpURLConnection) currentUri.toURL().openConnection(MinecraftClient.getInstance().getNetworkProxy());
+			connection = (HttpURLConnection) currentUri.toURL().openConnection(Minecraft.getInstance().getProxy());
 			connection.setDoInput(true);
 			connection.setDoOutput(false);
 			connection.connect();
@@ -112,13 +103,12 @@ public class PlayerSkinUtils {
 		return image;
 	}
 
-	//? if >=1.21.2 {
 	@SuppressWarnings("all")
 	private static void stripColor(NativeImage image, int x1, int y1, int x2, int y2) {
 		for (int i = x1; i < x2; ++i) {
 			for (int j = y1; j < y2; ++j) {
-				int k = image.getColorArgb(i, j);
-				if (ColorHelper.getAlpha(k) < 128) {
+				int k = image.getPixel(i, j);
+				if (ARGB.alpha(k) < 128) {
 					return;
 				}
 			}
@@ -126,7 +116,7 @@ public class PlayerSkinUtils {
 
 		for (int i = x1; i < x2; ++i) {
 			for (int j = y1; j < y2; ++j) {
-				image.setColorArgb(i, j, image.getColorArgb(i, j) & 16777215);
+				image.setPixel(i, j, image.getPixel(i, j) & 16777215);
 			}
 		}
 	}
@@ -135,82 +125,19 @@ public class PlayerSkinUtils {
 	private static void stripAlpha(NativeImage image, int x1, int y1, int x2, int y2) {
 		for (int i = x1; i < x2; ++i) {
 			for (int j = y1; j < y2; ++j) {
-				image.setColorArgb(i, j, ColorHelper.fullAlpha(image.getColorArgb(i, j)));
+				image.setPixel(i, j, ARGB.opaque(image.getPixel(i, j)));
 			}
 		}
 	}
-	//?} else {
-	/*@SuppressWarnings("all")
-	private static void stripColor(NativeImage image, int x1, int y1, int x2, int y2) {
-		for(int i = x1; i < x2; ++i) {
-			for(int j = y1; j < y2; ++j) {
-				int k = image.getColor(i, j);
-				if ((k >> 24 & 255) < 128) {
-					return;
-				}
-			}
-		}
 
-		for(int i = x1; i < x2; ++i) {
-			for(int j = y1; j < y2; ++j) {
-				image.setColor(i, j, image.getColor(i, j) & 16777215);
-			}
-		}
-
-	}
-
-	@SuppressWarnings("all")
-	private static void stripAlpha(NativeImage image, int x1, int y1, int x2, int y2) {
-		for(int i = x1; i < x2; ++i) {
-			for(int j = y1; j < y2; ++j) {
-				image.setColor(i, j, image.getColor(i, j) | -16777216);
-			}
-		}
-
-	}
-	*///?}
 
 	public static void setupClientTextures(TotemDollData data) {
-		//? if >=1.21 {
-		MinecraftClient.getInstance().getSkinProvider().fetchSkinTextures(MinecraftClient.getInstance().getGameProfile()).thenAccept((/*? if >=1.21.4 {*/ optional /*?} else {*/ /*skinTextures *//*?}*/) -> {
-			//? if >=1.21.4 {
+		Minecraft.getInstance().getSkinManager().get(Minecraft.getInstance().getGameProfile()).thenAccept((optional) -> {
 			if (optional.isEmpty()) {
 				return;
 			}
-			//? if >=1.21.9 {
-			net.minecraft.entity.player.SkinTextures skinTextures = optional.get();
-			//?} else {
-			/*net.minecraft.client.util.SkinTextures skinTextures = optional.get();
-			*///?}
-
-			//?}
+			PlayerSkin skinTextures = optional.get();
 			data.setSprites(TotemDollSprites.of(skinTextures));
 		});
-		//?} else {
-		/*MinecraftClient.getInstance().getSkinProvider().loadSkin(MinecraftClient.getInstance().getSession().getProfile(), (type, id, texture) -> {
-			MyTotemDollTaskExecutor.execute(() -> {
-				MinecraftClient.getInstance().execute(() -> {
-					TotemDollSprites textures = data.getStandardSprites();
-
-					switch (type) {
-						case SKIN -> {
-							MyTotemDollAtlasSpriteManager.registerSpecialSkinSprite(id, false, textures::setSkinSprite);
-							if (texture != null) {
-								textures.setArmsType(TotemDollArmsType.of(texture.getMetadata("model")));
-							}
-						}
-						case CAPE -> {
-							RemappedAtlasSprite capeSprite = RemappedAtlasSprite.ofResource(id);
-							MyTotemDollAtlasSpriteManager.registerSpecialRemappedSprite(capeSprite);
-							textures.setCapeSprite(capeSprite);
-						}
-						case ELYTRA -> MyTotemDollAtlasSpriteManager.registerSpecialSkinSprite(id, false, textures::setElytraSprite);
-					}
-
-					MyTotemDollAtlasManager.stitchAndUpdate(MyTotemDollAtlasSpriteManager.getSprites(), null);
-				});
-			});
-		}, false);
-		*///?}
 	}
 }

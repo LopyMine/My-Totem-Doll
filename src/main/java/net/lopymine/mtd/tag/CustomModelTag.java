@@ -1,8 +1,7 @@
 package net.lopymine.mtd.tag;
 
 import lombok.Getter;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.*;
 
 @Getter
@@ -15,6 +14,10 @@ public class CustomModelTag extends Tag {
 		this.modelId = modelId;
 	}
 
+	public static Builder startBuilder(char tag, Identifier modelId) {
+		return new Builder(tag, modelId);
+	}
+
 	public @NotNull String getModelName() {
 		String path = this.modelId.getPath();
 		int i = path.lastIndexOf('/');
@@ -24,10 +27,6 @@ public class CustomModelTag extends Tag {
 		return path;
 	}
 
-	public static Builder startBuilder(char tag, Identifier modelId) {
-		return new Builder(tag, modelId);
-	}
-
 	public static class Builder {
 
 		private final char tag;
@@ -35,7 +34,7 @@ public class CustomModelTag extends Tag {
 		private TagAction action;
 
 		public Builder(char tag, Identifier modelId) {
-			this.tag = tag;
+			this.tag     = tag;
 			this.modelId = modelId;
 		}
 

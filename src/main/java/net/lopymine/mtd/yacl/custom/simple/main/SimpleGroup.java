@@ -1,10 +1,9 @@
 package net.lopymine.mtd.yacl.custom.simple.main;
 
 import dev.isxander.yacl3.api.*;
-import net.minecraft.text.Text;
-
 import net.lopymine.mtd.utils.ModMenuUtils;
 import net.lopymine.mtd.yacl.custom.renderer.TotemDollPreviewRenderer;
+import net.minecraft.network.chat.Component;
 
 public class SimpleGroup {
 
@@ -13,8 +12,8 @@ public class SimpleGroup {
 
 	public SimpleGroup(String groupId) {
 		String groupKey = ModMenuUtils.getGroupKey(groupId);
-		Text groupName = ModMenuUtils.getName(groupKey);
-		Text description = ModMenuUtils.getDescription(groupKey);
+		Component groupName = ModMenuUtils.getName(groupKey);
+		Component description = ModMenuUtils.getDescription(groupKey);
 
 		this.groupBuilder = OptionGroup.createBuilder().name(groupName);
 		this.description  = OptionDescription.createBuilder().text(description);

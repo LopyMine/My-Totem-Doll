@@ -1,7 +1,6 @@
 package net.lopymine.mtd.compat.sodium;
 
 import net.fabricmc.loader.api.*;
-
 import net.lopymine.mtd.compat.CompatPlugin;
 import org.spongepowered.asm.service.MixinService;
 

@@ -1,16 +1,14 @@
 package net.lopymine.mtd.tag.manager;
 
 import it.unimi.dsi.fastutil.chars.*;
-import net.minecraft.text.Text;
-import net.minecraft.util.*;
-
+import java.util.*;
+import java.util.stream.*;
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.doll.data.TotemDollData;
 import net.lopymine.mtd.pack.TotemDollModelFinder;
 import net.lopymine.mtd.tag.*;
-
-import java.util.*;
-import java.util.stream.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.*;
 
 public class TagsManager {
@@ -229,11 +227,11 @@ public class TagsManager {
 		return MyTotemDoll.id("textures/gui/tags/%s.png".formatted(c));
 	}
 
-	public static Text getTagDescription(Character character) {
+	public static Component getTagDescription(Character character) {
 		return MyTotemDoll.text("tags.%s".formatted(character));
 	}
 
-	public static Text getAppliedTagDescription(char c) {
+	public static Component getAppliedTagDescription(char c) {
 		return MyTotemDoll.text("tags.%s.applied".formatted(c));
 	}
 

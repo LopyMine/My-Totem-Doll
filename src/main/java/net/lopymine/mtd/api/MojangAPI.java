@@ -1,25 +1,19 @@
 package net.lopymine.mtd.api;
 
 import com.google.gson.*;
-import net.lopymine.mtd.cache.KnownPlayerUUIDsConfigManager;
-import net.lopymine.mtd.config.MyTotemDollConfig;
-import net.lopymine.mtd.config.cache.KnownPlayerUUIDsConfig;
-import net.lopymine.mtd.exception.HttpResponseException;
-import net.minecraft.client.MinecraftClient;
-import net.lopymine.mtd.client.MyTotemDollClient;
-import net.lopymine.mtd.skin.data.ParsedSkinData;
+import com.mojang.util.UndashedUuid;
 import java.net.URI;
 import java.net.http.*;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import net.lopymine.mtd.cache.KnownPlayerUUIDsConfigManager;
+import net.lopymine.mtd.client.MyTotemDollClient;
+import net.lopymine.mtd.config.MyTotemDollConfig;
+import net.lopymine.mtd.config.cache.KnownPlayerUUIDsConfig;
+import net.lopymine.mtd.exception.HttpResponseException;
+import net.lopymine.mtd.skin.data.ParsedSkinData;
 import org.jetbrains.annotations.*;
-
-//? if >=1.20.2 {
-import com.mojang.util.UndashedUuid;
-//?} else {
-/*import com.mojang.util.UUIDTypeAdapter;
- *///?}
 
 public class MojangAPI {
 
@@ -45,7 +39,7 @@ public class MojangAPI {
 					.uri(URI.create(getUUIDEndpoint(nickname)))
 					.build();
 			HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
-			statusCode = response.statusCode();
+			statusCode   = response.statusCode();
 			responseBody = response.body();
 
 			if (statusCode == 429) {
@@ -76,11 +70,7 @@ public class MojangAPI {
 				throw new HttpResponseException(statusCode, "Response doesn't contains 'id'");
 			}
 			String uuidAsString = jsonObject.get("id").getAsString();
-			//? if >=1.20.2 {
 			UUID uuid = UndashedUuid.fromStringLenient(uuidAsString);
-			//?} else {
-			/*UUID uuid = UUIDTypeAdapter.fromString(uuidAsString);
-			 *///?}
 			return new Response<>(statusCode, uuid);
 		} catch (InterruptedException ignored) {
 		} catch (Exception e) {

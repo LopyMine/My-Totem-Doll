@@ -6,7 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.*;
 import lombok.*;
 import net.lopymine.mtd.utils.CodecUtils;
-import net.minecraft.util.Uuids;
+import net.minecraft.core.UUIDUtil;
 import static net.lopymine.mtd.utils.CodecUtils.option;
 
 @Setter
@@ -17,8 +17,8 @@ public class BBOutliner {
 	public static final Codec<BBOutliner> CODEC = CodecUtils.recursive("BBOutliner.Codec",
 			(codec) ->
 					RecordCodecBuilder.create(inst -> inst.group(
-							option("uuid", Uuids.CODEC, BBOutliner::getUuid),
-							option("children", Codec.either(codec, Uuids.CODEC).listOf(), BBOutliner::getChildren)
+							option("uuid", UUIDUtil.AUTHLIB_CODEC, BBOutliner::getUuid),
+							option("children", Codec.either(codec, UUIDUtil.AUTHLIB_CODEC).listOf(), BBOutliner::getChildren)
 					).apply(inst, BBOutliner::new))
 	);
 

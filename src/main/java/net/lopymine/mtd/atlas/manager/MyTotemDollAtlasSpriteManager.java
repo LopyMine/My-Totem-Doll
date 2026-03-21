@@ -1,39 +1,41 @@
 package net.lopymine.mtd.atlas.manager;
 
-import java.io.*;
+import com.mojang.blaze3d.platform.NativeImage;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.*;
 import net.lopymine.mtd.atlas.*;
-import net.lopymine.mtd.atlas.stitch.*;
+import net.lopymine.mtd.atlas.stitch.OnSpriteUploaded;
 import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.utils.texture.PlayerSkinUtils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.texture.*;
-import net.minecraft.resource.Resource;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.*;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.Resource;
 import org.jetbrains.annotations.*;
 
 public class MyTotemDollAtlasSpriteManager {
 
-	private static final AtlasSprite MISSING_SPRITE = AtlasSprite.of(MissingSprite.createSpriteContents());
-
 	@NotNull
-	public static final AtlasSprite STEVE_SKIN_SPRITE = Objects.requireNonNull(AtlasSprite.of(Identifier.of("minecraft", "textures/entity/player/wide/steve.png")));
-	//? if >=1.21.2 {
+	public static final AtlasSprite STEVE_SKIN_SPRITE = Objects.requireNonNull(AtlasSprite.of(Identifier.fromNamespaceAndPath("minecraft", "textures/entity/player/wide/steve.png")));
 	@NotNull
-	public static final RemappedAtlasSprite ELYTRA_SPRITE = RemappedAtlasSprite.ofResource(Identifier.of("textures/entity/equipment/wings/elytra.png"));
-	//?} else {
-	/*@NotNull
-	public static final RemappedAtlasSprite ELYTRA_SPRITE = RemappedAtlasSprite.ofResource(Objects.requireNonNull(Identifier.of("minecraft","textures/entity/elytra.png")));
-	*///?}
-
+	public static final RemappedAtlasSprite ELYTRA_SPRITE = RemappedAtlasSprite.ofResource(Identifier.parse("textures/entity/equipment/wings/elytra.png"));
+	private static final AtlasSprite MISSING_SPRITE = AtlasSprite.of(MissingTextureAtlasSprite.create());
 	private static final Map<Long, AtlasSprite> CONTENT_CACHED_SPECIAL_SKIN_SPRITES = new ConcurrentHashMap<>();
 	private static final Map<Long, AtlasSprite> CONTENT_CACHED_SPECIAL_REMAPPED_SPRITES = new ConcurrentHashMap<>();
 	private static final Map<Identifier, AtlasSprite> DYNAMIC_SPRITES = new ConcurrentHashMap<>();
 
 	private static final AtomicReference<Set<AtlasSprite>> ATLAS_SPRITES = new AtomicReference<>(Set.of());
+
+	static {
+		MISSING_SPRITE.setClosable(false);
+		MISSING_SPRITE.setUnregisterAction(() -> handleSprite(MISSING_SPRITE, false));
+
+		STEVE_SKIN_SPRITE.setClosable(false);
+		STEVE_SKIN_SPRITE.setUnregisterAction(() -> handleSprite(STEVE_SKIN_SPRITE, false));
+	}
 
 	public static Set<AtlasSprite> getSprites() {
 		return ATLAS_SPRITES.get();
@@ -134,45 +136,19 @@ public class MyTotemDollAtlasSpriteManager {
 	}
 
 	private static void loadFromResource(Identifier id, Consumer<NativeImage> consumer) {
-		Resource resource = MinecraftClient.getInstance().getResourceManager().getResource(id).orElse(null);
+		Resource resource = Minecraft.getInstance().getResourceManager().getResource(id).orElse(null);
 		if (resource == null) {
-			AbstractTexture texture = MinecraftClient.getInstance().getTextureManager().textures.get(id);
-			//? if >=1.21.4 {
-			if (!(texture instanceof NativeImageBackedTexture backedTexture)) {
+			AbstractTexture texture = Minecraft.getInstance().getTextureManager().byPath.get(id);
+
+			if (!(texture instanceof DynamicTexture backedTexture)) {
 				MyTotemDollClient.LOGGER.error("Failed to register mod's texture as a sprite in atlas! Failed to find texture even from TextureManager! Id: \"{}\", Texture Class: \"{}\"", id, texture == null ? "null" : texture.getClass().getSimpleName());
 				return;
 			}
-			NativeImage image = backedTexture.getImage();
+			NativeImage image = backedTexture.getPixels();
 			if (image == null) {
 				MyTotemDollClient.LOGGER.error("Failed to register mod's texture as a sprite in atlas! Found image in TextureManager, but it's null somehow!? Id: \"{}\"", id);
 				return;
 			}
-			//?} else {
-			/*NativeImage image = null;
-
-			if (texture instanceof PlayerSkinTexture playerSkinTexture) {
-				File cacheFile = playerSkinTexture.cacheFile;
-				if (cacheFile != null && cacheFile.exists()) {
-					try (FileInputStream stream = new FileInputStream(cacheFile)) {
-						image = NativeImage.read(stream);
-					} catch (Exception e) {
-						MyTotemDollClient.LOGGER.error("Failed to register mod's texture as a sprite in atlas! Failed to read player skin texture from cache, id: \"{}\", folder: \"{}\"", id, cacheFile);
-					}
-				} else {
-					String url = playerSkinTexture.url;
-					try {
-						image = PlayerSkinUtils.remapSkinTexture(PlayerSkinUtils.download(url));
-					} catch (Exception e) {
-						MyTotemDollClient.LOGGER.error("Failed to register mod's texture as a sprite in atlas! Failed to download player skin texture from url, id: \"{}\", url: \"{}\"", id, url);
-					}
-				}
-			}
-
-			if (image == null) {
-				MyTotemDollClient.LOGGER.error("Failed to register mod's texture as a sprite in atlas! Failed to find texture even from TextureManager! Id: \"{}\", Texture Class: \"{}\"", id, texture == null ? "null" : texture.getClass().getSimpleName());
-				return;
-			}
-			*///?}
 
 			NativeImage nativeImage = new NativeImage(image.getWidth(), image.getHeight(), true);
 			nativeImage.copyFrom(image);
@@ -180,7 +156,7 @@ public class MyTotemDollAtlasSpriteManager {
 			return;
 		}
 		try {
-			consumer.accept(NativeImage.read(resource.getInputStream()));
+			consumer.accept(NativeImage.read(resource.open()));
 		} catch (IOException e) {
 			MyTotemDollClient.LOGGER.error("Failed to load resource for mod's atlas:", e);
 		}
@@ -217,14 +193,6 @@ public class MyTotemDollAtlasSpriteManager {
 		registerDynamicSprite(STEVE_SKIN_SPRITE.getSpriteId(), false, null);
 
 		registerSpecialRemappedSprite(ELYTRA_SPRITE, false);
-	}
-
-	static {
-		MISSING_SPRITE.setClosable(false);
-		MISSING_SPRITE.setUnregisterAction(() -> handleSprite(MISSING_SPRITE, false));
-
-		STEVE_SKIN_SPRITE.setClosable(false);
-		STEVE_SKIN_SPRITE.setUnregisterAction(() -> handleSprite(STEVE_SKIN_SPRITE, false));
 	}
 
 	private interface SpriteFactory {

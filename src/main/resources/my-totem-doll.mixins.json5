@@ -3,55 +3,30 @@
     "package": "net.lopymine.mtd.mixin",
     "refmap": "${mod_id}.refmap.json",
     "compatibilityLevel": "JAVA_${java}",
-    "mixins": [],
+    "mixins": [
+	    "AnvilMenuMixin"
+    ],
     "client": [
-	    //? if <=1.21.3 {
-	    /*"ItemRendererMixin",
-	    "HeldItemRendererMixin",
-	    *///?}
-
-	    //? if >=1.21.4 {
-	    "ItemModelManagerMixin",
-	    "ItemRenderStateMixin",
-	    //?}
-
-	    //? if <=1.21.5 {
-	    /*"GameRendererMixin",
-	    *///?}
-
-	    //? if >=1.21.2 && <=1.21.3 {
-	    /*"ItemEntityRendererMixin",
-		"LivingEntityRendererMixin",
-		*///?}
-
-	    //? if >=1.21.6 {
-	    "DrawContextMixin",
-	    "InGameOverlayRendererMixin",
 	    "GuiRendererMixin",
-	    //?}
-
-	    //? if >=1.21.4 {
 	    "SelectItemModelMixin",
-	    //?}
-
-	    //? if >=1.21.9 {
 	    "ItemPickupParticleMixin",
-	    //?}
-
-	    "accessor.DilationAccessor",
 	    "AnvilScreenMixin",
-	    "AnvilScreenHandlerMixin",
 	    "ScreenMixin",
-	    "EntryListWidgetMixin",
-	    "ForgingScreenMixin",
 	    "ItemStackWithModdedBakedModelMixin",
 	    "ItemStackWithPlayerEntityMixin",
 	    "ItemStackMixin",
-	    "HandledScreenMixin",
-	    "MinecraftClientMixin",
 	    "TextureManagerMixin",
 	    "GameRendererDollRenderingMixin",
-	    "SpriteContentsMixin"
+	    "SpriteContentsMixin",
+	    "AbstractContainerScreenMixin",
+	    "AbstractSelectionListMixin",
+	    "GuiGraphicsMixin",
+	    "ItemCombinerScreenMixin",
+	    "ItemModelResolverMixin",
+	    "ItemStackRenderStateMixin",
+	    "MinecraftMixin",
+	    "ScreenEffectRendererMixin",
+	    "accessor.CubeDeformationAccessor"
     ],
     "injectors": {
         "defaultRequire": 1

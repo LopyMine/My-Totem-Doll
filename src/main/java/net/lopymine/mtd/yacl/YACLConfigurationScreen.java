@@ -1,14 +1,12 @@
 package net.lopymine.mtd.yacl;
 
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.Text;
-
-import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.config.MyTotemDollConfig;
 import net.lopymine.mtd.utils.ModMenuUtils;
 import net.lopymine.mtd.yacl.category.*;
 import net.lopymine.mtd.yacl.custom.screen.*;
 import net.lopymine.mtd.yacl.custom.simple.SimpleYACLScreen;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 
 public class YACLConfigurationScreen {
 
@@ -27,7 +25,7 @@ public class YACLConfigurationScreen {
 		return !(currentScreen instanceof MyTotemDollYACLScreen || currentScreen instanceof TotemDollModelSelectionScreen);
 	}
 
-	public static Text getRenderingCategoryTitle() {
+	public static Component getRenderingCategoryTitle() {
 		return ModMenuUtils.getName(ModMenuUtils.getCategoryKey("rendering"));
 	}
 }

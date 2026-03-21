@@ -4,12 +4,11 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import dev.isxander.yacl3.api.YetAnotherConfigLib;
 import dev.isxander.yacl3.impl.YetAnotherConfigLibImpl;
-import net.minecraft.client.gui.screen.Screen;
+import net.lopymine.mtd.utils.mixin.yacl.BetterYACLScreenConfig;
+import net.lopymine.mtd.yacl.custom.screen.MyTotemDollYACLScreen;
+import net.minecraft.client.gui.screens.Screen;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
-
-import net.lopymine.mtd.utils.mixin.yacl.BetterYACLScreenConfig;
-import net.lopymine.mtd.yacl.custom.screen.*;
 
 @Pseudo
 @Mixin(YetAnotherConfigLibImpl.class)

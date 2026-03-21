@@ -1,9 +1,9 @@
 package net.lopymine.mtd.utils.tooltip;
 
-import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.GuiGraphics;
 
 public interface TooltipRequest {
 
-	void render(DrawContext context, int mouseX, int mouseY, float delta);
+	void render(GuiGraphics context, int mouseX, int mouseY, float delta);
 
 }

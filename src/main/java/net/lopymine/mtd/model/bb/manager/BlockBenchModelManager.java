@@ -2,22 +2,17 @@ package net.lopymine.mtd.model.bb.manager;
 
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
-import net.fabricmc.loader.api.*;
-import net.lopymine.mtd.atlas.manager.*;
-import net.lopymine.mtd.model.bb.BBOutliner;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.model.ModelTransform;
-import net.minecraft.client.render.model.json.*;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.*;
-import net.minecraft.util.math.Direction;
-import org.slf4j.*;
-
 import com.mojang.datafixers.util.Either;
-import com.mojang.serialization.*;
-
+import com.mojang.serialization.Codec;
+import java.io.*;
+import java.nio.file.NoSuchFileException;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.function.Consumer;
+import net.fabricmc.loader.api.*;
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.api.Response;
+import net.lopymine.mtd.atlas.manager.*;
 import net.lopymine.mtd.config.other.vector.Vec3f;
 import net.lopymine.mtd.doll.data.TotemDollData;
 import net.lopymine.mtd.doll.manager.*;
@@ -27,13 +22,14 @@ import net.lopymine.mtd.model.bb.*;
 import net.lopymine.mtd.model.bb.BBCube.*;
 import net.lopymine.mtd.model.bb.BBModel.*;
 import net.lopymine.mtd.utils.CodecUtils;
-
-import java.io.*;
-import java.nio.file.NoSuchFileException;
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.function.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.core.*;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.ResourceManager;
 import org.jetbrains.annotations.*;
+import org.slf4j.*;
 
 // 0 - success
 // -1 - failed
@@ -194,11 +190,7 @@ public class BlockBenchModelManager {
 		BBCubeFaces cubeFaces = new BBCubeFaces(new HashMap<>());
 
 		for (Direction direction : Direction.values()) {
-			//? if >=1.21.5 {
-			String id = direction.getId();
-			//?} else {
-			/*String id = direction.getName();
-			*///?}
+			String id = direction.getName();
 			JsonObject face = faces.get(id).getAsJsonObject();
 			if (face.has("texture") && face.get("texture").isJsonNull()) {
 				continue;
@@ -217,7 +209,7 @@ public class BlockBenchModelManager {
 		List<UUID> rootCubes = new ArrayList<>();
 		List<BBOutliner> outliners = new ArrayList<>();
 		for (JsonElement jsonElement : jsonObject.get("outliner").getAsJsonArray()) {
-			CodecUtils.decode(Codec.either(BBOutliner.CODEC, Uuids.CODEC), jsonElement, (either) -> {
+			CodecUtils.decode(Codec.either(BBOutliner.CODEC, UUIDUtil.CODEC), jsonElement, (either) -> {
 				Optional<BBOutliner> left = either.left();
 				left.ifPresent(outliners::add);
 				Optional<UUID> right = either.right();
@@ -261,7 +253,7 @@ public class BlockBenchModelManager {
 		List<UUID> rootCubes = new ArrayList<>();
 		List<BBGroup> groups = new ArrayList<>();
 		for (JsonElement jsonElement : jsonObject.get("outliner").getAsJsonArray()) {
-			CodecUtils.decode(Codec.either(BBGroup.CODEC, Uuids.CODEC), jsonElement, (either) -> {
+			CodecUtils.decode(Codec.either(BBGroup.CODEC, UUIDUtil.CODEC), jsonElement, (either) -> {
 				Optional<BBGroup> left = either.left();
 				left.ifPresent((group) -> {
 					if (group.getName().equals("root")) {
@@ -275,10 +267,6 @@ public class BlockBenchModelManager {
 			});
 		}
 		return new BBModelGroupsAndRootCubes(rootCubes, groups);
-	}
-
-	private record BBModelGroupsAndRootCubes(List<UUID> rootCubes, List<BBGroup> groups) {
-
 	}
 
 	private static @NotNull BBModel createFinalBBModel(Identifier id, JsonObject jsonObject, String name, BBModelMeta meta, List<UUID> rootCubes, List<BBGroup> groups, BBModelResolution resolution, List<BBCube> cubes) {
@@ -295,13 +283,13 @@ public class BlockBenchModelManager {
 		);
 		groups.add(0, rootGroup);
 
-		ModelTransformation display = CodecUtils.decode("display", ModelTransformation.NONE, Transformations.MODEL_TRANSFORMATION_CODEC, jsonObject);
+		ItemTransforms display = CodecUtils.decode("display", ItemTransforms.NO_TRANSFORMS, Transformations.MODEL_TRANSFORMATION_CODEC, jsonObject);
 		Boolean frontGuiLight = CodecUtils.decode("front_gui_light", false, Codec.BOOL, jsonObject);
 		return new BBModel(id, name, meta, resolution, cubes, groups, frontGuiLight, display);
 	}
 
 	private static JsonObject readAsJsonObject(Identifier id) throws IOException {
-		ResourceManager resourceManager = MinecraftClient.getInstance().getResourceManager();
+		ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
 		InputStream open = resourceManager.open(id);
 		return new Gson().fromJson(new JsonReader(new InputStreamReader(open)), JsonObject.class);
 	}
@@ -322,7 +310,7 @@ public class BlockBenchModelManager {
 		MyTotemDollAtlasManager.stitchAndUpdate(MyTotemDollAtlasSpriteManager.getSprites(), null);
 
 		return () -> builder
-				.withTransform(ModelTransform./*? if <=1.21.4 {*/ /*pivot *//*?} else {*/ origin /*?}*/(-16.0F, -8.0F, 0.0F))
+				.withTransform(PartPose.offset(-16.0F, -8.0F, 0.0F))
 				.build(resolution.getWidth(), resolution.getHeight())
 				.initAfterBuild(model);
 	}
@@ -394,5 +382,9 @@ public class BlockBenchModelManager {
 		}
 		TotemDollModel.createDollModel(); // Reloading doll at resource reloading while we can
 		StandardTotemDollManager.initializeStandardDollData();
+	}
+
+	private record BBModelGroupsAndRootCubes(List<UUID> rootCubes, List<BBGroup> groups) {
+
 	}
 }

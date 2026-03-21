@@ -1,9 +1,8 @@
 package net.lopymine.mtd.gui.widget.info;
 
-import net.minecraft.util.Identifier;
-
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.gui.tooltip.info.InfoTooltipData;
+import net.minecraft.resources.Identifier;
 
 public class TipsWidget extends InfoWidget {
 

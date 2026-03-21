@@ -1,53 +1,43 @@
 package net.lopymine.mtd.extension;
 
-import net.minecraft.client.render.model.json.*;
+import net.minecraft.client.renderer.block.model.*;
 
 public class ModelTransformationExtension {
-	
-	public static Transformation getTl(ModelTransformation transform) {
-		return /*? >=1.21.4 {*/ transform.thirdPersonLeftHand(); /*?} else {*/ /*transform.thirdPersonLeftHand; *//*?}*/
+
+	public static ItemTransform getTl(ItemTransforms transform) {
+		return transform.thirdPersonLeftHand();
 	}
 
-	public static Transformation getTr(ModelTransformation transform) {
-		return /*? >=1.21.4 {*/ transform.thirdPersonRightHand(); /*?} else {*/ /*transform.thirdPersonRightHand; *//*?}*/
+	public static ItemTransform getTr(ItemTransforms transform) {
+		return transform.thirdPersonRightHand();
 	}
 
-	public static Transformation getFl(ModelTransformation transform) {
-		return /*? >=1.21.4 {*/ transform.firstPersonLeftHand(); /*?} else {*/ /*transform.firstPersonLeftHand; *//*?}*/
+	public static ItemTransform getFl(ItemTransforms transform) {
+		return transform.firstPersonLeftHand();
 	}
 
-	public static Transformation getFr(ModelTransformation transform) {
-		return /*? >=1.21.4 {*/ transform.firstPersonRightHand(); /*?} else {*/ /*transform.firstPersonRightHand; *//*?}*/
+	public static ItemTransform getFr(ItemTransforms transform) {
+		return transform.firstPersonRightHand();
 	}
 
-	public static Transformation getHead(ModelTransformation transform) {
-		return /*? >=1.21.4 {*/ transform.head(); /*?} else {*/ /*transform.head; *//*?}*/
+	public static ItemTransform getHead(ItemTransforms transform) {
+		return transform.head();
 	}
 
-	public static Transformation getGui(ModelTransformation transform) {
-		return /*? >=1.21.4 {*/ transform.gui(); /*?} else {*/ /*transform.gui; *//*?}*/
+	public static ItemTransform getGui(ItemTransforms transform) {
+		return transform.gui();
 	}
 
-	public static Transformation getGround(ModelTransformation transform) {
-		return /*? >=1.21.4 {*/ transform.ground(); /*?} else {*/ /*transform.ground; *//*?}*/
+	public static ItemTransform getGround(ItemTransforms transform) {
+		return transform.ground();
 	}
 
-	public static Transformation getFixed(ModelTransformation transform) {
-		return /*? >=1.21.4 {*/ transform.fixed(); /*?} else {*/ /*transform.fixed; *//*?}*/
+	public static ItemTransform getFixed(ItemTransforms transform) {
+		return transform.fixed();
 	}
 
-	//? if >=1.21.9 {
-	public static Transformation getOnShelf(ModelTransformation transform) {
+	public static ItemTransform getOnShelf(ItemTransforms transform) {
 		return transform.fixedFromBottom();
 	}
-	//?}
-
-//	public static ModelTransformation getBlockBenchedModelTransformation(ModelTransformation transform) {
-//		return ModelTransformation.of(-getPivotX(transform), -getPivotY(transform), getPivotZ(transform), getPitch(transform), getYaw(transform), getRoll(transform));
-//	}
-//
-//	public static String asString(ModelTransformation transform) {
-//		return "%s %s %s | %s %s %s".formatted(getPivotX(transform), getPivotY(transform), getPivotZ(transform), getPitch(transform), getYaw(transform), getRoll(transform));
-//	}
 
 }

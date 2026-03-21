@@ -1,9 +1,8 @@
 package net.lopymine.mtd.doll.data;
 
 import lombok.Getter;
-import net.minecraft.text.Text;
-
 import net.lopymine.mtd.MyTotemDoll;
+import net.minecraft.network.chat.Component;
 
 @Getter
 public enum LoadingState {
@@ -18,7 +17,7 @@ public enum LoadingState {
 	REGISTERING, // X
 	DOWNLOADED; // X
 
-	public Text getText() {
+	public Component getText() {
 		return MyTotemDoll.text("modmenu.option.standard_doll_skin_type.result.%s".formatted(this.name().toLowerCase()));
 	}
 }

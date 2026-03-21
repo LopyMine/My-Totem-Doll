@@ -1,9 +1,8 @@
 package net.lopymine.mtd.config.other.simple;
 
-import lombok.*;
-
 import java.util.Map.Entry;
 import java.util.Objects;
+import lombok.*;
 import org.jetbrains.annotations.NotNull;
 
 @Getter
