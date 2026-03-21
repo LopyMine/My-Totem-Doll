@@ -44,6 +44,8 @@ public class MyTotemDollAtlasManager {
 			ATLAS_TEXTURE.setUnlockHook(() -> set(atlasTexture));
 			return;
 		}
+
+
 		set(new LockableAtlasTexture(texture));
 	}
 
