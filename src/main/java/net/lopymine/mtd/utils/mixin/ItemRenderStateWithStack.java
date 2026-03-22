@@ -8,4 +8,6 @@ public interface ItemRenderStateWithStack {
 
 	void myTotemDoll$shouldClear(boolean bl);
 
+	void myTotemDoll$reset();
+
 }

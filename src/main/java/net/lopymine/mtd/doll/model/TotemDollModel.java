@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 @Setter
 public class TotemDollModel extends Model<Object> {
 
+	public static final Identifier NONE = MyTotemDoll.id("none");
 	public static final Identifier TWO_D_MODEL_ID = MyTotemDoll.id("dolls/2d_doll.bbmodel");
 	public static final Identifier THREE_D_MODEL_id = MyTotemDoll.id("dolls/3d_doll.bbmodel");
 

@@ -24,11 +24,7 @@ public class MyTotemDollClient implements ClientModInitializer {
 
 	@SuppressWarnings("deprecation")
 	private static boolean isProbablyTotem(ItemStack stack) {
-		//? if >=26.1 {
 		boolean bl = stack.item != null && stack.item.value() == Items.TOTEM_OF_UNDYING;
-		//?} else {
-		/*boolean bl = stack.item == Items.TOTEM_OF_UNDYING;
-		 *///?}
 		return bl || (MyTotemDollConfig.getInstance().isSupportOtherModsTotems() && BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath().contains("totem"));
 	}
 

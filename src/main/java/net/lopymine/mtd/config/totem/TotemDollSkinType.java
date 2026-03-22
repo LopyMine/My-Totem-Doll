@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import lombok.Getter;
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.config.other.EnumWithText;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.*;
 import net.minecraft.util.StringRepresentable;
 
 @Getter
@@ -24,11 +24,11 @@ public enum TotemDollSkinType implements StringRepresentable, EnumWithText {
 		this.needData = needData;
 	}
 
-	public Component getText() {
+	public MutableComponent getText() {
 		return MyTotemDoll.text("modmenu.option.standard_doll_skin_type.%s".formatted(this.getSerializedName()));
 	}
 
-	public Component getSuggestionText() {
+	public MutableComponent getSuggestionText() {
 		return MyTotemDoll.text("modmenu.option.standard_doll_skin_type.%s.suggestion".formatted(this.getSerializedName()));
 	}
 

@@ -17,10 +17,11 @@ public class MinecraftMixin {
 	@Inject(at = @At("HEAD"), method = "addInitialScreens")
 	private void addMTDHelloScreen(List<Function<Runnable, Screen>> list, CallbackInfoReturnable<Boolean> ci) {
 		MyTotemDollConfig config = MyTotemDollConfig.getInstance();
-		if (config.isFirstRun()) {
+		if (config.isFirstRun() || config.isFirstRunTemp()) {
 			list.add(WelcomeScreen::new);
 			if (!FabricLoader.getInstance().isDevelopmentEnvironment()) {
 				config.setFirstRun(false);
+				config.setFirstRunTemp(false);
 			}
 			config.save();
 		}

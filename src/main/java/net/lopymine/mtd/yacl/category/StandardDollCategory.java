@@ -84,7 +84,7 @@ public class StandardDollCategory {
 	private static OptionGroup getStandardDollModelGroup(MyTotemDollConfig defConfig, MyTotemDollConfig config, TotemDollPreviewRenderer renderer) {
 		Option<Identifier> standardDollModelPathOption = SimpleOption.<Identifier>startBuilder("standard_doll_model_path")
 				.withCustomDescription(renderer)
-				.withBinding(defConfig.getStandardTotemDollModelValue(), config::getStandardTotemDollModelValue, (value) -> {
+				.withBinding(config.getSelectedStandardTotemDollModelValue(), config::getStandardTotemDollModelValue, (value) -> {
 					config.setStandardTotemDollModelValue(value);
 					renderer.updateDollState(true);
 					for (TotemDollData data : TotemDollManager.getAllLoadedDolls()) {

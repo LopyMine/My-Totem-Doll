@@ -74,7 +74,6 @@ public class RenderingCategory {
 									} else {
 										leftHandConfig.copy(rightHandConfig);
 									}
-									OptionUtils.forEachOptions(yaclScreen.config, Option::forgetPendingValue);
 								}))
 						.build()
 		).build();

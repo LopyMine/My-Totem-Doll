@@ -64,7 +64,7 @@ public class TotemDollPreviewRenderer implements ImageRenderer {
 		}
 
 		if (this.suggestionSkinType != null && (type != this.suggestionSkinType || resized)) {
-			this.suggestionText = MultiLineLabel.create(textRenderer, this.suggestionSkinType.getSuggestionText(), width - 5);
+			this.suggestionText = MultiLineLabel.create(textRenderer, this.suggestionSkinType.getSuggestionText().withColor(this.getSuggestionColors()), width - 5);
 		}
 	}
 
@@ -96,7 +96,7 @@ public class TotemDollPreviewRenderer implements ImageRenderer {
 	private void renderDollStatus(GuiGraphicsExtractor context, int x, int y, int width) {
 		BackgroundRenderer.drawTransparencyWidgetBackground(context, x, y, width, 30, true, true);
 
-		DrawUtils.drawCenteredText(context, MyTotemDoll.text("text.status").append(this.data.getStandardSprites().getState().getText()), x + 2, y + 15, width - 2);
+		DrawUtils.drawCenteredText(context, MyTotemDoll.text("text.status").append(this.data.getStandardSprites().getState().getText()), x + 2, y, width - 4, 30);
 	}
 
 	private int renderDoll(GuiGraphicsExtractor context, int x, int y, int size) {

@@ -1,5 +1,6 @@
 package net.lopymine.mtd.doll.data;
 
+import java.util.Locale;
 import lombok.Getter;
 import net.lopymine.mtd.MyTotemDoll;
 import net.minecraft.network.chat.Component;
@@ -18,6 +19,6 @@ public enum LoadingState {
 	DOWNLOADED; // X
 
 	public Component getText() {
-		return MyTotemDoll.text("modmenu.option.standard_doll_skin_type.result.%s".formatted(this.name().toLowerCase()));
+		return MyTotemDoll.text("modmenu.option.standard_doll_skin_type.result.%s".formatted(this.name().toLowerCase(Locale.ROOT)));
 	}
 }

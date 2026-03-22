@@ -59,5 +59,11 @@ public class ItemStackRenderStateMixin implements ItemRenderStateWithStack {
 	public void myTotemDoll$shouldClear(boolean bl) {
 		this.shouldClear = bl;
 	}
+
+	@Override
+	public void myTotemDoll$reset() {
+		this.stack = null;
+		this.shouldClear = false;
+	}
 }
 

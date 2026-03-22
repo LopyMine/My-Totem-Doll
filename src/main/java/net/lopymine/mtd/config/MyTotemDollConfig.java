@@ -28,6 +28,7 @@ public class MyTotemDollConfig {
 			option("rendering_config", RenderingConfig.getNewInstance(), RenderingConfig.CODEC, MyTotemDollConfig::getRenderingConfig),
 			option("standard_doll_skin_data", "", Codec.STRING, MyTotemDollConfig::getStandardTotemDollSkinValue),
 			option("standard_doll_skin_type", TotemDollSkinType.STEVE, TotemDollSkinType.CODEC, MyTotemDollConfig::getStandardTotemDollSkinType),
+			option("selected_standard_doll_model_data", TotemDollModel.NONE, Identifier.CODEC, MyTotemDollConfig::getSelectedStandardTotemDollModelValue),
 			option("standard_doll_model_data", TotemDollModel.TWO_D_MODEL_ID, Identifier.CODEC, MyTotemDollConfig::getStandardTotemDollModelValue),
 			option("standard_doll_model_arms_type", TotemDollArmsType.WIDE, TotemDollArmsType.CODEC, MyTotemDollConfig::getStandardTotemDollArmsType),
 			option("tag_button_pos", new Vec2i(155, 48), Vec2i.CODEC, MyTotemDollConfig::getTagButtonPos),
@@ -38,6 +39,7 @@ public class MyTotemDollConfig {
 			option("tag_menu_tooltip_model_scale", 1.0F, Codec.FLOAT, MyTotemDollConfig::getTagMenuTooltipModelScale),
 			option("executor_threads_count", 6, Codec.INT, MyTotemDollConfig::getParallelTasksCount),
 			option("first_run", true, Codec.BOOL, MyTotemDollConfig::isFirstRun),
+			option("first_run_temp", true, Codec.BOOL, MyTotemDollConfig::isFirstRunTemp),
 			option("support_other_mods_totems", true, Codec.BOOL, MyTotemDollConfig::isSupportOtherModsTotems)
 	).apply(instance, MyTotemDollConfig::new));
 
@@ -50,6 +52,7 @@ public class MyTotemDollConfig {
 	private RenderingConfig renderingConfig;
 	private String standardTotemDollSkinValue;
 	private TotemDollSkinType standardTotemDollSkinType;
+	private Identifier selectedStandardTotemDollModelValue;
 	private Identifier standardTotemDollModelValue;
 	private TotemDollArmsType standardTotemDollArmsType;
 	private Vec2i tagButtonPos;
@@ -58,7 +61,12 @@ public class MyTotemDollConfig {
 	private float tagMenuTooltipModelScale;
 	private int parallelTasksCount;
 	private boolean firstRun;
+	private boolean firstRunTemp;
 	private boolean supportOtherModsTotems;
+
+	public Identifier getSelectedStandardTotemDollModelValue() {
+		return this.selectedStandardTotemDollModelValue == TotemDollModel.NONE ? this.selectedStandardTotemDollModelValue = this.standardTotemDollModelValue : this.selectedStandardTotemDollModelValue;
+	}
 
 	private MyTotemDollConfig() {
 		throw new IllegalArgumentException();

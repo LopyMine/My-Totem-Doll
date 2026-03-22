@@ -13,11 +13,10 @@
 		"YetAnotherConfigLibImplMixin",
 		"category.ConfigCategoryImplBuilderImplMixin",
 
-		"widget.ListEntryWidgetMixin",
 	    "widget.AbstractWidgetMixin",
 	    "widget.OptionDescriptionWidgetMixin",
 		"widget.EditBoxMixin",
-		"category.AbstractScrollAreaMixin",
+		"widget.AbstractScrollAreaMixin",
 		"category.ItemInHandRendererMixin",
 		"widget.AbstractButtonMixin"
 	],

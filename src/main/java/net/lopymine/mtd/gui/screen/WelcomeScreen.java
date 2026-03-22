@@ -62,7 +62,9 @@ public class WelcomeScreen extends Screen {
 	private @NotNull WelcomeTotemDollModelPreviewWidget createWelcomeModelPreviewWidget(Area area, Identifier modelId) {
 		Runnable runnable = () -> {
 			MyTotemDollConfig config = MyTotemDollConfig.getInstance();
+			config.setSelectedStandardTotemDollModelValue(modelId);
 			config.setStandardTotemDollModelValue(modelId);
+			config.saveAsync();
 			this.onClose();
 		};
 
