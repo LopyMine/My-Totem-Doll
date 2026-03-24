@@ -27,8 +27,6 @@ accessible field net/minecraft/world/item/ItemStack components Lnet/minecraft/co
 
 accessible class net/minecraft/client/renderer/ItemInHandRenderer$HandRenderSelection
 
-extendable method net/minecraft/client/gui/components/AbstractButton renderWidget (Lnet/minecraft/client/gui/GuiGraphics;IIF)V
-
 accessible field net/minecraft/client/gui/components/AbstractSelectionList children Ljava/util/List;
 
 mutable field net/minecraft/client/gui/screens/inventory/AbstractContainerScreen imageWidth I
