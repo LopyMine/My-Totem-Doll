@@ -21,6 +21,7 @@ public class KnownPlayerUUIDsConfigManager {
 					config.save();
 					config.setDirty(false);
 					requestedSave = false;
+					Thread.sleep(2);
 				} catch (Exception e) {
 					MyTotemDollClient.LOGGER.error("Failed to save config:", e);
 				}
