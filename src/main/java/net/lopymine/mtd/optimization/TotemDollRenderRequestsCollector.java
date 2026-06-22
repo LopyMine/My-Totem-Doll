@@ -31,9 +31,7 @@ public class TotemDollRenderRequestsCollector {
 	private final List<TotemDollRenderRequest> requests = new ArrayList<>();
 	private final TotemDollRenderProperties tempProperties = new TotemDollRenderProperties();
 
-	private TotemDollRenderRequestsCollector() {
-
-	}
+	private TotemDollRenderRequestsCollector() { }
 
 	public void requestRender(MatrixStack matrices, TotemDollData data, AbstractClientPlayerEntity holdingPlayer, DollRenderContext context, int light, int overlay, int outlineColor, @Nullable VertexConsumerProvider provider) {
 		MatrixStack.Entry entry = matrices.peek();
