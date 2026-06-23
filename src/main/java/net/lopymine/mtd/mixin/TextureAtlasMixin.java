@@ -10,11 +10,11 @@ import org.spongepowered.asm.mixin.injection.*;
 public class TextureAtlasMixin {
 
 	@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/texture/TextureAtlas;clearTextureData()V"), method = "close")
-	private void noNoNo(TextureAtlas instance, Operation<Void> original) {
-		if (instance.location().equals(MyTotemDollAtlasManager.ATLAS_ID)) {
+	private void noNoNo(TextureAtlas atlas, Operation<Void> original) {
+		if (atlas.location().equals(MyTotemDollAtlasManager.ATLAS_ID)) {
 			return;
 		}
-		original.call(instance);
+		original.call(atlas);
 	}
 
 }
