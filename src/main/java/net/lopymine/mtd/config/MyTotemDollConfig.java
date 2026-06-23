@@ -64,10 +64,6 @@ public class MyTotemDollConfig {
 	private boolean firstRunTemp;
 	private boolean supportOtherModsTotems;
 
-	public Identifier getSelectedStandardTotemDollModelValue() {
-		return this.selectedStandardTotemDollModelValue == TotemDollModel.NONE ? this.selectedStandardTotemDollModelValue = this.standardTotemDollModelValue : this.selectedStandardTotemDollModelValue;
-	}
-
 	private MyTotemDollConfig() {
 		throw new IllegalArgumentException();
 	}
@@ -86,6 +82,10 @@ public class MyTotemDollConfig {
 
 	private static MyTotemDollConfig read() {
 		return ConfigUtils.readConfig(CODEC, CONFIG_FILE, LOGGER);
+	}
+
+	public Identifier getSelectedStandardTotemDollModelValue() {
+		return this.selectedStandardTotemDollModelValue == TotemDollModel.NONE ? this.selectedStandardTotemDollModelValue = this.standardTotemDollModelValue : this.selectedStandardTotemDollModelValue;
 	}
 
 	public void saveAsync() {

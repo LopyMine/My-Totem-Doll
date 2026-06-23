@@ -45,7 +45,7 @@ public class TotemDollPreviewTooltipComponent implements ClientTooltipComponent 
 		int height = this.getHeight(textRenderer);
 		graphics.enableScissor(x, y + 10 + 4 + 2, x + width, y + height - 2);
 
-		TotemDollRenderer.renderPreview(graphics, x, y + 10, width, height - 10, size, this.data, DollRenderContext.D_TOOLTIP);
+		TotemDollRenderer.extractPreview(graphics, x, y + 10, width, height - 10, size, this.data, DollRenderContext.D_TOOLTIP);
 
 		graphics.disableScissor();
 

@@ -256,7 +256,7 @@ public class TagMenuWidget extends AbstractVersionedEntryListWidget<TagRow> {
 			DrawUtils.drawTexture(context, SEPARATOR, x - 1, y + (entryHeight / 2) - 3, 0, 0, 32, 7, 32, 7);
 
 			if (hovered) {
-				if (!(client.screen instanceof IRequestableTooltipScreen tooltipScreen)) {
+				if (!(client.gui.screen() instanceof IRequestableTooltipScreen tooltipScreen)) {
 					return;
 				}
 

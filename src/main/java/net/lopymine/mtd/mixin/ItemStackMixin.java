@@ -33,7 +33,8 @@ import org.spongepowered.asm.mixin.injection.At;
 @ExtensionMethod(ItemStackExtension.class)
 public abstract class ItemStackMixin {
 
-	@Shadow public abstract boolean is(Predicate<Holder<Item>> predicate);
+	@Shadow
+	public abstract boolean is(Predicate<Holder<Item>> predicate);
 
 	@ModifyReturnValue(at = @At("RETURN"), method = "getHoverName")
 	private Component getName(Component original) {
@@ -57,7 +58,7 @@ public abstract class ItemStackMixin {
 	private Optional<TooltipComponent> getTooltipData(Optional<TooltipComponent> original) {
 		ItemStack itemStack = (ItemStack) (Object) this;
 
-		if (!TotemDollRenderer.canRender(itemStack)) {
+		if (!TotemDollRenderer.canSubmit(itemStack)) {
 			return original;
 		}
 
@@ -81,7 +82,7 @@ public abstract class ItemStackMixin {
 
 	@Unique
 	private Optional<TooltipComponent> getLoadingStateTooltipData(String[] data) {
-		Screen currentScreen = Minecraft.getInstance().screen;
+		Screen currentScreen = Minecraft.getInstance().gui.screen();
 		if (!(currentScreen instanceof AnvilScreen || ScreenUtils.hasShiftDown())) {
 			return Optional.empty();
 		}

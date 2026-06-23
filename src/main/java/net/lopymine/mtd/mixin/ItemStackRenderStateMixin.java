@@ -5,7 +5,7 @@ import lombok.experimental.ExtensionMethod;
 import net.lopymine.mtd.doll.renderer.*;
 import net.lopymine.mtd.extension.ItemStackExtension;
 import net.lopymine.mtd.utils.mixin.ItemRenderStateWithStack;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.world.item.*;
 import org.jetbrains.annotations.Nullable;
@@ -28,16 +28,11 @@ public class ItemStackRenderStateMixin implements ItemRenderStateWithStack {
 	private boolean shouldClear = true;
 
 	@Inject(at = @At("HEAD"), method = "submit", cancellable = true)
-	private void renderRenderState(PoseStack matrices, SubmitNodeCollector queue, int light, int overlay, int outlineColor, CallbackInfo ci) {
-		this.renderDoll(matrices, light, overlay, outlineColor, null, ci);
-	}
-
-	@Unique
-	private void renderDoll(PoseStack matrices, int light, int overlay, @SuppressWarnings("all") int outlineColor, @Nullable MultiBufferSource provider, CallbackInfo ci) {
+	private void renderRenderState(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, int overlayCoords, int outlineColor, CallbackInfo ci) {
 		DollRenderContext context = DollRenderContext.of(this.displayContext);
 
 		if (this.stack != null) {
-			if (TotemDollRenderer.sentRenderRequest(matrices, this.stack, context, light, overlay, outlineColor, provider)) {
+			if (TotemDollRenderer.submitItem(submitNodeCollector, poseStack, context, this.stack, lightCoords, overlayCoords, outlineColor)) {
 				ci.cancel();
 			}
 		}
@@ -62,7 +57,7 @@ public class ItemStackRenderStateMixin implements ItemRenderStateWithStack {
 
 	@Override
 	public void myTotemDoll$reset() {
-		this.stack = null;
+		this.stack       = null;
 		this.shouldClear = false;
 	}
 }

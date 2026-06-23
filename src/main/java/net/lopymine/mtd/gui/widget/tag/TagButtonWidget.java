@@ -93,7 +93,7 @@ public class TagButtonWidget extends Button {
 
 	public void requestTooltip() {
 		Minecraft client = Minecraft.getInstance();
-		Screen screen = client.screen;
+		Screen screen = client.gui.screen();
 
 		if (!this.isHovered()) {
 			return;

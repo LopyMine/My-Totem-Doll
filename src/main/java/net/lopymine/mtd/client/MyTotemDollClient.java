@@ -7,6 +7,7 @@ import net.lopymine.mtd.cache.KnownPlayerUUIDsConfigManager;
 import net.lopymine.mtd.client.command.MyTotemDollCommandManager;
 import net.lopymine.mtd.client.event.MyTotemDollEvents;
 import net.lopymine.mtd.config.MyTotemDollConfig;
+import net.lopymine.mtd.doll.renderer.special.ItemGuiElementRenderer;
 import net.lopymine.mtd.pack.MyTotemDollReloadListener;
 import net.lopymine.mtd.tag.manager.*;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -37,6 +38,10 @@ public class MyTotemDollClient implements ClientModInitializer {
 		MyTotemDollEvents.register();
 		MyTotemDollReloadListener.register();
 		KnownPlayerUUIDsConfigManager.start();
-		PictureInPictureRendererRegistry.register(context -> new net.lopymine.mtd.doll.renderer.special.ItemGuiElementRenderer(context.bufferSource()));
+		//? if >=26.2 {
+		PictureInPictureRendererRegistry.register(context -> new ItemGuiElementRenderer());
+		//?} else {
+		/*PictureInPictureRendererRegistry.register(context -> new ItemGuiElementRenderer(context.bufferSource()));
+		 *///?}
 	}
 }

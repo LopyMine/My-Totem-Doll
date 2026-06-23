@@ -23,9 +23,9 @@ public class ScreenEffectRendererMixin {
 			),
 			method = "renderItemActivationAnimation"
 	)
-	private void renderFloatingDoll(ItemStackRenderState instance, PoseStack matrices, SubmitNodeCollector orderedRenderCommandQueue, int light, int uv, int i, Operation<Void> original) {
-		if (!TotemDollRenderer.sentRenderRequest(matrices, this.itemActivationItem, DollRenderContext.D_FLOATING, light, uv, 0, null)) {
-			original.call(instance, matrices, orderedRenderCommandQueue, light, uv, i);
+	private void renderFloatingDoll(ItemStackRenderState instance, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, int overlayCoords, int outlineColor, Operation<Void> original) {
+		if (!TotemDollRenderer.submitItem(submitNodeCollector, poseStack, DollRenderContext.D_FLOATING, this.itemActivationItem, lightCoords, overlayCoords, outlineColor)) {
+			original.call(instance, poseStack, submitNodeCollector, lightCoords, overlayCoords, outlineColor);
 		}
 	}
 

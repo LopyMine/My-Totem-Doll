@@ -55,7 +55,7 @@ public class CustomModelTagButtonWidget extends TagButtonWidget {
 	@Override
 	protected void renderIcon(GuiGraphicsExtractor context, int x, int y) {
 		context.enableScissor(this.getX() + 1, this.getY() + 1, this.getX() + this.getWidth() - 1, this.getY() + this.getHeight() - 1);
-		TotemDollRenderer.renderPreview(context, x, y, this.getWidth(), this.getHeight(), Math.min(this.getWidth(), this.getHeight()), this.getData());
+		TotemDollRenderer.extractPreview(context, x, y, this.getWidth(), this.getHeight(), Math.min(this.getWidth(), this.getHeight()), this.getData());
 		context.disableScissor();
 	}
 

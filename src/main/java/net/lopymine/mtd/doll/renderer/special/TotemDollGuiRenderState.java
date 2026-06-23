@@ -6,9 +6,10 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.renderer.state.gui.pip.PictureInPictureRenderState;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix3x2f;
+import org.joml.*;
+import org.jspecify.annotations.NonNull;
 
-public record TotemDollRenderState(
+public record TotemDollGuiRenderState(
 		@Nullable
 		TotemDollData data,
 		@Nullable
@@ -24,12 +25,12 @@ public record TotemDollRenderState(
 		@Nullable ScreenRectangle bounds
 ) implements PictureInPictureRenderState {
 
-	public static TotemDollRenderState getGui(ItemStack stack, int x, int y, Matrix3x2f matrices, @Nullable ScreenRectangle scissorArea) {
-		return new TotemDollRenderState(null, stack, x, y, 16, 16, 16, DollRenderContext.D_GUI, matrices, scissorArea, PictureInPictureRenderState.getBounds(x, y, x + 16, y + 16, scissorArea));
+	public static TotemDollGuiRenderState getGui(ItemStack stack, int x, int y, Matrix3x2f matrices, @Nullable ScreenRectangle scissorArea) {
+		return new TotemDollGuiRenderState(null, stack, x, y, 16, 16, 16, DollRenderContext.D_GUI, matrices, scissorArea, PictureInPictureRenderState.getBounds(x, y, x + 16, y + 16, scissorArea));
 	}
 
-	public static TotemDollRenderState getPreview(TotemDollData data, int x, int y, int width, int height, float size, @Nullable ScreenRectangle scissorArea) {
-		return new TotemDollRenderState(data, null, x, y, width, height, size, DollRenderContext.D_PREVIEW, null, scissorArea, PictureInPictureRenderState.getBounds(x, y, x + width, y + height, scissorArea));
+	public static TotemDollGuiRenderState getPreview(TotemDollData data, int x, int y, int width, int height, float size, @Nullable ScreenRectangle scissorArea) {
+		return new TotemDollGuiRenderState(data, null, x, y, width, height, size, DollRenderContext.D_PREVIEW, null, scissorArea, PictureInPictureRenderState.getBounds(x, y, x + width, y + height, scissorArea));
 	}
 
 	@Override
@@ -58,7 +59,7 @@ public record TotemDollRenderState(
 	}
 
 	@Override
-	public Matrix3x2f pose() {
+	public @NonNull Matrix3x2fc pose() {
 		if (this.matrices == null) {
 			return PictureInPictureRenderState.super.pose();
 		}

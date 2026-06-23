@@ -7,7 +7,6 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 
 public record ItemGuiRenderState(
-		@Nullable
 		ItemStack stack,
 		int x,
 		int y,

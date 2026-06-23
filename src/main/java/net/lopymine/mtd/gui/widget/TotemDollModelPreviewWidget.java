@@ -52,7 +52,7 @@ public class TotemDollModelPreviewWidget extends AbstractWidget {
 	}
 
 	protected void renderPreview(GuiGraphicsExtractor context) {
-		TotemDollRenderer.renderPreview(context, this.getX(), this.getY(), (int) this.getSize(), (int) this.getSize(), this.getSize() / 1.5F, this.getData().refreshAndApplyRenderProperties());
+		TotemDollRenderer.extractPreview(context, this.getX(), this.getY(), (int) this.getSize(), (int) this.getSize(), this.getSize() / 1.5F, this.getData().refreshAndApplyRenderProperties());
 	}
 
 	public void updateModel(Identifier id) {

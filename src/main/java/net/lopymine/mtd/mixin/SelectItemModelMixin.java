@@ -8,10 +8,10 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.*;
 import net.minecraft.client.renderer.item.SelectItemModel.ModelSelector;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.*;
-import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.At;
 
 @ExtensionMethod(ItemStackExtension.class)
 @Mixin(SelectItemModel.class)

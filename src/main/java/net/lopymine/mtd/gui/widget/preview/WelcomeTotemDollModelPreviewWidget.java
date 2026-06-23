@@ -37,7 +37,7 @@ public class WelcomeTotemDollModelPreviewWidget extends TotemDollModelPreviewWid
 			scale += this.easeOutSine(Mth.clamp((float) this.getHoverTime() / this.getMaxHoverTime(), 0.0F, 1.0F)) * 0.25F;
 		}
 
-		TotemDollRenderer.renderPreview(context, this.getX(), this.getY(), (int) this.getSize(), (int) this.getSize(), this.getSize() * scale, this.getData().refreshAndApplyRenderProperties());
+		TotemDollRenderer.extractPreview(context, this.getX(), this.getY(), (int) this.getSize(), (int) this.getSize(), this.getSize() * scale, this.getData().refreshAndApplyRenderProperties());
 	}
 
 	private long getMaxHoverTime() {

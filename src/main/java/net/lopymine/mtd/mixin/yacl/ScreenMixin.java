@@ -1,12 +1,10 @@
 package net.lopymine.mtd.mixin.yacl;
 
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import dev.isxander.yacl3.gui.YACLScreen;
 import net.lopymine.mtd.yacl.YACLConfigurationScreen;
 import net.lopymine.mtd.yacl.custom.TransparencySprites;
 import net.lopymine.mtd.yacl.custom.category.rendering.RenderingCategoryTab;
-import net.lopymine.mtd.yacl.custom.screen.MyTotemDollYACLScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
@@ -19,7 +17,7 @@ public abstract class ScreenMixin {
 
 	@WrapWithCondition(method = "extractBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;extractBlurredBackground(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V"))
 	public boolean disableBlur(Screen instance, GuiGraphicsExtractor context) {
-		Screen screen = Minecraft.getInstance().screen;
+		Screen screen = Minecraft.getInstance().gui.screen();
 		if (YACLConfigurationScreen.notOpen(screen)) {
 			return true;
 		}

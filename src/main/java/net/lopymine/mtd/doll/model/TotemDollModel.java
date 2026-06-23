@@ -6,13 +6,13 @@ import lombok.*;
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.atlas.*;
 import net.lopymine.mtd.atlas.manager.MyTotemDollAtlasManager;
+import net.lopymine.mtd.bruh.BufferConsumer;
 import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.config.MyTotemDollConfig;
 import net.lopymine.mtd.doll.data.TotemDollSprites;
 import net.lopymine.mtd.model.base.*;
 import net.lopymine.mtd.model.bb.manager.BlockBenchModelManager;
 import net.minecraft.client.model.Model;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.*;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
@@ -174,7 +174,7 @@ public class TotemDollModel extends Model<Object> {
 			this.sprites.put(part, sprite);
 		}
 
-		public void draw(PoseStack matrices, MultiBufferSource provider, AtlasSprite mainTexture, int light, int overlay, int color) {
+		public void draw(PoseStack matrices, BufferConsumer consumer, AtlasSprite mainTexture, int light, int overlay, int color) {
 			LockableAtlasTexture atlasTexture = MyTotemDollAtlasManager.getNullableAtlasTexture();
 			if (atlasTexture == null) {
 				MyTotemDollClient.LOGGER.error("Game tried to render doll model, but atlas not initialized yet!");
@@ -193,7 +193,7 @@ public class TotemDollModel extends Model<Object> {
 			if (!wasLocked) {
 				atlasTexture.setLocked(true);
 			}
-			this.model.getMain().draw(matrices, provider, atlasTexture.getAtlas(), renderLayer, mainTexture, this.sprites, light, overlay, color);
+			this.model.getMain().draw(matrices, consumer, atlasTexture.getAtlas(), renderLayer, mainTexture, this.sprites, light, overlay, color);
 			if (!wasLocked) {
 				atlasTexture.setLocked(false);
 			}

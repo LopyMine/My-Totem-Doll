@@ -24,10 +24,62 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ItemInHandRenderer.class)
 public class ItemInHandRendererMixin {
 
+	@Inject(
+			at = @At("HEAD"),
+			method = "submitHandsWithItems"
+	)
+	private void createBoolean(CallbackInfo ci, @Share("mtd_bl") LocalBooleanRef ref) {
+		createBoolean(ref);
+	}
+
+	@WrapOperation(
+			at = @At(
+					value = "FIELD",
+					target = "Lnet/minecraft/client/renderer/ItemInHandRenderer$HandRenderSelection;renderMainHand:Z"
+			),
+			method = "submitHandsWithItems"
+	)
+	private boolean swapRenderValue1(HandRenderSelection instance, Operation<Boolean> original, @Share("mtd_bl") LocalBooleanRef ref) {
+		if (ref.get()) {
+			return true;
+		}
+		return original.call(instance);
+	}
+
+	@WrapOperation(
+			at = @At(
+					value = "FIELD",
+					target = "Lnet/minecraft/client/renderer/ItemInHandRenderer$HandRenderSelection;renderOffHand:Z"
+			),
+			method = "submitHandsWithItems"
+	)
+	private boolean swapRenderValue2(HandRenderSelection instance, Operation<Boolean> original, @Share("mtd_bl") LocalBooleanRef ref) {
+		if (ref.get()) {
+			return true;
+		}
+		return original.call(instance);
+	}
+
+	@WrapOperation(
+			at = @At(
+					value = "INVOKE",
+					target = "Lnet/minecraft/client/renderer/ItemInHandRenderer;submitArmWithItem(Lnet/minecraft/client/player/AbstractClientPlayer;FFLnet/minecraft/world/InteractionHand;FLnet/minecraft/world/item/ItemStack;FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;I)V"
+			),
+			method = "submitHandsWithItems"
+	)
+	private void swapRenderingStack(ItemInHandRenderer instance, AbstractClientPlayer playerEntity, float a, float b, InteractionHand hand, float c, ItemStack stack, float d, PoseStack matrixStack, SubmitNodeCollector queue, int i, Operation<Void> original, @Share("mtd_bl") LocalBooleanRef ref) {
+		Consumer<ItemStack> consumer = (itemStack) -> original.call(instance, playerEntity, a, b, hand, c, itemStack, d, matrixStack, queue, i);
+		if (ref.get()) {
+			renderDoll(stack, consumer);
+		} else {
+			consumer.accept(stack);
+		}
+	}
+
 	@Unique
 	private static void createBoolean(LocalBooleanRef ref) {
 		Minecraft client = Minecraft.getInstance();
-		Screen currentScreen = client.screen;
+		Screen currentScreen = client.gui.screen();
 
 		ref.set(false);
 		if (YACLConfigurationScreen.notOpen(currentScreen)) {
@@ -62,51 +114,5 @@ public class ItemInHandRendererMixin {
 			return;
 		}
 		draw.accept(original);
-	}
-
-	@Inject(
-			at = @At("HEAD"),
-			method = "renderHandsWithItems(FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/player/LocalPlayer;I)V"
-	)
-	private void createBoolean(CallbackInfo ci, @Share("mtd_bl") LocalBooleanRef ref) {
-		createBoolean(ref);
-	}
-
-	@WrapOperation(
-			at = @At(
-					value = "FIELD",
-					target = "Lnet/minecraft/client/renderer/ItemInHandRenderer$HandRenderSelection;renderMainHand:Z"
-			),
-			method = "renderHandsWithItems(FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/player/LocalPlayer;I)V"
-	)
-	private boolean swapRenderValue1(HandRenderSelection instance, Operation<Boolean> original, @Share("mtd_bl") LocalBooleanRef ref) {
-		if (ref.get()) {
-			return true;
-		}
-		return original.call(instance);
-	}
-
-	@WrapOperation(
-			at = @At(
-					value = "FIELD",
-					target = "Lnet/minecraft/client/renderer/ItemInHandRenderer$HandRenderSelection;renderOffHand:Z"
-			),
-			method = "renderHandsWithItems(FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/player/LocalPlayer;I)V"
-	)
-	private boolean swapRenderValue2(HandRenderSelection instance, Operation<Boolean> original, @Share("mtd_bl") LocalBooleanRef ref) {
-		if (ref.get()) {
-			return true;
-		}
-		return original.call(instance);
-	}
-
-	@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/ItemInHandRenderer;renderArmWithItem(Lnet/minecraft/client/player/AbstractClientPlayer;FFLnet/minecraft/world/InteractionHand;FLnet/minecraft/world/item/ItemStack;FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;I)V"), method = "renderHandsWithItems(FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/player/LocalPlayer;I)V")
-	private void swapRenderingStack(ItemInHandRenderer instance, AbstractClientPlayer playerEntity, float a, float b, InteractionHand hand, float c, ItemStack stack, float d, PoseStack matrixStack, SubmitNodeCollector queue, int i, Operation<Void> original, @Share("mtd_bl") LocalBooleanRef ref) {
-		Consumer<ItemStack> consumer = (itemStack) -> original.call(instance, playerEntity, a, b, hand, c, itemStack, d, matrixStack, queue, i);
-		if (ref.get()) {
-			renderDoll(stack, consumer);
-		} else {
-			consumer.accept(stack);
-		}
 	}
 }

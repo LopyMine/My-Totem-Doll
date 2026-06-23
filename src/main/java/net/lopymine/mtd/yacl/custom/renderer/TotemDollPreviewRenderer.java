@@ -40,12 +40,12 @@ public class TotemDollPreviewRenderer implements ImageRenderer {
 		int offset = 5;
 		int width = renderWidth - (offset * 2);
 
-		this.renderDollStatus(context, x + offset, y + offset, width);
+		this.extractDollStatus(context, x + offset, y + offset, width);
 		this.updateSuggestion(width, this.lastRenderWidth != renderWidth);
 		this.lastRenderWidth = renderWidth;
 
-		int i = this.renderSuggestionText(context, x + offset, y + offset + 30 + 10, width);
-		return (this.renderDoll(context, x + offset, i, width) + offset) - y;
+		int i = this.extractSuggestionText(context, x + offset, y + offset + 30 + 10, width);
+		return (this.extractDoll(context, x + offset, i, width) + offset) - y;
 	}
 
 	private void updateSuggestion(int width, boolean resized) {
@@ -68,7 +68,7 @@ public class TotemDollPreviewRenderer implements ImageRenderer {
 		}
 	}
 
-	private int renderSuggestionText(GuiGraphicsExtractor context, int x, int y, int width) {
+	private int extractSuggestionText(GuiGraphicsExtractor context, int x, int y, int width) {
 		int suggestionColor = this.getSuggestionColors();
 
 		if (this.suggestionText == null) {
@@ -93,18 +93,18 @@ public class TotemDollPreviewRenderer implements ImageRenderer {
 		return STANDARD_SUGGESTION_TEXT_COLOR;
 	}
 
-	private void renderDollStatus(GuiGraphicsExtractor context, int x, int y, int width) {
+	private void extractDollStatus(GuiGraphicsExtractor context, int x, int y, int width) {
 		BackgroundRenderer.drawTransparencyWidgetBackground(context, x, y, width, 30, true, true);
 
 		DrawUtils.drawCenteredText(context, MyTotemDoll.text("text.status").append(this.data.getStandardSprites().getState().getText()), x + 2, y, width - 4, 30);
 	}
 
-	private int renderDoll(GuiGraphicsExtractor context, int x, int y, int size) {
+	private int extractDoll(GuiGraphicsExtractor context, int x, int y, int size) {
 		MyTotemDollConfig config = MyTotemDollConfig.getInstance();
 
 		BackgroundRenderer.drawTransparencyWidgetBackground(context, x, y, size, size, true, true);
 
-		TotemDollRenderer.renderPreview(context, x, y, size, size, size / 1.5F, config.isUseVanillaTotemModel() || TotemDollPlugin.isGoodStick(config.getStandardTotemDollSkinValue()) ? null : this.data.refreshAndApplyRenderProperties());
+		TotemDollRenderer.extractPreview(context, x, y, size, size, size / 1.5F, config.isUseVanillaTotemModel() || TotemDollPlugin.isGoodStick(config.getStandardTotemDollSkinValue()) ? null : this.data.refreshAndApplyRenderProperties());
 
 		return y + size + 2;
 	}

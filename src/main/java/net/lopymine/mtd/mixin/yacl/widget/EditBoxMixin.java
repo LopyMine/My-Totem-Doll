@@ -24,7 +24,7 @@ public abstract class EditBoxMixin extends AbstractWidget implements Renderable 
 
 	@WrapOperation(method = "extractWidgetRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V"))
 	private void renderTransparencyWidget(GuiGraphicsExtractor instance, RenderPipeline renderPipeline, Identifier identifier, int x, int y, int width, int height, Operation<Void> original) {
-		if (YACLConfigurationScreen.notOpen(Minecraft.getInstance().screen)) {
+		if (YACLConfigurationScreen.notOpen(Minecraft.getInstance().gui.screen())) {
 			original.call(instance, renderPipeline, identifier, x, y, width, height);
 			return;
 		}

@@ -1,11 +1,9 @@
 package net.lopymine.mtd.client.event;
 
-import java.util.List;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.ClientTooltipComponentCallback;
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.atlas.manager.*;
-import net.lopymine.mtd.doll.data.*;
 import net.lopymine.mtd.gui.tooltip.combined.*;
 import net.lopymine.mtd.gui.tooltip.info.*;
 import net.lopymine.mtd.gui.tooltip.preview.*;

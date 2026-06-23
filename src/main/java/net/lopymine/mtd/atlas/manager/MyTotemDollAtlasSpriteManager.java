@@ -192,7 +192,7 @@ public class MyTotemDollAtlasSpriteManager {
 		createAndRegisterSprite(MISSING_SPRITE.getSpriteId(), () -> MISSING_SPRITE, DYNAMIC_SPRITES, null);
 		registerDynamicSprite(STEVE_SKIN_SPRITE.getSpriteId(), false, null);
 
-		registerSpecialRemappedSprite(ELYTRA_SPRITE, false);
+		//registerSpecialRemappedSprite(ELYTRA_SPRITE, false);
 	}
 
 	private interface SpriteFactory {

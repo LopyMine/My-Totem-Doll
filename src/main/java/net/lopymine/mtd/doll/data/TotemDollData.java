@@ -171,8 +171,8 @@ public class TotemDollData {
 
 
 	@NotNull
-	public TotemDollGuiElementRenderer getGuiRenderer(net.minecraft.client.renderer.MultiBufferSource.BufferSource immediate) {
-		return TotemDollGuiElementRenderer.getRenderer(this.renderProperties, immediate);
+	public TotemDollGuiElementRenderer createGuiRenderer() {
+		return TotemDollGuiElementRenderer.createGuiRenderer(this.renderProperties);
 	}
 
 }

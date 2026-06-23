@@ -2,11 +2,11 @@ package net.lopymine.mtd.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import net.lopymine.mtd.doll.renderer.TotemDollRenderer;
-import net.lopymine.mtd.doll.renderer.special.TotemDollRenderState;
+import net.lopymine.mtd.doll.renderer.special.TotemDollGuiRenderState;
 import net.lopymine.mtd.utils.mixin.ItemRenderStateWithStack;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.GuiGraphicsExtractor.ScissorStack;
-import net.minecraft.client.renderer.item.*;
+import net.minecraft.client.renderer.item.TrackingItemStackRenderState;
 import net.minecraft.client.renderer.state.gui.GuiRenderState;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -50,10 +50,10 @@ public class GuiGraphicsMixin {
 
 	@Unique
 	private boolean renderDoll(ItemStack stack, int x, int y, CallbackInfo ci) {
-		if (!TotemDollRenderer.canRender(stack)) {
+		if (!TotemDollRenderer.canSubmit(stack)) {
 			return false;
 		}
-		this.guiRenderState.addPicturesInPictureState(TotemDollRenderState.getGui(stack, x, y, new Matrix3x2f(this.pose), this.scissorStack.peek()));
+		this.guiRenderState.addPicturesInPictureState(TotemDollGuiRenderState.getGui(stack, x, y, new Matrix3x2f(this.pose), this.scissorStack.peek()));
 		ci.cancel();
 		return true;
 	}

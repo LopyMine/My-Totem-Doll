@@ -142,7 +142,6 @@ public class TotemDollModelSelectionScreen extends Screen {
 	}
 
 
-
 	@Override
 	public void extractBackground(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
 		super.extractBackground(context, mouseX, mouseY, delta);
@@ -243,6 +242,6 @@ public class TotemDollModelSelectionScreen extends Screen {
 
 	@Override
 	public void onClose() {
-		Minecraft.getInstance().setScreen(this.parent);
+		Minecraft.getInstance().gui.setScreen(this.parent);
 	}
 }

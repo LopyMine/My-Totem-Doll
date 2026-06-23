@@ -52,7 +52,7 @@ public class TotemDollModelControllerElement extends ControllerWidget<TotemDollM
 	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 		if (this.isAvailable() && this.isMouseOver(click.x(), click.y()) && this.getDimension().isPointInside((int) click.x(), (int) click.y())) {
 			this.playDownSound();
-			Minecraft.getInstance().setScreen(new TotemDollModelSelectionScreen(this.screen, this.controller.option()));
+			Minecraft.getInstance().gui.setScreen(new TotemDollModelSelectionScreen(this.screen, this.controller.option()));
 			return true;
 		}
 		return false;

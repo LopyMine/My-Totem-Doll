@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import lombok.Getter;
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.config.other.EnumWithText;
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.StringRepresentable;
 
 @Getter

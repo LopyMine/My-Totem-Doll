@@ -2,6 +2,8 @@ package net.lopymine.mtd.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.*;
 import com.mojang.blaze3d.platform.NativeImage;
+import com.mojang.blaze3d.systems.CommandEncoder;
+import com.mojang.blaze3d.textures.GpuTexture;
 import net.minecraft.client.renderer.texture.SpriteContents;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
@@ -15,14 +17,14 @@ public class SpriteContentsMixin {
 	@WrapOperation(
 			at = @At(
 					value = "INVOKE",
-					target = "Lcom/mojang/blaze3d/systems/CommandEncoder;writeToTexture(Lcom/mojang/blaze3d/textures/GpuTexture;Lcom/mojang/blaze3d/platform/NativeImage;IIIIIIII)V"),
+					target = "Lcom/mojang/blaze3d/systems/CommandEncoder;writeToTexture(Lcom/mojang/blaze3d/textures/GpuTexture;Lcom/mojang/blaze3d/platform/NativeImage;IIII)V"),
 			method = "uploadFirstFrame"
 	)
-	private void validateImageBeforeUpload(com.mojang.blaze3d.systems.CommandEncoder instance, com.mojang.blaze3d.textures.GpuTexture target, NativeImage source, int mipLevel, int depth, int offsetX, int offsetY, int width, int height, int skipPixels, int skipRows, Operation<Void> original) {
-		if (source.pixels == 0L) {
-			throw new IllegalArgumentException(TEXT);
-		}
-		original.call(instance, target, source, mipLevel, depth, offsetX, offsetY, width, height, skipPixels, skipRows);
+	private void validateImageBeforeUpload(CommandEncoder instance, GpuTexture destination, NativeImage source, int mipLevel, int depthOrLayer, int destX, int destY, Operation<Void> original) {
+//		if (source.pixels == 0L) {
+//			throw new IllegalArgumentException(TEXT);
+//		}
+		original.call(instance, destination, source, mipLevel, depthOrLayer, destX, destY);
 	}
 
 }

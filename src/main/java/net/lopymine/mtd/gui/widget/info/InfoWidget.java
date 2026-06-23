@@ -5,7 +5,7 @@ import lombok.*;
 import net.lopymine.mtd.utils.DrawUtils;
 import net.lopymine.mtd.utils.tooltip.IRequestableTooltipScreen;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -54,7 +54,7 @@ public class InfoWidget implements Renderable {
 
 	public void requestTooltip() {
 		Minecraft client = Minecraft.getInstance();
-		Screen screen = client.screen;
+		Screen screen = client.gui.screen();
 		if (!(screen instanceof IRequestableTooltipScreen tooltipScreen)) {
 			return;
 		}
