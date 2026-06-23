@@ -62,15 +62,15 @@ public class TotemDollGuiElementRenderer extends PictureInPictureRenderer<TotemD
 
 	@Override
 	protected void renderToTexture(TotemDollGuiRenderState state, PoseStack matrices, SubmitNodeCollector collector) {
+		LightningUtils.flat();
+
 		if (state.renderContext() == DollRenderContext.D_PREVIEW && state.data() != null) {
 			TotemDollRenderer.submitPreview(collector, matrices, state.size() + 1, state.data());
 		} else if (state.stack() != null) {
-			LightningUtils.disable3dLighting();
 			matrices.pushPose();
 			matrices.scale(16F, -16F, -16F);
 			TotemDollRenderer.submitItem(collector, matrices, state.renderContext(), state.stack(), LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0);
 			matrices.popPose();
-			LightningUtils.enable3dLighting();
 
 			if (state.stack().hasModdedModel()) {
 				state.stack().setModdedModel(false);

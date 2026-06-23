@@ -3,6 +3,8 @@ package net.lopymine.mtd.mixin;
 import com.llamalad7.mixinextras.injector.wrapoperation.*;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.lopymine.mtd.doll.renderer.*;
+import net.lopymine.mtd.utils.LightningUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.world.item.ItemStack;
@@ -24,9 +26,13 @@ public class ScreenEffectRendererMixin {
 			method = "renderItemActivationAnimation"
 	)
 	private void renderFloatingDoll(ItemStackRenderState instance, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, int overlayCoords, int outlineColor, Operation<Void> original) {
-		if (!TotemDollRenderer.submitItem(submitNodeCollector, poseStack, DollRenderContext.D_FLOATING, this.itemActivationItem, lightCoords, overlayCoords, outlineColor)) {
+		ItemStack stack = this.itemActivationItem;
+		if (!TotemDollRenderer.canSubmit(stack) || stack == null) {
 			original.call(instance, poseStack, submitNodeCollector, lightCoords, overlayCoords, outlineColor);
+			return;
 		}
+		LightningUtils.flat();
+		TotemDollRenderer.submitItemAnyway(submitNodeCollector, poseStack, DollRenderContext.D_FLOATING, stack, lightCoords, overlayCoords, outlineColor);
 	}
 
 }

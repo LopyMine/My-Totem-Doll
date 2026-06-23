@@ -34,11 +34,16 @@ public class TotemDollRenderer {
 
 	// SUBMIT METHODS
 
+	public static void submitItemAnyway(SubmitNodeCollector collector, PoseStack matrices, DollRenderContext context, ItemStack stack, int light, int overlay, int outlineColor) {
+		TotemDollData totemDollData = stack.getTotemDollData(false);
+		TotemDollRenderState renderState = new TotemDollRenderState(totemDollData, light, overlay, outlineColor);
+		TotemDollRenderer.submitSpecial(collector, matrices, stack.getPlayerEntity(), context, renderState);
+	}
+
 	public static boolean submitItem(SubmitNodeCollector collector, PoseStack matrices, DollRenderContext context, ItemStack stack, int light, int overlay, int outlineColor) {
 		if (canSubmit(stack)) {
 			TotemDollData totemDollData = stack.getTotemDollData(false);
 			TotemDollRenderState renderState = new TotemDollRenderState(totemDollData, light, overlay, outlineColor);
-
 			TotemDollRenderer.submitSpecial(collector, matrices, stack.getPlayerEntity(), context, renderState);
 			return true;
 		}
@@ -53,14 +58,12 @@ public class TotemDollRenderer {
 
 		float rotation = (currentTime * rotationSpeed) % 360;
 
-		LightningUtils.disable3dLighting();
 		matrices.pushPose();
 		matrices.scale(-i, -i, i);
 		matrices.mulPose(Axis.YP.rotationDegrees(rotation));
 		matrices.translate(-0.5F, -1.0F, -0.5F);
 		TotemDollFeatureRenderer.submit(collector, matrices, new TotemDollRenderState(data));
 		matrices.popPose();
-		LightningUtils.enable3dLighting();
 	}
 
 	public static void submitSpecial(SubmitNodeCollector collector, PoseStack matrices, AbstractClientPlayer holdingPlayer, DollRenderContext context, TotemDollRenderState renderState) {

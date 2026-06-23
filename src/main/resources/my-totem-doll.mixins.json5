@@ -27,7 +27,8 @@
 	    "ScreenEffectRendererMixin",
 	    "accessor.CubeDeformationAccessor",
 	    "bruh.FeatureRenderDispatcherMixin",
-	    "bruh.SubmitNodeCollectionAccessor"
+	    "bruh.SubmitNodeCollectionAccessor",
+	    "TextureAtlasMixin"
     ],
     "injectors": {
         "defaultRequire": 1

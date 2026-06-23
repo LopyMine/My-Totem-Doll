@@ -17,7 +17,7 @@ public class ItemGuiElementRenderer extends PictureInPictureRenderer<ItemGuiRend
 
 	@Override
 	protected void renderToTexture(ItemGuiRenderState state, PoseStack matrices, SubmitNodeCollector collector) {
-		LightningUtils.disable3dLighting();
+		LightningUtils.flat();
 		matrices.mulPose(state.rotation());
 		float size = state.size();
 		matrices.scale(-size, -size, size);
