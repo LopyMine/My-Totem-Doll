@@ -37,7 +37,7 @@ public class TotemDollFeatureRenderer extends RenderTypeFeatureRenderer<TotemDol
 		}
 		PoseStack.Pose entry = matrices.last();
 		TotemDollData data = renderState.data();
-		Submit submit = new Submit(entry.copy(), data, data.getRenderProperties().copy(), renderState.light(), renderState.overlay(), renderState.overlay());
+		Submit submit = new Submit(entry.copy(), data, data.getRenderProperties().copy(), renderState.light(), renderState.overlay(), renderState.outline());
 		accessor.getTranslucentModels().submit(submit);
 	}
 
@@ -72,12 +72,12 @@ public class TotemDollFeatureRenderer extends RenderTypeFeatureRenderer<TotemDol
 		modelToRender.resetPartsVisibility();
 		data.getRenderProperties().applyToModel(modelToRender);
 
-		TotemDollRenderer.render(this.matrices, this::getVertexBuilder, submit.light(), submit.overlay(), data);
+		TotemDollRenderer.render(this.matrices, this::getVertexBuilder, submit.light(), submit.overlay(), 0, data);
 
-//		int argb = submit.outline();
-//		if (argb != 0) {
-//			TotemDollRenderer.renderDoll(this.matrices, data, submit.holdingPlayer(), submit.context(), outlineProvider, submit.light(), submit.overlay());
-//		}
+		int argb = submit.outline();
+		if (argb != 0) {
+			TotemDollRenderer.render(this.matrices, this::getVertexBuilder, submit.light(), submit.overlay(), argb, data);
+		}
 
 		data.getRenderProperties().copyFrom(this.renderProperties);
 
@@ -91,7 +91,7 @@ public class TotemDollFeatureRenderer extends RenderTypeFeatureRenderer<TotemDol
 			TotemDollRenderProperties renderProperties,
 			int light,
 			int overlay,
-			int outlineColor
+			int outline
 	) implements TranslucentSubmit {
 
 		@Override

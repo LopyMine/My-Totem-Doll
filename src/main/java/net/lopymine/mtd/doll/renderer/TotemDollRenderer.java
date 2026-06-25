@@ -136,7 +136,7 @@ public class TotemDollRenderer {
 
 	// RENDER METHODS
 
-	public static void render(PoseStack matrices, BufferConsumer consumer, int light, int overlay, TotemDollData totemDollData) {
+	public static void render(PoseStack matrices, BufferConsumer consumer, int light, int overlay, int outline, TotemDollData totemDollData) {
 		TotemDollSprites textures = totemDollData.getSpritesToRender();
 		AtlasSprite skinSprite = textures.getSkinSprite();
 		AtlasSprite capeSprite = textures.getCapeSprite();
@@ -170,7 +170,7 @@ public class TotemDollRenderer {
 			drawer.requestDrawingPartWithSprite("elytra", elytraSprite);
 		}
 
-		drawer.draw(matrices, consumer, skinSprite, light, overlay, -1);
+		drawer.draw(matrices, consumer, skinSprite, light, overlay, outline);
 
 		matrices.popPose();
 	}

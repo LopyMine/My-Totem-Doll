@@ -12,7 +12,7 @@ import net.lopymine.mtd.extension.*;
 import net.lopymine.mtd.model.bb.*;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.*;
 import net.minecraft.client.renderer.texture.*;
 import net.minecraft.client.resources.model.cuboid.ItemTransforms;
 import net.minecraft.resources.Identifier;
@@ -91,7 +91,7 @@ public class MModel extends ModelPart {
 		return this;
 	}
 
-	public void draw(PoseStack matrices, BufferConsumer consumer, TextureAtlas atlas, RenderType atlasRenderLayer, AtlasSprite mainSprite, Map<String, AtlasSprite> requestedParts, int light, int overlay, int color) {
+	public void draw(PoseStack matrices, BufferConsumer consumer, TextureAtlas atlas, RenderType atlasRenderLayer, AtlasSprite mainSprite, Map<String, AtlasSprite> requestedParts, int light, int overlay, int outline) {
 		AtlasSprite providedSprite = requestedParts.get(this.getName());
 
 		if ((this.skipRendering && providedSprite == null) || (!this.visible) || (this.mCuboids.isEmpty() && this.mChildren.isEmpty())) {
@@ -107,15 +107,23 @@ public class MModel extends ModelPart {
 		this.translateAndRotate(matrices);
 		if (!this.skipDraw && !this.mCuboids.isEmpty()) {
 			TextureAtlasSprite currentSprite = atlas.getSprite(currentSpriteId.getSpriteId());
-			VertexConsumer vertexConsumer = currentSprite.wrap(consumer.accept(atlasRenderLayer));
-			this.compile(matrices.last(), vertexConsumer, light, overlay, color);
+			VertexConsumer vertexConsumer = currentSprite.wrap(consumer.accept(outline == 0 ? atlasRenderLayer : getOutlineRenderType(atlasRenderLayer)));
+			this.compile(matrices.last(), vertexConsumer, light, overlay, outline == 0 ? -1 : outline);
 		}
 
 		for (MModel model : this.mChildrenModels) {
-			model.draw(matrices, consumer, atlas, atlasRenderLayer, currentSpriteId, requestedParts, light, overlay, color);
+			model.draw(matrices, consumer, atlas, atlasRenderLayer, currentSpriteId, requestedParts, light, overlay, outline);
 		}
 
 		matrices.popPose();
+	}
+
+	private static RenderType getOutlineRenderType(final RenderType renderType) {
+		if (renderType.isOutline()) {
+			return renderType;
+		} else {
+			return renderType.outline().isPresent() ? (RenderType)renderType.outline().get() : null;
+		}
 	}
 
 	private int getCountOfParents() {

@@ -174,7 +174,7 @@ public class TotemDollModel extends Model<Object> {
 			this.sprites.put(part, sprite);
 		}
 
-		public void draw(PoseStack matrices, BufferConsumer consumer, AtlasSprite mainTexture, int light, int overlay, int color) {
+		public void draw(PoseStack matrices, BufferConsumer consumer, AtlasSprite mainTexture, int light, int overlay, int outline) {
 			LockableAtlasTexture atlasTexture = MyTotemDollAtlasManager.getNullableAtlasTexture();
 			if (atlasTexture == null) {
 				MyTotemDollClient.LOGGER.error("Game tried to render doll model, but atlas not initialized yet!");
@@ -193,7 +193,7 @@ public class TotemDollModel extends Model<Object> {
 			if (!wasLocked) {
 				atlasTexture.setLocked(true);
 			}
-			this.model.getMain().draw(matrices, consumer, atlasTexture.getAtlas(), renderLayer, mainTexture, this.sprites, light, overlay, color);
+			this.model.getMain().draw(matrices, consumer, atlasTexture.getAtlas(), renderLayer, mainTexture, this.sprites, light, overlay, outline);
 			if (!wasLocked) {
 				atlasTexture.setLocked(false);
 			}
