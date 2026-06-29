@@ -15,8 +15,8 @@ public class TextureManagerMixin {
 	@WrapOperation(
 			at = @At(
 					value = "INVOKE",
-					target = "Lorg/slf4j/Logger;error(Ljava/lang/String;[Ljava/lang/Object;)V"
-					, remap = false
+					target = "Lorg/slf4j/Logger;error(Ljava/lang/String;[Ljava/lang/Object;)V",
+					remap = false
 			),
 			method = "loadContentsSafe(Lnet/minecraft/resources/Identifier;Lnet/minecraft/client/renderer/texture/ReloadableTexture;)Lnet/minecraft/client/renderer/texture/TextureContents;"
 	)

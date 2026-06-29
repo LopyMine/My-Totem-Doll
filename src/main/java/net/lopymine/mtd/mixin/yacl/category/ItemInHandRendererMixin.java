@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.ItemInHandRenderer.HandRenderSelection;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.*;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -29,13 +30,14 @@ public class ItemInHandRendererMixin {
 			method = "submitHandsWithItems"
 	)
 	private void createBoolean(CallbackInfo ci, @Share("mtd_bl") LocalBooleanRef ref) {
-		createBoolean(ref);
+		myTotemDoll$createBoolean(ref);
 	}
 
 	@WrapOperation(
 			at = @At(
 					value = "FIELD",
-					target = "Lnet/minecraft/client/renderer/ItemInHandRenderer$HandRenderSelection;renderMainHand:Z"
+					target = "Lnet/minecraft/client/renderer/ItemInHandRenderer$HandRenderSelection;renderMainHand:Z",
+					opcode = Opcodes.GETFIELD
 			),
 			method = "submitHandsWithItems"
 	)
@@ -49,8 +51,8 @@ public class ItemInHandRendererMixin {
 	@WrapOperation(
 			at = @At(
 					value = "FIELD",
-					target = "Lnet/minecraft/client/renderer/ItemInHandRenderer$HandRenderSelection;renderOffHand:Z"
-			),
+					target = "Lnet/minecraft/client/renderer/ItemInHandRenderer$HandRenderSelection;renderOffHand:Z",
+					opcode = Opcodes.GETFIELD),
 			method = "submitHandsWithItems"
 	)
 	private boolean swapRenderValue2(HandRenderSelection instance, Operation<Boolean> original, @Share("mtd_bl") LocalBooleanRef ref) {
@@ -70,14 +72,14 @@ public class ItemInHandRendererMixin {
 	private void swapRenderingStack(ItemInHandRenderer instance, AbstractClientPlayer playerEntity, float a, float b, InteractionHand hand, float c, ItemStack stack, float d, PoseStack matrixStack, SubmitNodeCollector queue, int i, Operation<Void> original, @Share("mtd_bl") LocalBooleanRef ref) {
 		Consumer<ItemStack> consumer = (itemStack) -> original.call(instance, playerEntity, a, b, hand, c, itemStack, d, matrixStack, queue, i);
 		if (ref.get()) {
-			renderDoll(stack, consumer);
+			myTotemDoll$renderDoll(stack, consumer);
 		} else {
 			consumer.accept(stack);
 		}
 	}
 
 	@Unique
-	private static void createBoolean(LocalBooleanRef ref) {
+	private static void myTotemDoll$createBoolean(LocalBooleanRef ref) {
 		Minecraft client = Minecraft.getInstance();
 		Screen currentScreen = client.gui.screen();
 
@@ -99,7 +101,7 @@ public class ItemInHandRendererMixin {
 	}
 
 	@Unique
-	private static void renderDoll(ItemStack original, Consumer<ItemStack> draw) {
+	private static void myTotemDoll$renderDoll(ItemStack original, Consumer<ItemStack> draw) {
 		LocalPlayer player = Minecraft.getInstance().player;
 		if (player == null) {
 			draw.accept(original);

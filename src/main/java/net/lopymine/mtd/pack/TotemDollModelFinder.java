@@ -24,7 +24,7 @@ public class TotemDollModelFinder {
 
 		FOUNDED_TOTEM_MODELS.clear();
 		for (PackResources pack : list) {
-			String packId = pack.packId().replace("file/", "");
+			String packId = pack.packId().replace("file/", "").replace("mod/", "");
 			if (packId.equals(MyTotemDoll.MOD_ID)) {
 				continue;
 			}

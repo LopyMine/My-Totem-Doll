@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Pseudo
-@Mixin(Cube.class)
+@Mixin(value = Cube.class, priority = 1500)
 public class CubeMixinMixin {
 
 	@Dynamic

@@ -9,7 +9,6 @@ import java.nio.file.NoSuchFileException;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
-import net.fabricmc.loader.api.*;
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.api.Response;
 import net.lopymine.mtd.atlas.manager.*;
@@ -17,6 +16,7 @@ import net.lopymine.mtd.config.other.vector.Vec3f;
 import net.lopymine.mtd.doll.data.TotemDollData;
 import net.lopymine.mtd.doll.manager.*;
 import net.lopymine.mtd.doll.model.TotemDollModel;
+import net.lopymine.mtd.loader.MyTotemDollLoader;
 import net.lopymine.mtd.model.base.*;
 import net.lopymine.mtd.model.bb.*;
 import net.lopymine.mtd.model.bb.BBCube.*;
@@ -128,11 +128,11 @@ public class BlockBenchModelManager {
 				return Response.empty(102);
 			}
 
-			SemanticVersion modelVersion = SemanticVersion.parse(meta.getVersion());
+			String modelVersion = meta.getVersion();
 
-			if (modelVersion.compareTo((Version) SemanticVersion.parse("5.0")) >= 0) {
+			if (MyTotemDollLoader.compareVersions(modelVersion, "5.0") >= 0) {
 				return processBBModel50(id, jsonObject, name, meta);
-			} else if (modelVersion.compareTo((Version) SemanticVersion.parse("4.10")) >= 0) {
+			} else if (MyTotemDollLoader.compareVersions(modelVersion, "4.10") >= 0) {
 				return processBBModel410(id, jsonObject, name, meta);
 			}
 		} catch (NoSuchFileException | FileNotFoundException e) {

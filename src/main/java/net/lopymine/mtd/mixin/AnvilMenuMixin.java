@@ -16,7 +16,11 @@ public class AnvilMenuMixin {
 
 	@WrapOperation(
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getHoverName()Lnet/minecraft/network/chat/Component;"),
+			//? if fabric {
 			method = "createResult"
+			//?} else {
+			/*method = "createResultInternal"
+			*///?}
 	)
 	private Component swapItemName(ItemStack stack, Operation<Component> original) {
 		if (!MyTotemDollClient.canProcess(stack)) {

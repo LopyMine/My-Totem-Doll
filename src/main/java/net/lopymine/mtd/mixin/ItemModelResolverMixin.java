@@ -24,7 +24,7 @@ public class ItemModelResolverMixin {
 
 	@Inject(at = @At("HEAD"), method = "appendItemLayers")
 	private void captureEntityForDoll(ItemStackRenderState renderState, ItemStack stack, ItemDisplayContext displayContext, Level world, ItemOwner context, int seed, CallbackInfo ci) {
-		this.captureEntity(stack, context == null ? null : context.asLivingEntity(), renderState);
+		this.myTotemDoll$captureEntity(stack, context == null ? null : context.asLivingEntity(), renderState);
 	}
 
 	@WrapOperation(
@@ -34,11 +34,11 @@ public class ItemModelResolverMixin {
 			method = "appendItemLayers"
 	)
 	private Object swapItemModel(ItemStack stack, DataComponentType<?> componentType, Operation<?> original) {
-		return this.changeModel(stack, () -> original.call(stack, componentType));
+		return this.myTotemDoll$changeModel(stack, () -> original.call(stack, componentType));
 	}
 
 	@Unique
-	private Object changeModel(ItemStack stack, Supplier<Object> supplier) {
+	private Object myTotemDoll$changeModel(ItemStack stack, Supplier<Object> supplier) {
 		if (!MyTotemDollClient.canProcess(stack)) {
 			return supplier.get();
 		}
@@ -53,7 +53,7 @@ public class ItemModelResolverMixin {
 	}
 
 	@Unique
-	private void captureEntity(ItemStack stack, @Nullable LivingEntity entity, ItemStackRenderState renderState) {
+	private void myTotemDoll$captureEntity(ItemStack stack, @Nullable LivingEntity entity, ItemStackRenderState renderState) {
 		stack.setPlayerEntity(null);
 		if (entity instanceof AbstractClientPlayer player) {
 			stack.setPlayerEntity(player);

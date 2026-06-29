@@ -10,20 +10,20 @@ import net.lopymine.mtd.yacl.custom.category.rendering.RenderingConfigCategoryIm
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 
+@SuppressWarnings("UnstableApiUsage")
 @Mixin(ConfigCategoryImpl.BuilderImpl.class)
 public class ConfigCategoryImplBuilderImplMixin implements BetterYACLCategoryBuilder {
 
 	@Unique
-	private int custom = -1;
-
+	private int myTotemDoll$custom = -1;
 
 	@ModifyReturnValue(at = @At("RETURN"), method = "build", remap = false)
 	private ConfigCategory swapCategory(ConfigCategory original) {
-		if (this.custom == -1) {
+		if (this.myTotemDoll$custom == -1) {
 			return original;
-		} else if (this.custom == 0) {
+		} else if (this.myTotemDoll$custom == 0) {
 			return new BetterConfigCategoryImpl(original.name(), original.groups(), original.tooltip());
-		} else if (this.custom == 1) {
+		} else if (this.myTotemDoll$custom == 1) {
 			return new RenderingConfigCategoryImpl(original.name(), original.groups(), original.tooltip());
 		}
 		throw new IllegalArgumentException("Who modified me? mm???? [My Totem Doll]");
@@ -31,13 +31,13 @@ public class ConfigCategoryImplBuilderImplMixin implements BetterYACLCategoryBui
 
 	@Override
 	public Builder myTotemDoll$enableBetter() {
-		this.custom = 0;
+		this.myTotemDoll$custom = 0;
 		return ((Builder) this);
 	}
 
 	@Override
 	public Builder myTotemDoll$enableRendering() {
-		this.custom = 1;
+		this.myTotemDoll$custom = 1;
 		return ((Builder) this);
 	}
 }

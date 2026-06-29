@@ -10,16 +10,16 @@ import net.minecraft.client.gui.screens.Screen;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 
+@SuppressWarnings("UnstableApiUsage")
 @Mixin(YetAnotherConfigLibImpl.class)
 public class YetAnotherConfigLibImplMixin implements BetterYACLScreenConfig {
 
 	@Unique
-	private boolean enabled;
-
+	private boolean myTotemDoll$enabled;
 
 	@ModifyReturnValue(at = @At("RETURN"), method = "generateScreen")
 	private Screen swapScreen(Screen original, @Local(argsOnly = true) Screen parent) {
-		if (!this.enabled) {
+		if (!this.myTotemDoll$enabled) {
 			return original;
 		}
 		return new MyTotemDollYACLScreen(((YetAnotherConfigLib) this), parent);
@@ -28,7 +28,7 @@ public class YetAnotherConfigLibImplMixin implements BetterYACLScreenConfig {
 
 	@Override
 	public YetAnotherConfigLib myTotemDoll$enable() {
-		this.enabled = true;
+		this.myTotemDoll$enabled = true;
 		return ((YetAnotherConfigLib) this);
 	}
 }

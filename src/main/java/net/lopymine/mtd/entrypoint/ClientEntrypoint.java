@@ -14,16 +14,20 @@ public class ClientEntrypoint implements ClientModInitializer {
 }
 
 //?} elif neoforge {
-/*import net.lopymine.dl.DitheringLib;
-import net.lopymine.dl.client.DitheringLibClient;
+
+/*import net.lopymine.mtd.MyTotemDoll;
+import net.lopymine.mtd.client.MyTotemDollClient;
+import net.lopymine.mtd.modmenu.ModMenuIntegration;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 
-@Mod(value = DitheringLib.MOD_ID, dist = Dist.CLIENT)
+@Mod(value = MyTotemDoll.MOD_ID, dist = Dist.CLIENT)
 public class ClientEntrypoint {
 
-	public ClientEntrypoint() {
-		DitheringLibClient.onInitializeClient();
+	public ClientEntrypoint(ModContainer container) {
+		MyTotemDollClient.onInitializeClient();
+		new ModMenuIntegration().register(container);
 	}
 
 }

@@ -16,24 +16,24 @@ public abstract class ScreenMixin extends AbstractContainerEventHandler implemen
 	@Shadow
 	public Font font;
 	@Unique
-	private TooltipRequest tooltipRequest;
+	private TooltipRequest myTotemDoll$tooltipRequest;
 
 	@Inject(at = @At("TAIL"), method = "extractRenderStateWithTooltipAndSubtitles")
 	private void renderWithTooltip(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-		if (this.tooltipRequest != null) {
+		if (this.myTotemDoll$tooltipRequest != null) {
 			context.nextStratum();
-			this.tooltipRequest.renderRenderState(context, mouseX, mouseY, delta);
-			this.tooltipRequest = null;
+			this.myTotemDoll$tooltipRequest.renderRenderState(context, mouseX, mouseY, delta);
+			this.myTotemDoll$tooltipRequest = null;
 		}
 	}
 
 	@Override
 	public void myTotemDoll$requestTooltip(TooltipRequest tooltipRequest) {
-		this.tooltipRequest = tooltipRequest;
+		this.myTotemDoll$tooltipRequest = tooltipRequest;
 	}
 
 	@Override
 	public TooltipRequest myTotemDoll$getCurrentRequest() {
-		return this.tooltipRequest;
+		return this.myTotemDoll$tooltipRequest;
 	}
 }

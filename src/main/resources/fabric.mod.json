@@ -16,10 +16,10 @@
     "environment": "*",
     "entrypoints": {
         "main": [
-            "net.lopymine.mtd.MyTotemDoll"
+            "net.lopymine.mtd.entrypoint.CommonEntrypoint"
         ],
         "client": [
-            "net.lopymine.mtd.client.MyTotemDollClient"
+            "net.lopymine.mtd.entrypoint.ClientEntrypoint"
         ],
         "modmenu": [
             "net.lopymine.mtd.modmenu.ModMenuIntegration"

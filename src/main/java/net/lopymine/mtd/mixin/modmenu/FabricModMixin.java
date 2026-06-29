@@ -1,5 +1,7 @@
 package net.lopymine.mtd.mixin.modmenu;
 
+//? if fabric {
+
 import com.terraformersmc.modmenu.util.mod.fabric.FabricMod;
 import java.util.*;
 import net.fabricmc.loader.api.metadata.ModMetadata;
@@ -37,3 +39,5 @@ public class FabricModMixin {
 		map.put(nickname + " " + Arrays.toString(models.toArray()), List.of("Community Model Author"));
 	}
 }
+
+//?}

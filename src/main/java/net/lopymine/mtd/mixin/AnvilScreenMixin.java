@@ -34,18 +34,18 @@ public abstract class AnvilScreenMixin extends ItemCombinerScreen<AnvilMenu> imp
 	private EditBox name;
 	@Unique
 	@Nullable
-	private DraggingTagButtonWidget tagButtonWidget = null;
+	private DraggingTagButtonWidget myTotemDoll$tagButtonWidget = null;
 	@Unique
 	@Nullable
-	private TagMenuWidget tagMenuWidget = null;
+	private TagMenuWidget myTotemDoll$tagMenuWidget = null;
 	@Unique
 	@Nullable
-	private SmallInfoWidget infoWidget = null;
+	private SmallInfoWidget myTotemDoll$infoWidget = null;
 	@Unique
 	@Nullable
-	private TipsWidget tipsWidget = null;
+	private TipsWidget myTotemDoll$tipsWidget = null;
 	@Unique
-	private boolean currentVisibleState = false;
+	private boolean myTotemDoll$currentVisibleState = false;
 
 	public AnvilScreenMixin(AnvilMenu handler, Inventory playerInventory, Component title, Identifier texture) {
 		super(handler, playerInventory, title, texture);
@@ -66,7 +66,7 @@ public abstract class AnvilScreenMixin extends ItemCombinerScreen<AnvilMenu> imp
 
 		//
 
-		this.tagMenuWidget         = new TagMenuWidget(0, 0, new Renamer() {
+		this.myTotemDoll$tagMenuWidget         = new TagMenuWidget(0, 0, new Renamer() {
 			@Override
 			public String getName() {
 				return AnvilScreenMixin.this.name.getValue();
@@ -77,25 +77,25 @@ public abstract class AnvilScreenMixin extends ItemCombinerScreen<AnvilMenu> imp
 				AnvilScreenMixin.this.name.setValue(name);
 			}
 		});
-		this.tagMenuWidget.visible = this.currentVisibleState;
-		if (this.tagMenuWidget.visible) {
-			this.tagMenuWidget.updateButtons(stackTwo.isEmpty() ? stackOne : stackTwo);
+		this.myTotemDoll$tagMenuWidget.visible = this.myTotemDoll$currentVisibleState;
+		if (this.myTotemDoll$tagMenuWidget.visible) {
+			this.myTotemDoll$tagMenuWidget.updateButtons(stackTwo.isEmpty() ? stackOne : stackTwo);
 		}
 
 		//
 
-		this.infoWidget         = new SmallInfoWidget(0, 0);
-		this.infoWidget.visible = this.tagMenuWidget.visible;
+		this.myTotemDoll$infoWidget         = new SmallInfoWidget(0, 0);
+		this.myTotemDoll$infoWidget.visible = this.myTotemDoll$tagMenuWidget.visible;
 
 		//
 
-		this.tipsWidget         = new TipsWidget(0, 0);
-		this.tipsWidget.visible = this.tagMenuWidget.visible;
+		this.myTotemDoll$tipsWidget         = new TipsWidget(0, 0);
+		this.myTotemDoll$tipsWidget.visible = this.myTotemDoll$tagMenuWidget.visible;
 
 		//
 
 		Vec2i originalPos = MyTotemDollConfig.getNewInstance().getTagButtonPos();
-		this.tagButtonWidget         = new DraggingTagButtonWidget(
+		this.myTotemDoll$tagButtonWidget         = new DraggingTagButtonWidget(
 				Tag.simple('4'),
 				this.leftPos,
 				this.topPos,
@@ -104,37 +104,37 @@ public abstract class AnvilScreenMixin extends ItemCombinerScreen<AnvilMenu> imp
 				0,
 				0,
 				(b) -> {
-					this.currentVisibleState = b.isPressed();
+					this.myTotemDoll$currentVisibleState = b.isPressed();
 					this.resize(this.width, this.height);
 				});
-		this.tagButtonWidget.visible = bl;
-		this.tagButtonWidget.setPressed(this.tagMenuWidget.visible);
+		this.myTotemDoll$tagButtonWidget.visible = bl;
+		this.myTotemDoll$tagButtonWidget.setPressed(this.myTotemDoll$tagMenuWidget.visible);
 
 		//
 
-		if (this.tagMenuWidget.visible) {
-			this.imageWidth = 176 + this.tagMenuWidget.getWidth() + 5 + this.infoWidget.getWidth();
+		if (this.myTotemDoll$tagMenuWidget.visible) {
+			this.imageWidth = 176 + this.myTotemDoll$tagMenuWidget.getWidth() + 5 + this.myTotemDoll$infoWidget.getWidth();
 		} else {
 			this.imageWidth = 176;
 		}
 
 		//
 
-		this.addRenderableWidget(this.tagMenuWidget);
-		this.addRenderableOnly(this.infoWidget);
-		this.addRenderableOnly(this.tipsWidget);
-		this.addRenderableWidget(this.tagButtonWidget);
+		this.addRenderableWidget(this.myTotemDoll$tagMenuWidget);
+		this.addRenderableOnly(this.myTotemDoll$infoWidget);
+		this.addRenderableOnly(this.myTotemDoll$tipsWidget);
+		this.addRenderableWidget(this.myTotemDoll$tagButtonWidget);
 
 		//
 
 		this.leftPos = (this.width - this.imageWidth) / 2;
-		this.updateWidgets();
+		this.myTotemDoll$updateWidgets();
 	}
 
 	@Unique
-	private void updateWidgets() {
+	private void myTotemDoll$updateWidgets() {
 		MyTotemDollConfig config = MyTotemDollConfig.getInstance();
-		if (!config.isModEnabled() || this.tagButtonWidget == null || this.tagMenuWidget == null || this.infoWidget == null || this.tipsWidget == null) {
+		if (!config.isModEnabled() || this.myTotemDoll$tagButtonWidget == null || this.myTotemDoll$tagMenuWidget == null || this.myTotemDoll$infoWidget == null || this.myTotemDoll$tipsWidget == null) {
 			return;
 		}
 
@@ -142,29 +142,29 @@ public abstract class AnvilScreenMixin extends ItemCombinerScreen<AnvilMenu> imp
 
 		int tagMenuX = this.leftPos + 176 + 1;
 		int tagMenuY = this.topPos;
-		this.tagMenuWidget.setPosition(tagMenuX + 10, tagMenuY + 33);
+		this.myTotemDoll$tagMenuWidget.setPosition(tagMenuX + 10, tagMenuY + 33);
 
 		ItemStack stackOne = this.menu.getSlot(0).getItem();
 		ItemStack stackTwo = this.menu.getSlot(2).getItem();
 		ItemStack result = stackTwo.isEmpty() ? stackOne : stackTwo;
 		if (result.is(Items.TOTEM_OF_UNDYING)) {
-			this.tagMenuWidget.updateButtons(result);
-			this.tagMenuWidget.updateCustomModelTagButtons(result);
+			this.myTotemDoll$tagMenuWidget.updateButtons(result);
+			this.myTotemDoll$tagMenuWidget.updateCustomModelTagButtons(result);
 		}
 
 		//
 
 		int infoWidgetX = tagMenuX + 50 + 2;
 		int infoWidgetY = tagMenuY + 2;
-		this.infoWidget.setPosition(infoWidgetX, infoWidgetY);
-		this.tipsWidget.setPosition(infoWidgetX, infoWidgetY + this.infoWidget.getHeight() + 4);
+		this.myTotemDoll$infoWidget.setPosition(infoWidgetX, infoWidgetY);
+		this.myTotemDoll$tipsWidget.setPosition(infoWidgetX, infoWidgetY + this.myTotemDoll$infoWidget.getHeight() + 4);
 
 		//
 
 		Vec2i pos = config.getTagButtonPos();
-		this.tagButtonWidget.setPosition(pos.getX() + this.leftPos, pos.getY() + this.topPos);
-		this.tagButtonWidget.setOriginX(this.leftPos);
-		this.tagButtonWidget.setOriginY(this.topPos);
+		this.myTotemDoll$tagButtonWidget.setPosition(pos.getX() + this.leftPos, pos.getY() + this.topPos);
+		this.myTotemDoll$tagButtonWidget.setOriginX(this.leftPos);
+		this.myTotemDoll$tagButtonWidget.setOriginY(this.topPos);
 	}
 
 	@WrapOperation(
@@ -187,8 +187,8 @@ public abstract class AnvilScreenMixin extends ItemCombinerScreen<AnvilMenu> imp
 		if (!MyTotemDollConfig.getInstance().isModEnabled()) {
 			return;
 		}
-		this.updateWidgets();
-		if (this.tagMenuWidget != null && this.tagMenuWidget.visible) {
+		this.myTotemDoll$updateWidgets();
+		if (this.myTotemDoll$tagMenuWidget != null && this.myTotemDoll$tagMenuWidget.visible) {
 			int x = this.leftPos + 176 + 1;
 			int y = this.topPos;
 			DrawUtils.drawTexture(graphics, TagMenuWidget.BACKGROUND, x, y, 0, 0, 50, 166, 50, 166);
@@ -211,13 +211,13 @@ public abstract class AnvilScreenMixin extends ItemCombinerScreen<AnvilMenu> imp
 
 	@Inject(at = @At("HEAD"), method = "slotChanged")
 	private void checkTotem(AbstractContainerMenu handler, int slotId, ItemStack stack, CallbackInfo ci) {
-		if (!MyTotemDollConfig.getInstance().isModEnabled() || this.tagButtonWidget == null || this.tagMenuWidget == null) {
+		if (!MyTotemDollConfig.getInstance().isModEnabled() || this.myTotemDoll$tagButtonWidget == null || this.myTotemDoll$tagMenuWidget == null) {
 			return;
 		}
 		if (slotId == 0) {
-			this.tagButtonWidget.visible = MyTotemDollClient.canProcess(stack);
-			if (!this.tagButtonWidget.visible && this.tagMenuWidget.visible) {
-				this.tagButtonWidget.setPressed(false, true);
+			this.myTotemDoll$tagButtonWidget.visible = MyTotemDollClient.canProcess(stack);
+			if (!this.myTotemDoll$tagButtonWidget.visible && this.myTotemDoll$tagMenuWidget.visible) {
+				this.myTotemDoll$tagButtonWidget.setPressed(false, true);
 			}
 		}
 	}
@@ -236,11 +236,11 @@ public abstract class AnvilScreenMixin extends ItemCombinerScreen<AnvilMenu> imp
 
 	@Override
 	public @Nullable TagButtonWidget myTotemDoll$getTagButtonWidget() {
-		return this.tagButtonWidget;
+		return this.myTotemDoll$tagButtonWidget;
 	}
 
 	@Override
 	public @Nullable TagMenuWidget myTotemDoll$getTagMenuWidget() {
-		return this.tagMenuWidget;
+		return this.myTotemDoll$tagMenuWidget;
 	}
 }

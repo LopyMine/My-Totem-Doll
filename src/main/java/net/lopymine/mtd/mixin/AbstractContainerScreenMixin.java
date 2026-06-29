@@ -14,7 +14,7 @@ public class AbstractContainerScreenMixin {
 
 	@Inject(at = @At("HEAD"), method = "mouseDragged", cancellable = true)
 	private void mouseDragged(MouseButtonEvent click, double deltaX, double deltaY, CallbackInfoReturnable<Boolean> cir) {
-		TagButtonWidget tagButtonWidget = this.getTagButtonWidget();
+		TagButtonWidget tagButtonWidget = this.myTotemDoll$getTagButtonWidget();
 		if (tagButtonWidget == null) {
 			return;
 		}
@@ -25,7 +25,7 @@ public class AbstractContainerScreenMixin {
 
 	@Inject(at = @At("HEAD"), method = "mouseReleased", cancellable = true)
 	private void mouseReleased(MouseButtonEvent click, CallbackInfoReturnable<Boolean> cir) {
-		TagButtonWidget tagButtonWidget = this.getTagButtonWidget();
+		TagButtonWidget tagButtonWidget = this.myTotemDoll$getTagButtonWidget();
 		if (tagButtonWidget == null) {
 			return;
 		}
@@ -36,7 +36,7 @@ public class AbstractContainerScreenMixin {
 
 	@Inject(at = @At("HEAD"), method = "mouseScrolled", cancellable = true)
 	private void onMouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount, CallbackInfoReturnable<Boolean> cir) {
-		TagMenuWidget tagMenuWidget = this.getTagMenuWidget();
+		TagMenuWidget tagMenuWidget = this.myTotemDoll$getTagMenuWidget();
 		if (tagMenuWidget == null) {
 			return;
 		}
@@ -46,7 +46,7 @@ public class AbstractContainerScreenMixin {
 	}
 
 	@Unique
-	private @Nullable TagMenuWidget getTagMenuWidget() {
+	private @Nullable TagMenuWidget myTotemDoll$getTagMenuWidget() {
 		if (!(this instanceof MTDAnvilScreen anvilScreen)) {
 			return null;
 		}
@@ -54,7 +54,7 @@ public class AbstractContainerScreenMixin {
 	}
 
 	@Unique
-	private @Nullable TagButtonWidget getTagButtonWidget() {
+	private @Nullable TagButtonWidget myTotemDoll$getTagButtonWidget() {
 		if (!(this instanceof MTDAnvilScreen anvilScreen)) {
 			return null;
 		}

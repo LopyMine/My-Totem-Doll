@@ -1,14 +1,13 @@
 package net.lopymine.mtd;
 
-import net.fabricmc.api.ModInitializer;
 import net.minecraft.network.chat.*;
 import net.minecraft.resources.Identifier;
 import org.slf4j.*;
 
-public class MyTotemDoll implements ModInitializer {
+public class MyTotemDoll {
 
 	public static final String MOD_NAME = /*$ mod_name*/ "My Totem Doll";
-	public static final String MOD_ID = /*$ mod_id*/ "my-totem-doll";
+	public static final String MOD_ID = /*$ mod_id*/ "my_totem_doll";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);
 	public static final String YACL_DEPEND_VERSION = /*$ yacl*/ "3.9.4+26.2-fabric";
 
@@ -32,8 +31,7 @@ public class MyTotemDoll implements ModInitializer {
 		return id(path);
 	}
 
-	@Override
-	public void onInitialize() {
+	public static void onInitialize() {
 		LOGGER.info("{} Initialized", MOD_NAME);
 	}
 }

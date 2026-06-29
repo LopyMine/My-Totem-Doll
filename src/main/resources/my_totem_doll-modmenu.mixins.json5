@@ -7,7 +7,9 @@
     "mixins": [
     ],
 	"client": [
+		//? if fabric {
 		"FabricModMixin"
+		//?}
 	],
     "injectors": {
         "defaultRequire": 1

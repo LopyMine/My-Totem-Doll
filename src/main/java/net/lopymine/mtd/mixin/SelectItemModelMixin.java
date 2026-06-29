@@ -24,12 +24,12 @@ public abstract class SelectItemModelMixin<T> implements ItemModel {
 	@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/item/SelectItemModel$ModelSelector;get(Ljava/lang/Object;Lnet/minecraft/client/multiplayer/ClientLevel;)Lnet/minecraft/client/renderer/item/ItemModel;"), method = "update")
 	private ItemModel markModdedIfModelChangedWithVanillaResourcePack(ModelSelector<T> instance, @Nullable T value, @Nullable ClientLevel clientLevel, Operation<ItemModel> original, @Local(argsOnly = true) ItemStack itemStack) {
 		ItemModel model = original.call(instance, value, clientLevel);
-		this.checkModel(model, itemStack, value);
+		this.myTotemDoll$checkModel(model, itemStack, value);
 		return model;
 	}
 
 	@Unique
-	private void checkModel(ItemModel itemModel, ItemStack stack, T value) {
+	private void myTotemDoll$checkModel(ItemModel itemModel, ItemStack stack, T value) {
 		if (!(value instanceof Component)) {
 			return;
 		}

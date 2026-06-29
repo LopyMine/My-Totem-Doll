@@ -6,12 +6,12 @@ import java.io.File;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import lombok.*;
-import net.fabricmc.loader.api.FabricLoader;
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.config.other.vector.Vec2i;
 import net.lopymine.mtd.config.rendering.RenderingConfig;
 import net.lopymine.mtd.config.totem.*;
 import net.lopymine.mtd.doll.model.TotemDollModel;
+import net.lopymine.mtd.loader.MyTotemDollLoader;
 import net.lopymine.mtd.utils.*;
 import net.minecraft.resources.Identifier;
 import org.slf4j.*;
@@ -43,7 +43,7 @@ public class MyTotemDollConfig {
 			option("support_other_mods_totems", true, Codec.BOOL, MyTotemDollConfig::isSupportOtherModsTotems)
 	).apply(instance, MyTotemDollConfig::new));
 
-	private static final File CONFIG_FILE = FabricLoader.getInstance().getConfigDir().resolve(MyTotemDoll.MOD_ID + ".json5").toFile();
+	private static final File CONFIG_FILE = MyTotemDollLoader.getConfigDir().resolve(MyTotemDoll.MOD_ID + ".json5").toFile();
 	private static final Logger LOGGER = LoggerFactory.getLogger(MyTotemDoll.MOD_NAME + "/Config");
 	private static MyTotemDollConfig INSTANCE;
 

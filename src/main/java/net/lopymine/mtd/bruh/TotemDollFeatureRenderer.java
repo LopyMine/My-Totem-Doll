@@ -3,7 +3,6 @@ package net.lopymine.mtd.bruh;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import java.util.List;
-import net.fabricmc.api.*;
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.atlas.LockableAtlasTexture;
 import net.lopymine.mtd.atlas.manager.MyTotemDollAtlasManager;
@@ -84,7 +83,6 @@ public class TotemDollFeatureRenderer extends RenderTypeFeatureRenderer<TotemDol
 		this.matrices.popPose();
 	}
 
-	@Environment(EnvType.CLIENT)
 	public record Submit(
 			Pose copyPeek,
 			TotemDollData data,

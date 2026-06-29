@@ -77,8 +77,9 @@ public class StandardTotemDollManager {
 
 		CompletableFuture.runAsync(() -> {
 			Identifier id = MyTotemDoll.getDollTextureId("file/%s".formatted(Math.abs(data.hashCode())));
+			String path = data.endsWith("\"") && data.startsWith("\"") ? data.substring(1, data.length()-1) : data;
 
-			try (InputStream inputStream = Files.newInputStream(Path.of(data))) {
+			try (InputStream inputStream = Files.newInputStream(Path.of(path))) {
 				NativeImage nativeImage = NativeImage.read(inputStream);
 
 				MyTotemDollAtlasSpriteManager.registerSpecialSkinSprite(id, nativeImage, true, (sprite) -> {

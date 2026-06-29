@@ -10,15 +10,15 @@ import org.spongepowered.asm.mixin.*;
 public class ItemStackWithPlayerEntityMixin implements ItemStackWithPlayerEntity {
 
 	@Unique
-	private AbstractClientPlayer player;
+	private AbstractClientPlayer myTotemDoll$player;
 
 	@Override
 	public void myTotemDoll$setPlayerEntity(AbstractClientPlayer player) {
-		this.player = player;
+		this.myTotemDoll$player = player;
 	}
 
 	@Override
 	public AbstractClientPlayer myTotemDoll$getPlayerEntity() {
-		return this.player;
+		return this.myTotemDoll$player;
 	}
 }

@@ -1,30 +1,30 @@
 package net.lopymine.mtd.entrypoint;
 
 //? if fabric {
-import net.lopymine.dl.DitheringLib;
+
 import net.fabricmc.api.ModInitializer;
+import net.lopymine.mtd.MyTotemDoll;
 
 public class CommonEntrypoint implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		DitheringLib.onInitialize();
+		MyTotemDoll.onInitialize();
 	}
 }
 
 //?} elif neoforge {
 
-/*import net.lopymine.dl.DitheringLib;
+/*import net.lopymine.mtd.MyTotemDoll;
 import net.neoforged.fml.common.Mod;
 
-@Mod(DitheringLib.MOD_ID)
+@Mod(MyTotemDoll.MOD_ID)
 public class CommonEntrypoint {
 
 	public CommonEntrypoint() {
-		DitheringLib.onInitialize();
+		MyTotemDoll.onInitialize();
 	}
 
 }
 
 *///?}
-

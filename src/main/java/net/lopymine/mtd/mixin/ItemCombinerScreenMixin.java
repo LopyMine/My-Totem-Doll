@@ -22,11 +22,11 @@ public class ItemCombinerScreenMixin {
 	)
 	private void drawBackground(GuiGraphicsExtractor instance, com.mojang.blaze3d.pipeline.RenderPipeline renderPipeline, Identifier identifier, int x, int y, float u, float v, int width, int height, int textureWidth, int textureHeight, Operation<Void> original) {
 		Consumer<Integer> draw = (w) -> original.call(instance, renderPipeline, identifier, x, y, u, v, w, height, textureWidth, textureHeight);
-		this.drawBackground(width, draw);
+		this.myTotemDoll$drawBackground(width, draw);
 	}
 
 	@Unique
-	private void drawBackground(int width, Consumer<Integer> draw) {
+	private void myTotemDoll$drawBackground(int width, Consumer<Integer> draw) {
 		if (this instanceof MTDAnvilScreen && MyTotemDollConfig.getInstance().isModEnabled()) {
 			draw.accept(176);
 			return;

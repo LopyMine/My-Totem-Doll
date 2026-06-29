@@ -1,3 +1,5 @@
+//~ client_fabric_commands
+
 package net.lopymine.mtd.client.command.refresh;
 
 import com.mojang.brigadier.Command;
@@ -11,12 +13,13 @@ import net.lopymine.mtd.api.MojangAPI;
 import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.client.command.builder.CommandTextBuilder;
 import net.lopymine.mtd.doll.manager.TotemDollManager;
+import net.lopymine.mtd.utils.CommandUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
+import static net.lopymine.mtd.utils.CommandUtils.argument;
+import static net.lopymine.mtd.utils.CommandUtils.literal;
 
 public class RefreshCommand {
 
@@ -42,11 +45,11 @@ public class RefreshCommand {
 		}
 
 		Component startFeedback = CommandTextBuilder.startBuilder("command.refresh.all.start").build();
-		context.getSource().sendFeedback(startFeedback);
+		CommandUtils.sendMessage(startFeedback);
 
 		RELOADING_ALL_FUTURE = TotemDollManager.reloadData((seconds) -> {
 			Component endFeedback = CommandTextBuilder.startBuilder("command.refresh.all.end", seconds).build();
-			Minecraft.getInstance().execute(() -> context.getSource().sendFeedback(endFeedback));
+			Minecraft.getInstance().execute(() -> CommandUtils.sendMessage(endFeedback));
 		}).whenComplete((r, e) -> {
 			RELOADING_ALL_FUTURE = null;
 			if (e != null) {
@@ -68,11 +71,11 @@ public class RefreshCommand {
 		}
 
 		Component startFeedback = CommandTextBuilder.startBuilder("command.refresh.player.start", nickname).build();
-		context.getSource().sendFeedback(startFeedback);
+		CommandUtils.sendMessage(startFeedback);
 
 		CompletableFuture<Float> f = TotemDollManager.reloadData(nickname, (seconds) -> {
 			Component endFeedback = CommandTextBuilder.startBuilder("command.refresh.player.end", nickname, seconds).build();
-			Minecraft.getInstance().execute(() -> context.getSource().sendFeedback(endFeedback));
+			Minecraft.getInstance().execute(() -> CommandUtils.sendMessage(endFeedback));
 		});
 
 		if (f != null) {

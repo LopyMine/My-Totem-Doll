@@ -14,8 +14,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ItemPickupParticleMixin {
 
 	@Inject(at = @At("TAIL"), method = "<init>")
-	private void markClear(ClientLevel world, EntityRenderState renderState, Entity collector, Vec3 velocity, CallbackInfo ci) {
-		if (renderState instanceof ItemClusterRenderState state) {
+	private void markClear(ClientLevel level, EntityRenderState itemEntity, Entity target, Vec3 movement, CallbackInfo ci) {
+		if (itemEntity instanceof ItemClusterRenderState state) {
 			((ItemRenderStateWithStack) state.item).myTotemDoll$shouldClear(false);
 		}
 	}

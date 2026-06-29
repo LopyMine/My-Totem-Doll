@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.state.gui.GuiRenderState;
 import net.minecraft.client.renderer.state.gui.pip.PictureInPictureRenderState;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.*;
 
 @ExtensionMethod(ItemStackExtension.class)
 @Mixin(GuiRenderer.class)
@@ -23,7 +23,16 @@ public class GuiRendererMixin {
 	@Shadow @Final private FeatureRenderDispatcher featureRenderDispatcher;
 
 	@Inject(at = @At("HEAD"), method = "preparePictureInPictureState", cancellable = true)
-	private void renderDoll(PictureInPictureRenderState picturesInPictureState, int guiScale, CallbackInfo ci) {
+	private void renderDoll(
+			PictureInPictureRenderState picturesInPictureState,
+			int guiScale,
+			//? if fabric {
+			CallbackInfo ci
+			//?} else {
+			/*boolean firstPass,
+			CallbackInfoReturnable<Boolean> cir
+			*///?}
+	) {
 		if (!(picturesInPictureState instanceof TotemDollGuiRenderState totemDollGuiRenderState)) {
 			return;
 		}
@@ -43,7 +52,12 @@ public class GuiRendererMixin {
 		TotemDollGuiElementRenderer guiRenderer = data.createGuiRenderer();
 		guiRenderer.setActive(true);
 		guiRenderer.prepare(totemDollGuiRenderState, this.renderState, this.featureRenderDispatcher, guiScale);
+
+		//? if fabric {
 		ci.cancel();
+		//?} else {
+		/*cir.setReturnValue(true);
+		*///?}
 	}
 
 	@Inject(at = @At(value = "TAIL"), method = "preparePictureInPicture")

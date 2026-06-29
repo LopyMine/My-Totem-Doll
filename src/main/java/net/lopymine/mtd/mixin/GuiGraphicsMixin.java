@@ -43,13 +43,13 @@ public class GuiGraphicsMixin {
 			cancellable = true
 	)
 	private void swapTotemRendering(LivingEntity entity, Level world, ItemStack stack, int x, int y, int seed, CallbackInfo ci, @Local TrackingItemStackRenderState state) {
-		if (!this.renderDoll(stack, x, y, ci) && state instanceof ItemRenderStateWithStack stateWithStack) {
+		if (!this.myTotemDoll$renderDoll(stack, x, y, ci) && state instanceof ItemRenderStateWithStack stateWithStack) {
 			stateWithStack.myTotemDoll$reset();
 		}
 	}
 
 	@Unique
-	private boolean renderDoll(ItemStack stack, int x, int y, CallbackInfo ci) {
+	private boolean myTotemDoll$renderDoll(ItemStack stack, int x, int y, CallbackInfo ci) {
 		if (!TotemDollRenderer.canSubmit(stack)) {
 			return false;
 		}

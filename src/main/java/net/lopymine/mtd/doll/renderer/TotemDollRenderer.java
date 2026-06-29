@@ -77,6 +77,11 @@ public class TotemDollRenderer {
 		data.getRenderProperties().setRenderContext(renderContext);
 		matrices.translate(-0.5F, -1.0F, -0.5F);
 
+		String nickname = data.getNickname();
+		if (context == DollRenderContext.D_GUI && "deadmau5".equals(nickname)) {
+			matrices.translate(0F, -0.1F, 0F);
+		}
+
 		switch (renderContext) {
 			case D_FIRST_PERSON_LEFT_HAND,
 			     D_FIRST_PERSON_RIGHT_HAND -> TotemDollRenderer.renderInHand(collector, matrices, renderState, renderContext.isLeftHanded(), true);
@@ -98,6 +103,10 @@ public class TotemDollRenderer {
 
 	public static void extractPreview(GuiGraphicsExtractor context, int x, int y, int width, int height, float size, @Nullable TotemDollData data, DollRenderContext renderContext) {
 		if (data == null) {
+			if (Minecraft.getInstance().level == null) {
+				DrawUtils.drawCenteredText(context, Component.literal("Join world to view"), x, y, width, height);
+				return;
+			}
 			long currentTime = Util.getMillis();
 			float rotationSpeed = 0.05f;
 			float rotation = (currentTime * rotationSpeed) % 360;

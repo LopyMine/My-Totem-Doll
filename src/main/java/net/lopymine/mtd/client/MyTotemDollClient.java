@@ -1,12 +1,12 @@
 package net.lopymine.mtd.client;
 
-import net.fabricmc.fabric.api.client.rendering.v1.PictureInPictureRendererRegistry;
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.cache.KnownPlayerUUIDsConfigManager;
 import net.lopymine.mtd.client.command.MyTotemDollCommandManager;
 import net.lopymine.mtd.client.event.MyTotemDollEvents;
 import net.lopymine.mtd.config.MyTotemDollConfig;
-import net.lopymine.mtd.doll.renderer.special.ItemGuiElementRenderer;
+import net.lopymine.mtd.doll.renderer.special.*;
+import net.lopymine.mtd.loader.MyTotemDollLoader;
 import net.lopymine.mtd.pack.MyTotemDollReloadListener;
 import net.lopymine.mtd.tag.manager.*;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -32,10 +32,10 @@ public class MyTotemDollClient {
 		LOGGER.info("{} Client Initialized", MyTotemDoll.MOD_NAME);
 		TagsManager.register();
 		TagsSkinProviders.register();
-		MyTotemDollCommandManager.register();
+		MyTotemDollLoader.registerCommands(MyTotemDollCommandManager::register);
 		MyTotemDollEvents.register();
 		MyTotemDollReloadListener.register();
 		KnownPlayerUUIDsConfigManager.start();
-		PictureInPictureRendererRegistry.register(context -> new ItemGuiElementRenderer());
+		MyTotemDollLoader.registerPictureInPictureRenderer(ItemGuiRenderState.class, ItemGuiElementRenderer::new);
 	}
 }
