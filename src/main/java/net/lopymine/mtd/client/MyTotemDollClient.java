@@ -1,6 +1,5 @@
 package net.lopymine.mtd.client;
 
-import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.PictureInPictureRendererRegistry;
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.cache.KnownPlayerUUIDsConfigManager;
@@ -15,7 +14,7 @@ import net.minecraft.world.item.*;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.*;
 
-public class MyTotemDollClient implements ClientModInitializer {
+public class MyTotemDollClient {
 
 	public static Logger LOGGER = LoggerFactory.getLogger(MyTotemDoll.MOD_NAME + "/Client");
 
@@ -29,8 +28,7 @@ public class MyTotemDollClient implements ClientModInitializer {
 		return bl || (MyTotemDollConfig.getInstance().isSupportOtherModsTotems() && BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath().contains("totem"));
 	}
 
-	@Override
-	public void onInitializeClient() {
+	public static void onInitializeClient() {
 		LOGGER.info("{} Client Initialized", MyTotemDoll.MOD_NAME);
 		TagsManager.register();
 		TagsSkinProviders.register();
@@ -38,10 +36,6 @@ public class MyTotemDollClient implements ClientModInitializer {
 		MyTotemDollEvents.register();
 		MyTotemDollReloadListener.register();
 		KnownPlayerUUIDsConfigManager.start();
-		//? if >=26.2 {
 		PictureInPictureRendererRegistry.register(context -> new ItemGuiElementRenderer());
-		//?} else {
-		/*PictureInPictureRendererRegistry.register(context -> new ItemGuiElementRenderer(context.bufferSource()));
-		 *///?}
 	}
 }

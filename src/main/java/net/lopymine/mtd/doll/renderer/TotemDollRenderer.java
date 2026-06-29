@@ -34,10 +34,10 @@ public class TotemDollRenderer {
 
 	// SUBMIT METHODS
 
-	public static void submitItemAnyway(SubmitNodeCollector collector, PoseStack matrices, DollRenderContext context, ItemStack stack, int light, int overlay, int outlineColor) {
+	public static void submitItemAnyway(SubmitNodeCollector collector, PoseStack matrices, DollRenderContext context, ItemStack stack, @Nullable AbstractClientPlayer holdingPlayer, int light, int overlay, int outlineColor) {
 		TotemDollData totemDollData = stack.getTotemDollData(false);
 		TotemDollRenderState renderState = new TotemDollRenderState(totemDollData, light, overlay, outlineColor);
-		TotemDollRenderer.submitSpecial(collector, matrices, stack.getPlayerEntity(), context, renderState);
+		TotemDollRenderer.submitSpecial(collector, matrices, holdingPlayer, context, renderState);
 	}
 
 	public static boolean submitItem(SubmitNodeCollector collector, PoseStack matrices, DollRenderContext context, ItemStack stack, int light, int overlay, int outlineColor) {

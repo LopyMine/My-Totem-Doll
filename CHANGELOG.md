@@ -1,1 +1,2 @@
-- Ported to 26.1
+- Fixed using player skin in totem activation animation with "Holding Player" option
+- Added NeoForge support
