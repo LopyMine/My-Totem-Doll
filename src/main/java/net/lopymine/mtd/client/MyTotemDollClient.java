@@ -1,12 +1,12 @@
 package net.lopymine.mtd.client;
 
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.PictureInPictureRendererRegistry;
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.cache.KnownPlayerUUIDsConfigManager;
 import net.lopymine.mtd.client.command.MyTotemDollCommandManager;
 import net.lopymine.mtd.client.event.MyTotemDollEvents;
 import net.lopymine.mtd.config.MyTotemDollConfig;
+import net.lopymine.mtd.doll.renderer.special.*;
+import net.lopymine.mtd.loader.MyTotemDollLoader;
 import net.lopymine.mtd.pack.MyTotemDollReloadListener;
 import net.lopymine.mtd.tag.manager.*;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -14,7 +14,7 @@ import net.minecraft.world.item.*;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.*;
 
-public class MyTotemDollClient implements ClientModInitializer {
+public class MyTotemDollClient {
 
 	public static Logger LOGGER = LoggerFactory.getLogger(MyTotemDoll.MOD_NAME + "/Client");
 
@@ -28,15 +28,14 @@ public class MyTotemDollClient implements ClientModInitializer {
 		return bl || (MyTotemDollConfig.getInstance().isSupportOtherModsTotems() && BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath().contains("totem"));
 	}
 
-	@Override
-	public void onInitializeClient() {
+	public static void onInitializeClient() {
 		LOGGER.info("{} Client Initialized", MyTotemDoll.MOD_NAME);
 		TagsManager.register();
 		TagsSkinProviders.register();
-		MyTotemDollCommandManager.register();
+		MyTotemDollLoader.registerCommands(MyTotemDollCommandManager::register);
 		MyTotemDollEvents.register();
 		MyTotemDollReloadListener.register();
 		KnownPlayerUUIDsConfigManager.start();
-		PictureInPictureRendererRegistry.register(context -> new net.lopymine.mtd.doll.renderer.special.ItemGuiElementRenderer(context.bufferSource()));
+		MyTotemDollLoader.registerPictureInPictureRenderer(ItemGuiRenderState.class, ItemGuiElementRenderer::new);
 	}
 }

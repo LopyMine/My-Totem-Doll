@@ -11,6 +11,7 @@ public class KnownPlayerUUIDsConfigManager {
 		Thread thread = new Thread(() -> {
 			while (true) {
 				try {
+					Thread.sleep(5000L);
 					if (!requestedSave) {
 						continue;
 					}

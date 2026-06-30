@@ -16,7 +16,6 @@
 	    "ItemStackWithPlayerEntityMixin",
 	    "ItemStackMixin",
 	    "TextureManagerMixin",
-	    "GameRendererDollRenderingMixin",
 	    "SpriteContentsMixin",
 	    "AbstractContainerScreenMixin",
 	    "AbstractSelectionListMixin",
@@ -26,7 +25,9 @@
 	    "ItemStackRenderStateMixin",
 	    "MinecraftMixin",
 	    "ScreenEffectRendererMixin",
-	    "accessor.CubeDeformationAccessor"
+	    "accessor.CubeDeformationAccessor",
+	    "FeatureRenderDispatcherMixin",
+	    "SubmitNodeCollectionMixin"
     ],
     "injectors": {
         "defaultRequire": 1

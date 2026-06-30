@@ -1,1 +1,2 @@
-- Ported to 26.1
+- Added NeoForge support
+- Many bug fixes

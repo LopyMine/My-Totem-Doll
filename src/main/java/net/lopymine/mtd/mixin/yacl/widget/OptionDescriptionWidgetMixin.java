@@ -18,18 +18,18 @@ public class OptionDescriptionWidgetMixin {
 	private int maxScrollAmount;
 
 	@Unique
-	private float currentScroll, targetScroll;
+	private float myTotemDoll$currentScroll, myTotemDoll$targetScroll;
 
 	@Inject(at = @At("HEAD"), method = "setOptionDescription", remap = false)
 	private void saveScroll(DescriptionWithName description, CallbackInfo ci) {
-		this.currentScroll = this.currentScrollAmount;
-		this.targetScroll  = this.targetScrollAmount;
+		this.myTotemDoll$currentScroll = this.currentScrollAmount;
+		this.myTotemDoll$targetScroll  = this.targetScrollAmount;
 	}
 
 	@Inject(at = @At("TAIL"), method = "setOptionDescription", remap = false)
 	private void loadScroll(DescriptionWithName description, CallbackInfo ci) {
-		this.currentScrollAmount = this.currentScroll;
-		this.targetScrollAmount  = this.targetScroll;
+		this.currentScrollAmount = this.myTotemDoll$currentScroll;
+		this.targetScrollAmount  = this.myTotemDoll$targetScroll;
 	}
 
 	@Inject(at = @At("TAIL"), method = "extractWidgetRenderState")

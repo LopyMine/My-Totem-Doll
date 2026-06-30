@@ -2,9 +2,9 @@ package net.lopymine.mtd.mixin;
 
 import java.util.List;
 import java.util.function.Function;
-import net.fabricmc.loader.api.FabricLoader;
 import net.lopymine.mtd.config.MyTotemDollConfig;
 import net.lopymine.mtd.gui.screen.WelcomeScreen;
+import net.lopymine.mtd.loader.MyTotemDollLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,7 +19,7 @@ public class MinecraftMixin {
 		MyTotemDollConfig config = MyTotemDollConfig.getInstance();
 		if (config.isFirstRun() || config.isFirstRunTemp()) {
 			list.add(WelcomeScreen::new);
-			if (!FabricLoader.getInstance().isDevelopmentEnvironment()) {
+			if (!MyTotemDollLoader.isDevelopmentEnvironment()) {
 				config.setFirstRun(false);
 				config.setFirstRunTemp(false);
 			}

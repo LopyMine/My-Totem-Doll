@@ -1,7 +1,7 @@
 package net.lopymine.mtd.compat;
 
 import java.util.*;
-import net.fabricmc.loader.api.FabricLoader;
+import net.lopymine.mtd.loader.MyTotemDollLoader;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.*;
 
@@ -21,7 +21,7 @@ public abstract class CompatPlugin implements IMixinConfigPlugin {
 
 	@Override
 	public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-		return FabricLoader.getInstance().isModLoaded(this.getCompatModId());
+		return MyTotemDollLoader.isModLoaded(this.getCompatModId(), true);
 	}
 
 	@Override

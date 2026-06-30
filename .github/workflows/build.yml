@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [fabric]
+        platform: [fabric, neoforge]
     steps:
       - uses: actions/checkout@v4
       - uses: gradle/wrapper-validation-action@v2

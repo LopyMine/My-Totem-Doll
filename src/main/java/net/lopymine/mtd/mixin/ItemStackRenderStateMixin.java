@@ -22,48 +22,43 @@ public class ItemStackRenderStateMixin implements ItemRenderStateWithStack {
 
 	@Unique
 	@Nullable
-	private ItemStack stack;
+	private ItemStack myTotemDoll$stack;
 
 	@Unique
-	private boolean shouldClear = true;
+	private boolean myTotemDoll$shouldClear = true;
 
 	@Inject(at = @At("HEAD"), method = "submit", cancellable = true)
-	private void renderRenderState(PoseStack matrices, SubmitNodeCollector queue, int light, int overlay, int outlineColor, CallbackInfo ci) {
-		this.renderDoll(matrices, light, overlay, outlineColor, null, ci);
-	}
-
-	@Unique
-	private void renderDoll(PoseStack matrices, int light, int overlay, @SuppressWarnings("all") int outlineColor, @Nullable MultiBufferSource provider, CallbackInfo ci) {
+	private void renderRenderState(PoseStack matrices, SubmitNodeCollector collector, int light, int overlay, int outlineColor, CallbackInfo ci) {
 		DollRenderContext context = DollRenderContext.of(this.displayContext);
 
-		if (this.stack != null) {
-			if (TotemDollRenderer.sentRenderRequest(matrices, this.stack, context, light, overlay, outlineColor, provider)) {
+		if (this.myTotemDoll$stack != null) {
+			if (TotemDollRenderer.submit(collector, matrices, this.myTotemDoll$stack, context, light, overlay, outlineColor)) {
 				ci.cancel();
 			}
 		}
 
-		if (this.shouldClear) {
-			if (this.stack != null && this.stack.hasModdedModel()) {
-				this.stack.setModdedModel(false);
+		if (this.myTotemDoll$shouldClear) {
+			if (this.myTotemDoll$stack != null && this.myTotemDoll$stack.hasModdedModel()) {
+				this.myTotemDoll$stack.setModdedModel(false);
 			}
-			this.stack = null;
+			this.myTotemDoll$stack = null;
 		}
 	}
 
 	@Override
 	public void myTotemDoll$setStack(ItemStack stack) {
-		this.stack = stack;
+		this.myTotemDoll$stack = stack;
 	}
 
 	@Override
 	public void myTotemDoll$shouldClear(boolean bl) {
-		this.shouldClear = bl;
+		this.myTotemDoll$shouldClear = bl;
 	}
 
 	@Override
 	public void myTotemDoll$reset() {
-		this.stack = null;
-		this.shouldClear = false;
+		this.myTotemDoll$stack       = null;
+		this.myTotemDoll$shouldClear = false;
 	}
 }
 

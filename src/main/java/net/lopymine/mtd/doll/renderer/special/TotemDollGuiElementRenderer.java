@@ -70,7 +70,7 @@ public class TotemDollGuiElementRenderer extends PictureInPictureRenderer<TotemD
 			LightningUtils.disable3dLighting();
 			matrices.pushPose();
 			matrices.scale(16F, -16F, -16F);
-			TotemDollRenderer.renderDoll(matrices, state.stack(), state.renderContext(), this.bufferSource, 15728880, OverlayTexture.NO_OVERLAY);
+			TotemDollRenderer.renderDoll(matrices, state.stack(), state.renderContext(), this.bufferSource, 15728880, OverlayTexture.NO_OVERLAY, 0);
 			matrices.popPose();
 			this.bufferSource.endBatch();
 			LightningUtils.enable3dLighting();

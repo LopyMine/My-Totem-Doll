@@ -14,14 +14,13 @@ import net.lopymine.mtd.doll.manager.StandardTotemDollManager;
 import net.lopymine.mtd.doll.model.TotemDollModel;
 import net.lopymine.mtd.doll.model.TotemDollModel.Drawer;
 import net.lopymine.mtd.extension.*;
-import net.lopymine.mtd.optimization.TotemDollRenderRequestsCollector;
-import net.lopymine.mtd.thing.ThingMarks;
+import net.lopymine.mtd.renderer.TotemDollFeatureRenderer;
 import net.lopymine.mtd.utils.*;
 import net.lopymine.mtd.utils.plugin.TotemDollPlugin;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.player.*;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
@@ -30,27 +29,23 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.*;
 import org.jetbrains.annotations.*;
 
-
 @ExtensionMethod({ItemStackExtension.class, DrawContextExtension.class})
 public class TotemDollRenderer {
 
-	public static boolean sentRenderRequest(PoseStack matrices, ItemStack stack, DollRenderContext context, int light, int overlay, int outlineColor, @Nullable MultiBufferSource provider) {
-		if (canRender(stack)) {
+	public static boolean submit(SubmitNodeCollector collector, PoseStack matrices, ItemStack stack, DollRenderContext context, int light, int overlay, int outlineColor) {
+		if (canSubmit(stack)) {
 			TotemDollData totemDollData = stack.getTotemDollData(false);
-			TotemDollRenderRequestsCollector.getInstance().requestRender(matrices, totemDollData, stack.getPlayerEntity(), context, light, overlay, outlineColor, provider);
-			if (!ThingMarks.WORLD_RENDERING.get().isMarked()) {
-				TotemDollRenderRequestsCollector.getInstance().renderStates();
-			}
+			renderOrSubmitDoll(matrices, totemDollData, stack.getPlayerEntity(), context, null, collector, light, overlay, outlineColor);
 			return true;
 		}
 		return false;
 	}
 
-	public static void renderDoll(PoseStack matrices, ItemStack stack, DollRenderContext context, MultiBufferSource vertexConsumers, int light, int overlay) {
-		renderDoll(matrices, stack.getTotemDollData(), stack.getPlayerEntity(), context, vertexConsumers, light, overlay);
+	public static void renderDoll(PoseStack matrices, ItemStack stack, DollRenderContext context, MultiBufferSource vertexConsumers, int light, int overlay, int outlineColor) {
+		renderOrSubmitDoll(matrices, stack.getTotemDollData(), stack.getPlayerEntity(), context, vertexConsumers, null, light, overlay, outlineColor);
 	}
 
-	public static void renderDoll(PoseStack matrices, TotemDollData totemDollData, AbstractClientPlayer holdingPlayer, DollRenderContext context, MultiBufferSource vertexConsumers, int light, int overlay) {
+	public static void renderOrSubmitDoll(PoseStack matrices, TotemDollData totemDollData, AbstractClientPlayer holdingPlayer, DollRenderContext context, @Nullable MultiBufferSource vertexConsumers, @Nullable SubmitNodeCollector collector, int light, int overlay, int outlineColor) {
 		DollRenderContext renderContext = context == DollRenderContext.D_NONE ? DollRenderContext.D_GUI : context;
 		beforeDollRendered(renderContext, holdingPlayer, totemDollData);
 		matrices.pushPose();
@@ -61,10 +56,16 @@ public class TotemDollRenderer {
 
 		switch (renderContext) {
 			case D_FIRST_PERSON_LEFT_HAND,
-			     D_FIRST_PERSON_RIGHT_HAND -> TotemDollRenderer.renderInHand(renderContext.isLeftHanded(), true, matrices, vertexConsumers, light, overlay, totemDollData);
+			     D_FIRST_PERSON_RIGHT_HAND -> TotemDollRenderer.renderInHand(renderContext.isLeftHanded(), true, matrices, vertexConsumers, collector, light, overlay, totemDollData);
 			case D_THIRD_PERSON_LEFT_HAND,
-			     D_THIRD_PERSON_RIGHT_HAND -> TotemDollRenderer.renderInHand(renderContext.isLeftHanded(), false, matrices, vertexConsumers, light, overlay, totemDollData);
-			default -> TotemDollRenderer.render(matrices, vertexConsumers, light, overlay, totemDollData);
+			     D_THIRD_PERSON_RIGHT_HAND -> TotemDollRenderer.renderInHand(renderContext.isLeftHanded(), false, matrices, vertexConsumers, collector, light, overlay, totemDollData);
+			default -> {
+				if (collector != null) {
+					TotemDollFeatureRenderer.submit(collector, matrices, totemDollData, light, overlay, outlineColor);
+				} else if (vertexConsumers != null) {
+					TotemDollRenderer.render(matrices, vertexConsumers, light, overlay, totemDollData);
+				}
+			}
 		}
 
 		afterDollRenderer();
@@ -77,6 +78,10 @@ public class TotemDollRenderer {
 
 	public static void renderPreview(GuiGraphicsExtractor context, int x, int y, int width, int height, float size, @Nullable TotemDollData data, DollRenderContext renderContext) {
 		if (data == null) {
+			if (Minecraft.getInstance().level == null) {
+				DrawUtils.drawCenteredText(context, Component.literal("Join world to view"), x, y, width, height);
+				return;
+			}
 			long currentTime = Util.getMillis();
 			float rotationSpeed = 0.05f;
 			float rotation = (currentTime * rotationSpeed) % 360;
@@ -106,7 +111,7 @@ public class TotemDollRenderer {
 		LightningUtils.enable3dLighting();
 	}
 
-	public static void renderInHand(boolean leftHanded, boolean firstPerson, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay, TotemDollData totemDollData) {
+	public static void renderInHand(boolean leftHanded, boolean firstPerson, PoseStack matrices, @Nullable MultiBufferSource vertexConsumers, @Nullable SubmitNodeCollector collector, int light, int overlay, TotemDollData totemDollData) {
 		matrices.pushPose();
 
 		if (firstPerson) {
@@ -127,7 +132,12 @@ public class TotemDollRenderer {
 			matrices.translate(-0.5F, -0.5F, -0.5F);
 		}
 
-		TotemDollRenderer.render(matrices, vertexConsumers, light, overlay, totemDollData);
+		if (collector != null) {
+			TotemDollFeatureRenderer.submit(collector, matrices, totemDollData, light, overlay, 0);
+		} else if (vertexConsumers != null) {
+			TotemDollRenderer.render(matrices, vertexConsumers, light, overlay, totemDollData);
+		}
+
 		matrices.popPose();
 	}
 
@@ -185,7 +195,8 @@ public class TotemDollRenderer {
 
 	private static void prepareStandardDollForRendering(AbstractClientPlayer playerEntity, TotemDollData totemDollData) {
 		if (playerEntity != null && MyTotemDollConfig.getInstance().getStandardTotemDollSkinType() == TotemDollSkinType.HOLDING_PLAYER) {
-			if (!playerEntity.equals(Minecraft.getInstance().player) && playerEntity.isInvisibleTo(Minecraft.getInstance().player)) {
+			LocalPlayer player = Minecraft.getInstance().player;
+			if (player != null && !playerEntity.equals(player) && playerEntity.isInvisibleTo(player)) {
 				return;
 			}
 			totemDollData.setFrameSprites(playerEntity);
@@ -197,7 +208,7 @@ public class TotemDollRenderer {
 		profiler.pop();
 	}
 
-	public static boolean canRender(@Nullable ItemStack stack) {
+	public static boolean canSubmit(@Nullable ItemStack stack) {
 		if (!MyTotemDollClient.canProcess(stack)) {
 			return false;
 		}

@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ItemInHandRendererMixin {
 
 	@Unique
-	private static void createBoolean(LocalBooleanRef ref) {
+	private static void myTotemDoll$createBoolean(LocalBooleanRef ref) {
 		Minecraft client = Minecraft.getInstance();
 		Screen currentScreen = client.screen;
 
@@ -47,7 +47,7 @@ public class ItemInHandRendererMixin {
 	}
 
 	@Unique
-	private static void renderDoll(ItemStack original, Consumer<ItemStack> draw) {
+	private static void myTotemDoll$renderDoll(ItemStack original, Consumer<ItemStack> draw) {
 		LocalPlayer player = Minecraft.getInstance().player;
 		if (player == null) {
 			draw.accept(original);
@@ -69,7 +69,7 @@ public class ItemInHandRendererMixin {
 			method = "renderHandsWithItems(FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/player/LocalPlayer;I)V"
 	)
 	private void createBoolean(CallbackInfo ci, @Share("mtd_bl") LocalBooleanRef ref) {
-		createBoolean(ref);
+		myTotemDoll$createBoolean(ref);
 	}
 
 	@WrapOperation(
@@ -104,7 +104,7 @@ public class ItemInHandRendererMixin {
 	private void swapRenderingStack(ItemInHandRenderer instance, AbstractClientPlayer playerEntity, float a, float b, InteractionHand hand, float c, ItemStack stack, float d, PoseStack matrixStack, SubmitNodeCollector queue, int i, Operation<Void> original, @Share("mtd_bl") LocalBooleanRef ref) {
 		Consumer<ItemStack> consumer = (itemStack) -> original.call(instance, playerEntity, a, b, hand, c, itemStack, d, matrixStack, queue, i);
 		if (ref.get()) {
-			renderDoll(stack, consumer);
+			myTotemDoll$renderDoll(stack, consumer);
 		} else {
 			consumer.accept(stack);
 		}

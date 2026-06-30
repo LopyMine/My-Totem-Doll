@@ -5,8 +5,8 @@ import java.io.File;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.*;
-import net.fabricmc.loader.api.FabricLoader;
 import net.lopymine.mtd.MyTotemDoll;
+import net.lopymine.mtd.loader.MyTotemDollLoader;
 import net.lopymine.mtd.utils.*;
 import net.minecraft.core.UUIDUtil;
 import org.slf4j.*;
@@ -22,7 +22,7 @@ public class KnownPlayerUUIDsConfig {
 	).apply(instance, (map) -> {
 		return new KnownPlayerUUIDsConfig(new ConcurrentHashMap<>(map));
 	}));
-	private static final File CONFIG_FILE = FabricLoader.getInstance().getConfigDir().resolve(MyTotemDoll.MOD_ID + "-known-player-uuids" + ".json5").toFile();
+	private static final File CONFIG_FILE = MyTotemDollLoader.getConfigDir().resolve(MyTotemDoll.MOD_ID + "-known-player-uuids" + ".json5").toFile();
 	private static final Logger LOGGER = LoggerFactory.getLogger(MyTotemDoll.MOD_NAME + "/KnownPlayerUUIDsConfig");
 	private static KnownPlayerUUIDsConfig INSTANCE;
 	private final Map<String, UUID> cache;

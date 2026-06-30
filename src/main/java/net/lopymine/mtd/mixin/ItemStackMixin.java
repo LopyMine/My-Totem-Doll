@@ -57,7 +57,7 @@ public abstract class ItemStackMixin {
 	private Optional<TooltipComponent> getTooltipData(Optional<TooltipComponent> original) {
 		ItemStack itemStack = (ItemStack) (Object) this;
 
-		if (!TotemDollRenderer.canRender(itemStack)) {
+		if (!TotemDollRenderer.canSubmit(itemStack)) {
 			return original;
 		}
 
@@ -68,8 +68,8 @@ public abstract class ItemStackMixin {
 
 		String[] data = TagsManager.getDataFromString(customName.getString());
 
-		Optional<TooltipComponent> loadingStateTooltipData = this.getLoadingStateTooltipData(data);
-		Optional<TooltipComponent> tagsTooltipData = this.getTagsTooltipData(data);
+		Optional<TooltipComponent> loadingStateTooltipData = this.myTotemDoll$getLoadingStateTooltipData(data);
+		Optional<TooltipComponent> tagsTooltipData = this.myTotemDoll$getTagsTooltipData(data);
 
 		List<ClientTooltipComponent> list = Stream.of(loadingStateTooltipData, tagsTooltipData)
 				.flatMap(Optional::stream)
@@ -80,7 +80,7 @@ public abstract class ItemStackMixin {
 	}
 
 	@Unique
-	private Optional<TooltipComponent> getLoadingStateTooltipData(String[] data) {
+	private Optional<TooltipComponent> myTotemDoll$getLoadingStateTooltipData(String[] data) {
 		Screen currentScreen = Minecraft.getInstance().screen;
 		if (!(currentScreen instanceof AnvilScreen || ScreenUtils.hasShiftDown())) {
 			return Optional.empty();
@@ -94,7 +94,7 @@ public abstract class ItemStackMixin {
 	}
 
 	@Unique
-	private Optional<TooltipComponent> getTagsTooltipData(String[] data) {
+	private Optional<TooltipComponent> myTotemDoll$getTagsTooltipData(String[] data) {
 		if (data.length < 2) {
 			return Optional.empty();
 		}

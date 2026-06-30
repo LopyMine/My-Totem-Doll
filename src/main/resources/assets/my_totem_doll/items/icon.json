@@ -1,6 +1,6 @@
 {
 	"model": {
 		"type": "minecraft:model",
-		"model": "my-totem-doll:item/icon"
+		"model": "my_totem_doll:item/icon"
 	}
 }

@@ -8,16 +8,16 @@ import org.spongepowered.asm.mixin.*;
 public class ItemStackWithModdedBakedModelMixin implements ItemStackWithModdedBakedModel {
 
 	@Unique
-	private boolean modded = false;
+	private boolean myTotemDoll$modded = false;
 
 	@Override
 	public void myTotemDoll$setModdedModel(boolean modded) {
-		this.modded = modded;
+		this.myTotemDoll$modded = modded;
 	}
 
 	@Override
 	public boolean myTotemDoll$isModdedModel() {
-		return modded;
+		return myTotemDoll$modded;
 	}
 
 }
