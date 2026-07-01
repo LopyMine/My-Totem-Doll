@@ -3,32 +3,20 @@ plugins {
 }
 
 mossyDependencies {
-	minecraft = stonecutter.current.version.toString()
-	mappings = prop("build.yarn")
+	minecraft = stonecutter.current.project.substring(stonecutter.current.project.indexOf("-") + 1)
 	lombok = prop("base.lombok_version")
+
 	fabricApi = prop("build.fabric_api")
 	fabricLoader = prop("build.fabric_loader")
 
+	neoForge = prop("build.neoforge")
+	parchment = prop("build.parchment")
+
 	additional {
-		// - By default, every additional project dependency ("dep.modId" from gradle.properties) will use
-		// - Modrinth Maven and "modImplementation" configuration name
-		// - If you want to override mod configuration name, you can do this:
-
-		//override("modCompileOnly", "just_mod_id")
-
-		// - It will do this:
-		// - modImplementation("maven.modrinth:modId:version") -> modCompileOnly("maven.modrinth:modId:version")
-
-		// - Or if you want to disable it and handle by yourself, just disable it auto handling:
-
-		//disable("just_mod_id")
-
-		disable("cit-resewn")
+		//override("modCompileOnly", "yacl")
+		override("mossyCompileOnly", "iris")
+		override("mossyCompileOnly", "sodium")
 	}
-}
-
-mossyResources {
-	//expandFiles = ["custom", "file", "patterns", "here"]
 }
 
 repositories {
@@ -41,13 +29,17 @@ repositories {
 
 dependencies {
 	// Mixin^2
-	include(implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-fabric:${prop("build.mixin_squared")}")))
+	if (sc.current.project.contains("fabric")) {
+		include(implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-fabric:${prop("build.mixin_squared")}")))
+	} else {
+		compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:${prop("build.mixin_squared")}"))
+		implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-neoforge:${prop("build.mixin_squared")}"))
+	}
+}
 
-	// CIT Resewn
-	def cit = prop("dep.cit-resewn")
-	if (cit != "unknown") {
-		modImplementation "maven.modrinth:cit-resewn:${cit}"
-		modImplementation "maven.modrinth:cit-resewn-defaults:${cit}"
+stonecutter {
+	replacements.string(current.parsed >= "26.1") {
+		replace("atlas.location()", "atlas.location()")
 	}
 }
 

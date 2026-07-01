@@ -2,34 +2,21 @@ package net.lopymine.mtd.yacl.custom.renderer;
 
 import dev.isxander.yacl3.gui.image.ImageRenderer;
 import lombok.experimental.ExtensionMethod;
-import net.lopymine.mtd.extension.DrawContextExtension;
-import net.lopymine.mtd.utils.*;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.*;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.widget.ClickableWidget;
-
 import net.lopymine.mtd.MyTotemDoll;
-import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.config.MyTotemDollConfig;
 import net.lopymine.mtd.config.totem.TotemDollSkinType;
 import net.lopymine.mtd.doll.data.TotemDollData;
-import net.lopymine.mtd.doll.renderer.TotemDollRenderer;
 import net.lopymine.mtd.doll.manager.StandardTotemDollManager;
+import net.lopymine.mtd.doll.renderer.TotemDollRenderer;
+import net.lopymine.mtd.extension.DrawContextExtension;
 import net.lopymine.mtd.gui.BackgroundRenderer;
+import net.lopymine.mtd.utils.*;
 import net.lopymine.mtd.utils.plugin.TotemDollPlugin;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.components.MultiLineLabel;
 import org.jetbrains.annotations.Nullable;
 
-//? if >=1.21.11 {
-import net.minecraft.client.font.Alignment;
-//?}
-
-//? if >=1.21.9 && <=1.21.10 {
-/*
-import net.minecraft.client.font.MultilineText.Alignment;
-*/
-//?}
 
 @ExtensionMethod(DrawContextExtension.class)
 public class TotemDollPreviewRenderer implements ImageRenderer {
@@ -39,7 +26,7 @@ public class TotemDollPreviewRenderer implements ImageRenderer {
 
 	private TotemDollData data;
 	@Nullable
-	private MultilineText suggestionText;
+	private MultiLineLabel suggestionText;
 	@Nullable
 	private TotemDollSkinType suggestionSkinType;
 
@@ -50,7 +37,7 @@ public class TotemDollPreviewRenderer implements ImageRenderer {
 	}
 
 	@Override
-	public int render(DrawContext context, int x, int y, int renderWidth, float tickDelta) {
+	public int render(GuiGraphics context, int x, int y, int renderWidth, float tickDelta) {
 		int offset = 5;
 		int width = renderWidth - (offset * 2);
 
@@ -63,7 +50,7 @@ public class TotemDollPreviewRenderer implements ImageRenderer {
 	}
 
 	private void updateSuggestion(int width, boolean resized) {
-		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+		Font textRenderer = Minecraft.getInstance().font;
 		MyTotemDollConfig config = MyTotemDollConfig.getInstance();
 		TotemDollSkinType skinType = config.getStandardTotemDollSkinType();
 		String skinValue = config.getStandardTotemDollSkinValue();
@@ -78,11 +65,11 @@ public class TotemDollPreviewRenderer implements ImageRenderer {
 		}
 
 		if (this.suggestionSkinType != null && (type != this.suggestionSkinType || resized)) {
-			this.suggestionText = MultilineText.create(textRenderer, this.suggestionSkinType.getSuggestionText(), width - 5);
+			this.suggestionText = MultiLineLabel.create(textRenderer, this.suggestionSkinType.getSuggestionText(), width - 5);
 		}
 	}
 
-	private int renderSuggestionText(DrawContext context, int x, int y, int width) {
+	private int renderSuggestionText(GuiGraphics context, int x, int y, int width) {
 		int suggestionColor = this.getSuggestionColors();
 
 		if (this.suggestionText == null) {
@@ -91,13 +78,7 @@ public class TotemDollPreviewRenderer implements ImageRenderer {
 
 		context.push();
 		context.translate(0, 0, 10);
-		//? if >=1.21.11 {
-		int i = this.suggestionText.draw(Alignment.LEFT, x + 5, y + 5, 10, context.getTextConsumer());
-		//?} elif >=1.21.9 {
-		/*int i = this.suggestionText.draw(context, Alignment.LEFT, x + 5, y + 5, 10, false, suggestionColor);
-		*///?} else {
-		/*int i = this.suggestionText.draw(context, x + 5, y + 5, 10, suggestionColor);
-		*///?}
+		int i = this.suggestionText.renderLeftAlignedNoShadow(context, x + 5, y + 5, 10, suggestionColor);
 		context.translate(0, 0, -5);
 		BackgroundRenderer.drawTransparencyWidgetBackground(context, x, y, width, i - y + 5, true, suggestionColor);
 
@@ -113,13 +94,13 @@ public class TotemDollPreviewRenderer implements ImageRenderer {
 		return STANDARD_SUGGESTION_TEXT_COLOR;
 	}
 
-	private void renderDollStatus(DrawContext context, int x, int y, int width) {
+	private void renderDollStatus(GuiGraphics context, int x, int y, int width) {
 		BackgroundRenderer.drawTransparencyWidgetBackground(context, x, y, width, 30, true, true);
 
 		DrawUtils.drawCenteredText(context, MyTotemDoll.text("text.status").append(this.data.getStandardSprites().getState().getText()), x + 2, y + 15, width - 2);
 	}
 
-	private int renderDoll(DrawContext context, int x, int y, int size) {
+	private int renderDoll(GuiGraphics context, int x, int y, int size) {
 		MyTotemDollConfig config = MyTotemDollConfig.getInstance();
 
 		BackgroundRenderer.drawTransparencyWidgetBackground(context, x, y, size, size, true, true);

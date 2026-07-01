@@ -2,7 +2,6 @@ package net.lopymine.mtd.yacl.custom.simple.custom;
 
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.ConfigCategory.Builder;
-
 import net.lopymine.mtd.yacl.YACLConfigurationScreen;
 import net.lopymine.mtd.yacl.custom.category.rendering.RenderingConfigCategory;
 

@@ -1,25 +1,24 @@
 package net.lopymine.mtd.gui.tooltip.wrapped;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.tooltip.TooltipComponent;
-import net.minecraft.text.*;
-
 import java.util.List;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
 
-public class WrappedTextTooltipComponent implements TooltipComponent {
+public class WrappedTextTooltipComponent implements ClientTooltipComponent {
 
-	private final List<OrderedText> texts;
+	private final List<FormattedCharSequence> texts;
 
-	public WrappedTextTooltipComponent(Text text) {
-		this.texts = MinecraftClient.getInstance().textRenderer.wrapLines(text, 100000);
+	public WrappedTextTooltipComponent(Component text) {
+		this.texts = Minecraft.getInstance().font.split(text, 100000);
 	}
 
-	public int getWidth(TextRenderer textRenderer) {
+	public int getWidth(Font textRenderer) {
 		int max = 0;
-		for (OrderedText text : this.texts) {
-			int width = textRenderer.getWidth(text);
+		for (FormattedCharSequence text : this.texts) {
+			int width = textRenderer.width(text);
 			if (width > max) {
 				max = width;
 			}
@@ -28,15 +27,15 @@ public class WrappedTextTooltipComponent implements TooltipComponent {
 	}
 
 	@Override
-	public int getHeight(/*? >=1.21.2 {*/TextRenderer textRenderer/*?}*/) {
+	public int getHeight() {
 		return this.texts.size() * 10;
 	}
 
 	@Override
-	public void drawItems(TextRenderer textRenderer, int x, int y, /*? >=1.21.2 {*/int w, int h,/*?}*/ DrawContext context) {
+	public void renderImage(Font textRenderer, int x, int y, GuiGraphics context) {
 		int offset = 0;
-		for (OrderedText text : this.texts) {
-			context.drawText(textRenderer, text, x, y + offset, -1, true);
+		for (FormattedCharSequence text : this.texts) {
+			context.drawString(textRenderer, text, x, y + offset, -1, true);
 			offset += 10;
 		}
 	}

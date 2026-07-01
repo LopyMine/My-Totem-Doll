@@ -1,6 +1,6 @@
 package net.lopymine.mtd.utils.mixin;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public interface ItemRenderStateWithStack {
 

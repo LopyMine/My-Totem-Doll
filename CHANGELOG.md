@@ -1,4 +1,2 @@
-- Fixed compatibility with newer YACL version
-- Ported to 1.21.11
-- Fixed searching in the Standard Model Selection Screen
-- Fixed compatibility with Controlify mod
+- Added NeoForge support
+- Many bug fixes

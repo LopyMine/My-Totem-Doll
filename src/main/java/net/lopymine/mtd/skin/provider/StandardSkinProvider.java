@@ -1,23 +1,18 @@
 package net.lopymine.mtd.skin.provider;
 
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.*;
 import lombok.*;
-import net.minecraft.util.Identifier;
-
-
 import net.lopymine.mtd.api.Response;
 import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.config.totem.TotemDollArmsType;
 import net.lopymine.mtd.doll.data.*;
 import net.lopymine.mtd.doll.manager.StandardTotemDollManager;
 import net.lopymine.mtd.skin.data.ParsedSkinData;
-
-
 import net.lopymine.mtd.thread.MyTotemDollTaskExecutor;
 import net.lopymine.mtd.utils.texture.*;
-
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.concurrent.*;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.*;
 
 @Setter
@@ -108,7 +103,7 @@ public abstract class StandardSkinProvider implements SkinProvider {
 				TotemDollArmsType armsType = TotemDollArmsType.of(parsedSkinData.isSlim());
 				textures.setStandardArmsType(armsType);
 
-				Identifier skinId = this.getSkinId(value);
+				ResourceLocation skinId = this.getSkinId(value);
 
 				FailedAction onFailed = (throwable) -> {
 					textures.setState(LoadingState.CRITICAL_ERROR);
@@ -123,12 +118,12 @@ public abstract class StandardSkinProvider implements SkinProvider {
 				PlayerSkinUtils.downloadSkin(parsedSkinData.getSkinUrl(), skinId, onSuccess, onFailed, true);
 
 				if (parsedSkinData.getCapeUrl() != null) {
-					Identifier capeId = this.getCapeId(value);
+					ResourceLocation capeId = this.getCapeId(value);
 					PlayerSkinUtils.downloadSkin(parsedSkinData.getCapeUrl(), capeId, textures::setCapeSprite, null, false);
 				}
 
 				if (parsedSkinData.getElytraUrl() != null) {
-					Identifier elytraId = this.getElytraId(value);
+					ResourceLocation elytraId = this.getElytraId(value);
 					PlayerSkinUtils.downloadSkin(parsedSkinData.getElytraUrl(), elytraId, textures::setElytraSprite, null, false);
 				}
 
@@ -219,17 +214,17 @@ public abstract class StandardSkinProvider implements SkinProvider {
 		this.cache.put(value, data);
 	}
 
-	protected Identifier getSkinId(String value) {
+	protected ResourceLocation getSkinId(String value) {
 		return this.getId(value, "skin");
 	}
 
-	protected Identifier getCapeId(String value) {
+	protected ResourceLocation getCapeId(String value) {
 		return this.getId(value, "cape");
 	}
 
-	protected Identifier getElytraId(String value) {
+	protected ResourceLocation getElytraId(String value) {
 		return this.getId(value, "elytra");
 	}
 
-	protected abstract Identifier getId(String value, String type);
+	protected abstract ResourceLocation getId(String value, String type);
 }

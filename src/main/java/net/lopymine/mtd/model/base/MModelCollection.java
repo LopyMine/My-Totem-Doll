@@ -1,8 +1,7 @@
 package net.lopymine.mtd.model.base;
 
-import lombok.*;
-
 import java.util.List;
+import lombok.*;
 
 @Getter
 @Setter
@@ -15,7 +14,7 @@ public class MModelCollection {
 
 	public MModelCollection(List<MModel> models, String id) {
 		this.models = models;
-		this.id = id;
+		this.id     = id;
 	}
 
 	public boolean setVisible(boolean visible) {

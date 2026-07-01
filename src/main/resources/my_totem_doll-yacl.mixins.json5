@@ -1,0 +1,26 @@
+{
+    "required": true,
+    "package": "net.lopymine.mtd.mixin.yacl",
+    "refmap": "${mod_id}.refmap.json",
+    "compatibilityLevel": "JAVA_${java}",
+	"plugin": "net.lopymine.mtd.compat.yacl.YACLCompatPlugin",
+    "mixins": [
+    ],
+	"client": [
+		"ScreenMixin",
+		"YACLScreenMixin",
+		"YetAnotherConfigLibImplBuilderMixin",
+		"YetAnotherConfigLibImplMixin",
+		"category.ConfigCategoryImplBuilderImplMixin",
+		"widget.ListEntryWidgetMixin",
+	    "widget.AbstractWidgetMixin",
+	    "widget.OptionDescriptionWidgetMixin",
+		"category.AbstractSelectionListMixin",
+		"category.ItemInHandRendererMixin",
+		"widget.AbstractButtonMixin",
+		"widget.EditBoxMixin"
+	],
+    "injectors": {
+        "defaultRequire": 1
+    }
+}

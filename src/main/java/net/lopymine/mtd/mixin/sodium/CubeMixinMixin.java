@@ -1,18 +1,16 @@
 package net.lopymine.mtd.mixin.sodium;
 
-//? if >=1.21 {
 import com.bawnorton.mixinsquared.TargetHandler;
-import net.minecraft.client.model.ModelPart.Cuboid;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.util.math.MatrixStack.Entry;
+import com.mojang.blaze3d.vertex.PoseStack.Pose;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.lopymine.mtd.model.base.MCuboid;
+import net.minecraft.client.model.geom.ModelPart.Cube;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
-import org.spongepowered.asm.mixin.injection.callback.*;
-
-import net.lopymine.mtd.model.base.MCuboid;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Pseudo
-@Mixin(Cuboid.class)
+@Mixin(value = Cube.class, priority = 1500)
 public class CubeMixinMixin {
 
 	@Dynamic
@@ -22,8 +20,8 @@ public class CubeMixinMixin {
 			prefix = "handler"
 	)
 	@Inject(method = "@MixinSquared:Handler", at = @At("HEAD"), cancellable = true, remap = false, require = 0)
-	private void helloSodium(Entry pose, VertexConsumer buffer, int light, int overlay, int color, CallbackInfo a, CallbackInfo b) {
-		Cuboid cuboid = (Cuboid) (Object) this;
+	private void helloSodium(Pose pose, VertexConsumer buffer, int light, int overlay, int color, CallbackInfo a, CallbackInfo b) {
+		Cube cuboid = (Cube) (Object) this;
 		if (!(cuboid instanceof MCuboid)) {
 			return;
 		}
@@ -31,4 +29,3 @@ public class CubeMixinMixin {
 	}
 
 }
-//?}

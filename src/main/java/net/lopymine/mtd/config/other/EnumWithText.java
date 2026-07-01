@@ -1,9 +1,9 @@
 package net.lopymine.mtd.config.other;
 
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 
 public interface EnumWithText {
 
-	Text getText();
+	Component getText();
 
 }

@@ -1,20 +1,16 @@
 package net.lopymine.mtd.client.event;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.lopymine.mtd.atlas.manager.*;
-import net.minecraft.client.gui.tooltip.*;
-
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
-
 import net.lopymine.mtd.MyTotemDoll;
+import net.lopymine.mtd.atlas.manager.*;
 import net.lopymine.mtd.gui.tooltip.combined.*;
 import net.lopymine.mtd.gui.tooltip.info.*;
 import net.lopymine.mtd.gui.tooltip.preview.*;
 import net.lopymine.mtd.gui.tooltip.state.LoadingStateTooltipData;
 import net.lopymine.mtd.gui.tooltip.tags.*;
 import net.lopymine.mtd.gui.tooltip.wrapped.*;
+import net.lopymine.mtd.loader.MyTotemDollLoader;
 import net.lopymine.mtd.thread.MyTotemDollTaskExecutor;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 
 public class MyTotemDollEvents {
 
@@ -24,31 +20,16 @@ public class MyTotemDollEvents {
 	}
 
 	private static void registerTooltipCallbacks() {
-		TooltipComponentCallback.EVENT.register((data -> {
-			if (data instanceof TagsTooltipData tooltipData) {
-				return new TagsTooltipComponent(tooltipData.tags());
-			}
-			if (data instanceof InfoTooltipData tooltipData) {
-				return new InfoTooltipComponent(tooltipData.key(), tooltipData.color());
-			}
-			if (data instanceof LoadingStateTooltipData tooltipData) {
-				return TooltipComponent.of(MyTotemDoll.text("text.status").append(tooltipData.state().getText()).asOrderedText());
-			}
-			if (data instanceof CombinedTooltipData tooltipData) {
-				return new CombinedTooltipComponent(tooltipData.list());
-			}
-			if (data instanceof TotemDollPreviewTooltipData tooltipData) {
-				return new TotemDollPreviewTooltipComponent(tooltipData.data(), tooltipData.model());
-			}
-			if (data instanceof WrappedTextTooltipData tooltipData) {
-				return new WrappedTextTooltipComponent(tooltipData.text());
-			}
-			return null;
-		}));
+		MyTotemDollLoader.registerTooltipComponentFactory(TagsTooltipData.class, (data) -> new TagsTooltipComponent(data.tags()));
+		MyTotemDollLoader.registerTooltipComponentFactory(InfoTooltipData.class, (data) -> new InfoTooltipComponent(data.key(), data.color()));
+		MyTotemDollLoader.registerTooltipComponentFactory(LoadingStateTooltipData.class, (data) -> ClientTooltipComponent.create(MyTotemDoll.text("text.status").append(data.state().getText()).getVisualOrderText()));
+		MyTotemDollLoader.registerTooltipComponentFactory(CombinedTooltipData.class, (data) -> new CombinedTooltipComponent(data.list()));
+		MyTotemDollLoader.registerTooltipComponentFactory(TotemDollPreviewTooltipData.class, (data) -> new TotemDollPreviewTooltipComponent(data.data(), data.model()));
+		MyTotemDollLoader.registerTooltipComponentFactory(WrappedTextTooltipData.class, (data) -> new WrappedTextTooltipComponent(data.text()));
 	}
 
 	private static void registerLifecycleEvents() {
-		ClientLifecycleEvents.CLIENT_STOPPING.register((client) -> {
+		MyTotemDollLoader.registerClientStopping(() -> {
 			MyTotemDollTaskExecutor.stop();
 			MyTotemDollAtlasManager.close();
 			MyTotemDollAtlasSpriteManager.close();

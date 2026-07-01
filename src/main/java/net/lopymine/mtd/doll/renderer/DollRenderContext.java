@@ -1,14 +1,13 @@
 package net.lopymine.mtd.doll.renderer;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import lombok.Getter;
 import lombok.experimental.ExtensionMethod;
-import net.minecraft.client.render.model.json.*;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.MatrixStack.Entry;
-
 import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.extension.ModelTransformationExtension;
 import net.lopymine.mtd.model.base.MModel;
+import net.minecraft.client.renderer.block.model.*;
 
 @Getter
 @ExtensionMethod(ModelTransformationExtension.class)
@@ -23,9 +22,6 @@ public enum DollRenderContext {
 	D_GUI("gui"),
 	D_GROUND("ground"),
 	D_FIXED("fixed"),
-	//? if >=1.21.9 {
-	D_ON_SHELF("on_shelf"),
-	//?}
 
 	D_FLOATING("floating"),
 	D_PREVIEW("preview"),
@@ -39,13 +35,8 @@ public enum DollRenderContext {
 	}
 
 	public static DollRenderContext of(Object object) {
-		//? if <=1.21.4 {
-		/*if (object instanceof
-				//? if >=1.21.2 {
-				net.minecraft.item.ModelTransformationMode
-				//?} else {
-				/^net.minecraft.client.render.model.json.ModelTransformationMode
-				^///?}
+		if (object instanceof
+				net.minecraft.world.item.ItemDisplayContext
 						mode) {
 			return switch (mode) {
 				case THIRD_PERSON_LEFT_HAND -> D_THIRD_PERSON_LEFT_HAND;
@@ -59,29 +50,11 @@ public enum DollRenderContext {
 				default -> D_NONE;
 			};
 		}
-		*///?} else {
-		if (object instanceof net.minecraft.item.ItemDisplayContext context) {
-			return switch (context) {
-				case THIRD_PERSON_LEFT_HAND -> D_THIRD_PERSON_LEFT_HAND;
-				case THIRD_PERSON_RIGHT_HAND -> D_THIRD_PERSON_RIGHT_HAND;
-				case FIRST_PERSON_LEFT_HAND -> D_FIRST_PERSON_LEFT_HAND;
-				case FIRST_PERSON_RIGHT_HAND -> D_FIRST_PERSON_RIGHT_HAND;
-				case HEAD -> D_HEAD;
-				case GUI -> D_GUI;
-				case GROUND -> D_GROUND;
-				case FIXED -> D_FIXED;
-				//? if >=1.21.9 {
-				case ON_SHELF -> D_ON_SHELF;
-				//?}
-				default -> D_NONE;
-			};
-		}
-		//?}
 		MyTotemDollClient.LOGGER.error("Failed to get DollRenderContext from object: {}", object.getClass().getName());
 		return D_NONE;
 	}
 
-	public Transformation get(ModelTransformation transformation) {
+	public ItemTransform get(ItemTransforms transformation) {
 		return switch (this) {
 			case D_THIRD_PERSON_LEFT_HAND -> transformation.getTl();
 			case D_THIRD_PERSON_RIGHT_HAND -> transformation.getTr();
@@ -91,20 +64,14 @@ public enum DollRenderContext {
 			case D_GUI -> transformation.getGui();
 			case D_GROUND -> transformation.getGround();
 			case D_FIXED -> transformation.getFixed();
-			//? if >=1.21.9 {
-			case D_ON_SHELF -> transformation.getOnShelf();
-			//?}
-			default -> Transformation.IDENTITY;
+			default -> ItemTransform.NO_TRANSFORM;
 		};
 	}
 
-	public void apply(MModel model, MatrixStack matrices) {
-		Transformation transformation = get(model.getTransformation());
-		Entry peek = matrices.peek();
-		transformation.apply(this.isLeftHanded(), /*? if <=1.21.4 {*/ /*matrices *//*?} else {*/ peek /*?}*/);
-		//? if >=1.21.5 {
-		peek.translate(0.5F, 0.5F, 0.5F);
-		//?}
+	public void apply(MModel model, PoseStack matrices) {
+		ItemTransform transformation = get(model.getTransformation());
+		Pose peek = matrices.last();
+		transformation.apply(this.isLeftHanded(), matrices);
 	}
 
 	public boolean isLeftHanded() {

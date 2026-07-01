@@ -1,16 +1,14 @@
 package net.lopymine.mtd.tag.manager;
 
 import it.unimi.dsi.fastutil.chars.*;
-import net.minecraft.text.Text;
-import net.minecraft.util.*;
-
+import java.util.*;
+import java.util.stream.*;
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.doll.data.TotemDollData;
 import net.lopymine.mtd.pack.TotemDollModelFinder;
 import net.lopymine.mtd.tag.*;
-
-import java.util.*;
-import java.util.stream.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.*;
 
 public class TagsManager {
@@ -63,14 +61,14 @@ public class TagsManager {
 	}
 
 	public static void reloadCustomModelIdsTags() {
-		Collection<Set<Identifier>> values = TotemDollModelFinder.getFoundedTotemModels().values();
+		Collection<Set<ResourceLocation>> values = TotemDollModelFinder.getFoundedTotemModels().values();
 		Set<Character> characters = getRegisteredTags().keySet();
 		TagsGenerator generator = new TagsGenerator();
 
 		CUSTOM_MODEL_IDS_TAGS.clear();
 		registerBuiltinCustomModels();
-		for (Set<Identifier> value : values) {
-			for (Identifier id : value) {
+		for (Set<ResourceLocation> value : values) {
+			for (ResourceLocation id : value) {
 
 				Character next = null;
 				while (generator.hasNext()) {
@@ -110,7 +108,7 @@ public class TagsManager {
 	}
 
 	private static void registerBuiltinCustomModel(char ch, String modelName) {
-		Identifier modelId = MyTotemDoll.getDollModelId(modelName);
+		ResourceLocation modelId = MyTotemDoll.getDollModelId(modelName);
 		CustomModelTag tag = CustomModelTag.startBuilder(ch, modelId)
 				.setAction((data) -> data.setFrameMModel(modelId))
 				.build();
@@ -222,18 +220,18 @@ public class TagsManager {
 		return joinData(data);
 	}
 
-	public static Identifier getTagIcon(char c) {
+	public static ResourceLocation getTagIcon(char c) {
 		if (hasRegisteredTag(CUSTOM_MODEL_IDS_TAGS, c)) {
 			return MyTotemDoll.id("textures/gui/tags/unknown.png");
 		}
 		return MyTotemDoll.id("textures/gui/tags/%s.png".formatted(c));
 	}
 
-	public static Text getTagDescription(Character character) {
+	public static Component getTagDescription(Character character) {
 		return MyTotemDoll.text("tags.%s".formatted(character));
 	}
 
-	public static Text getAppliedTagDescription(char c) {
+	public static Component getAppliedTagDescription(char c) {
 		return MyTotemDoll.text("tags.%s.applied".formatted(c));
 	}
 

@@ -1,7 +1,6 @@
 package net.lopymine.mtd.skin.data;
 
 import lombok.*;
-
 import org.jetbrains.annotations.Nullable;
 
 @Getter

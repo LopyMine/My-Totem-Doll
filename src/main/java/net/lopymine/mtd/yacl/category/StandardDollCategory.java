@@ -1,9 +1,8 @@
 package net.lopymine.mtd.yacl.category;
 
 import dev.isxander.yacl3.api.*;
+import java.util.*;
 import lombok.experimental.ExtensionMethod;
-import net.minecraft.util.Identifier;
-
 import net.lopymine.mtd.config.MyTotemDollConfig;
 import net.lopymine.mtd.config.totem.*;
 import net.lopymine.mtd.doll.data.TotemDollData;
@@ -12,8 +11,7 @@ import net.lopymine.mtd.extension.SimpleOptionExtension;
 import net.lopymine.mtd.yacl.custom.controller.totem.TotemDollModelControllerBuilder;
 import net.lopymine.mtd.yacl.custom.renderer.TotemDollPreviewRenderer;
 import net.lopymine.mtd.yacl.custom.simple.main.*;
-
-import java.util.*;
+import net.minecraft.resources.ResourceLocation;
 
 @ExtensionMethod(SimpleOptionExtension.class)
 public class StandardDollCategory {
@@ -84,7 +82,7 @@ public class StandardDollCategory {
 	}
 
 	private static OptionGroup getStandardDollModelGroup(MyTotemDollConfig defConfig, MyTotemDollConfig config, TotemDollPreviewRenderer renderer) {
-		Option<Identifier> standardDollModelPathOption = SimpleOption.<Identifier>startBuilder("standard_doll_model_path")
+		Option<ResourceLocation> standardDollModelPathOption = SimpleOption.<ResourceLocation>startBuilder("standard_doll_model_path")
 				.withCustomDescription(renderer)
 				.withBinding(defConfig.getStandardTotemDollModelValue(), config::getStandardTotemDollModelValue, (value) -> {
 					config.setStandardTotemDollModelValue(value);

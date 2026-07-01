@@ -1,22 +1,18 @@
 package net.lopymine.mtd.doll.manager;
 
-import net.lopymine.mtd.atlas.manager.MyTotemDollAtlasSpriteManager;
-import net.minecraft.client.texture.*;
-import net.minecraft.util.Identifier;
-import net.lopymine.mtd.MyTotemDoll;
-import net.lopymine.mtd.client.MyTotemDollClient;
-
-
-import net.lopymine.mtd.config.MyTotemDollConfig;
-import net.lopymine.mtd.config.totem.*;
-import net.lopymine.mtd.doll.data.*;
-import net.lopymine.mtd.skin.provider.extended.MojangSkinProvider;
-import net.lopymine.mtd.utils.texture.*;
-
-
+import com.mojang.blaze3d.platform.NativeImage;
 import java.io.InputStream;
 import java.nio.file.*;
 import java.util.concurrent.CompletableFuture;
+import net.lopymine.mtd.MyTotemDoll;
+import net.lopymine.mtd.atlas.manager.MyTotemDollAtlasSpriteManager;
+import net.lopymine.mtd.client.MyTotemDollClient;
+import net.lopymine.mtd.config.MyTotemDollConfig;
+import net.lopymine.mtd.config.totem.TotemDollSkinType;
+import net.lopymine.mtd.doll.data.*;
+import net.lopymine.mtd.skin.provider.extended.MojangSkinProvider;
+import net.lopymine.mtd.utils.texture.*;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.*;
 
 public class StandardTotemDollManager {
@@ -80,9 +76,10 @@ public class StandardTotemDollManager {
 		textures.setState(LoadingState.DOWNLOADING);
 
 		CompletableFuture.runAsync(() -> {
-			Identifier id = MyTotemDoll.getDollTextureId("file/%s".formatted(Math.abs(data.hashCode())));
+			ResourceLocation id = MyTotemDoll.getDollTextureId("file/%s".formatted(Math.abs(data.hashCode())));
+			String path = data.endsWith("\"") && data.startsWith("\"") ? data.substring(1, data.length()-1) : data;
 
-			try (InputStream inputStream = Files.newInputStream(Path.of(data))) {
+			try (InputStream inputStream = Files.newInputStream(Path.of(path))) {
 				NativeImage nativeImage = NativeImage.read(inputStream);
 
 				MyTotemDollAtlasSpriteManager.registerSpecialSkinSprite(id, nativeImage, true, (sprite) -> {
@@ -107,7 +104,7 @@ public class StandardTotemDollManager {
 		textures.setState(LoadingState.DOWNLOADING);
 
 		CompletableFuture.runAsync(() -> {
-			Identifier id = MyTotemDoll.getDollTextureId("url/%s".formatted(Math.abs(data.hashCode())));
+			ResourceLocation id = MyTotemDoll.getDollTextureId("url/%s".formatted(Math.abs(data.hashCode())));
 
 			FailedAction onFailed = (throwable) -> {
 				textures.setState(LoadingState.CRITICAL_ERROR);

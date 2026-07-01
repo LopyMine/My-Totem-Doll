@@ -1,25 +1,24 @@
 package net.lopymine.mtd.mixin;
 
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.item.ItemStack;
-import org.spongepowered.asm.mixin.*;
-
 import net.lopymine.mtd.utils.mixin.ItemStackWithPlayerEntity;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.world.item.ItemStack;
+import org.spongepowered.asm.mixin.*;
 
 
 @Mixin(ItemStack.class)
 public class ItemStackWithPlayerEntityMixin implements ItemStackWithPlayerEntity {
 
 	@Unique
-	private AbstractClientPlayerEntity player;
+	private AbstractClientPlayer myTotemDoll$player;
 
 	@Override
-	public void myTotemDoll$setPlayerEntity(AbstractClientPlayerEntity player) {
-		this.player = player;
+	public void myTotemDoll$setPlayerEntity(AbstractClientPlayer player) {
+		this.myTotemDoll$player = player;
 	}
 
 	@Override
-	public AbstractClientPlayerEntity myTotemDoll$getPlayerEntity() {
-		return this.player;
+	public AbstractClientPlayer myTotemDoll$getPlayerEntity() {
+		return this.myTotemDoll$player;
 	}
 }

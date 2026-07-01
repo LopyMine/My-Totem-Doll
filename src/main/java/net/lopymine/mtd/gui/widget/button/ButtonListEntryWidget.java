@@ -1,95 +1,45 @@
 package net.lopymine.mtd.gui.widget.button;
 
-import lombok.Getter;
-import net.minecraft.client.gui.*;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.ButtonWidget.PressAction;
-import net.minecraft.client.gui.widget.ElementListWidget.Entry;
-import net.minecraft.text.Text;
-
 import java.util.List;
+import lombok.Getter;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Button.OnPress;
+import net.minecraft.client.gui.components.ContainerObjectSelectionList.Entry;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.network.chat.Component;
 
 @Getter
 public class ButtonListEntryWidget extends Entry<ButtonListEntryWidget> {
 
-	private final ButtonWidget widget;
+	private final Button widget;
 
-	public ButtonListEntryWidget(Text text, PressAction pressAction) {
-		this.widget = ButtonWidget.builder(text, pressAction).build();
+	public ButtonListEntryWidget(Component text, OnPress pressAction) {
+		this.widget = Button.builder(text, pressAction).build();
 	}
 
 	@Override
-	public List<? extends Selectable> selectableChildren() {
+	public List<? extends NarratableEntry> narratables() {
 		return List.of(this.widget);
 	}
 
 	@Override
-	public List<? extends Element> children() {
+	public List<? extends GuiEventListener> children() {
 		return List.of(this.widget);
 	}
 
-	//? if >=1.21.9 {
 	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
-		this.widget.render(context, mouseX, mouseY, deltaTicks);
-	}
-
-	@Override
-	public void setWidth(int width) {
-		super.setWidth(width);
-		this.widget.setWidth(width);
-	}
-
-	@Override
-	public void setHeight(int height) {
-		super.setHeight(height);
-		this.widget.setHeight(height);
-	}
-
-	@Override
-	public void setX(int x) {
-		super.setX(x);
-		this.widget.setX(x);
-	}
-
-	@Override
-	public void setY(int y) {
-		super.setY(y);
-		this.widget.setY(y);
-	}
-	//?} else {
-	/*@Override
-	public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+	public void render(GuiGraphics context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
 		this.widget.setWidth(entryWidth);
 		this.widget.setX(x);
 
-		//? if >=1.21 {
 		this.widget.setHeight(entryHeight);
 		this.widget.setY(y);
-		//?} else {
-		/^this.widget.setY(y + ((entryHeight - 20) / 2));
-		 ^///?}
 		this.widget.render(context, mouseX, mouseY, tickDelta);
 	}
-	*///?}
-
-	//? if >=1.21.9 {
-	@Override
-	public boolean mouseClicked(Click click, boolean doubled) {
-		return this.widget.mouseClicked(click, doubled);
-	}
 
 	@Override
-	public boolean mouseDragged(Click click, double offsetX, double offsetY) {
-		return this.widget.mouseDragged(click, offsetX, offsetY);
-	}
-
-	@Override
-	public boolean mouseReleased(Click click) {
-		return this.widget.mouseReleased(click);
-	}
-	//?} else {
-	/*@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		return this.widget.mouseClicked(mouseX, mouseY, button);
 	}
@@ -103,7 +53,6 @@ public class ButtonListEntryWidget extends Entry<ButtonListEntryWidget> {
 	public boolean mouseReleased(double mouseX, double mouseY, int button) {
 		return this.widget.mouseReleased(mouseX, mouseY, button);
 	}
-	*///?}
 
 	@Override
 	public void mouseMoved(double mouseX, double mouseY) {

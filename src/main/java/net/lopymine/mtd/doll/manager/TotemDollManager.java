@@ -1,14 +1,13 @@
 package net.lopymine.mtd.doll.manager;
 
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 import net.lopymine.mtd.atlas.manager.*;
 import net.lopymine.mtd.doll.data.TotemDollData;
 import net.lopymine.mtd.skin.provider.SkinProvider;
 import net.lopymine.mtd.skin.provider.extended.MojangSkinProvider;
 import net.lopymine.mtd.tag.manager.TagsSkinProviders;
-
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 import org.jetbrains.annotations.Nullable;
 
 public class TotemDollManager {

@@ -1,10 +1,8 @@
 package net.lopymine.mtd.config.other.vector;
 
-import lombok.*;
-
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
+import lombok.*;
 import static net.lopymine.mtd.utils.CodecUtils.option;
 
 @Setter

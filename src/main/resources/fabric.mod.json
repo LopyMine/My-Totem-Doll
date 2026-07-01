@@ -1,42 +1,38 @@
 {
-    "schemaVersion": 1,
-    "id": "${mod_id}",
-    "version": "${mod_version}",
-    "name": "${mod_name}",
-    "description": "${mod_description}",
-    "authors": [
-        "${mod_authors}"
-    ],
-    "contact": {
-        "homepage": "https://modrinth.com/mod/${mod_id}",
-        "issues": "https://github.com/LopyMine/${mod_id}/issues"
-    },
-    "license": "${mod_license}",
-    "icon": "icon/icon.png",
-    "environment": "*",
-    "entrypoints": {
-        "main": [
-            "net.lopymine.mtd.MyTotemDoll"
-        ],
-        "client": [
-            "net.lopymine.mtd.client.MyTotemDollClient"
-        ],
-        "modmenu": [
-            "net.lopymine.mtd.modmenu.ModMenuIntegration"
-        ]
-    },
-    "depends": {
-        "fabricloader": ">=${fabric_loader}",
-        "minecraft": ">=${minecraft}",
-        "java": ">=${java}",
-        "${fabric_api_id}": "*"
-    },
-    "accessWidener": "aws/${minecraft}.accesswidener",
-    "mixins": [
-        "${mod_id}.mixins.json",
-	    "${mod_id}-yacl.mixins.json",
-	    "${mod_id}-modmenu.mixins.json",
-	    "${mod_id}-sodium.mixins.json",
-	    "${mod_id}-cit-resewn.mixins.json"
-    ]
+	"schemaVersion": 1,
+	"id": "${mod_id}",
+	"version": "${mod_version}",
+	"name": "${mod_name}",
+	"description": "${mod_description}",
+	"authors": [
+		"${mod_authors}"
+	],
+	"contact": {
+		"homepage": "https://modrinth.com/mod/${mod_id}",
+		"issues": "https://github.com/${github_mod_author}/${mod_id}/issues"
+	},
+	"license": "${mod_license}",
+	"icon": "icon/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"net.lopymine.mtd.entrypoint.CommonEntrypoint"
+		],
+		"client": [
+			"net.lopymine.mtd.entrypoint.ClientEntrypoint"
+		],
+		"modmenu": [
+			"net.lopymine.mtd.modmenu.ModMenuIntegration"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=${fabric_loader}",
+		"minecraft": ">=${minecraft}",
+		"java": ">=${java}",
+		"${fabric_api_id}": "*"
+	},
+	"accessWidener": "${fabric_trick_accesswidener_id}",
+	"mixins": [
+		"${fabric_trick_mixin_configs}"
+	]
 }

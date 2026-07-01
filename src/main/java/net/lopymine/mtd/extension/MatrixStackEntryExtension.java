@@ -1,15 +1,13 @@
 package net.lopymine.mtd.extension;
 
-import net.minecraft.client.util.math.MatrixStack.Entry;
+import com.mojang.blaze3d.vertex.PoseStack.Pose;
 
 public class MatrixStackEntryExtension {
 
-	public static void copyFrom(Entry entry, Entry anotherEntry) {
-		entry.getPositionMatrix().set(anotherEntry.getPositionMatrix());
-		entry.getNormalMatrix().set(anotherEntry.getNormalMatrix());
-		//? if >=1.21 {
-		entry.canSkipNormalization = anotherEntry.canSkipNormalization;
-		//?}
+	public static void copyFrom(Pose entry, Pose anotherEntry) {
+		entry.pose().set(anotherEntry.pose());
+		entry.normal().set(anotherEntry.normal());
+		entry.trustedNormals = anotherEntry.trustedNormals;
 	}
 
 }

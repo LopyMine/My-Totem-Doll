@@ -12,7 +12,7 @@ public class HttpResponseException extends IOException {
 
 	public HttpResponseException(final int statusCode, final String reasonPhrase) {
 		super(String.format("status code: %d" + (reasonPhrase != null && reasonPhrase.isBlank() ? "" : ", reason phrase: %s"), statusCode, reasonPhrase));
-		this.statusCode = statusCode;
+		this.statusCode   = statusCode;
 		this.reasonPhrase = reasonPhrase;
 	}
 

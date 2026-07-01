@@ -1,26 +1,20 @@
 package net.lopymine.mtd.config.totem;
 
-import lombok.Getter;
-import net.minecraft.text.Text;
-import net.minecraft.util.*;
-
 import com.mojang.serialization.Codec;
-
+import lombok.Getter;
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.config.other.EnumWithText;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.Nullable;
 
 @Getter
-public enum TotemDollArmsType implements StringIdentifiable, EnumWithText {
+public enum TotemDollArmsType implements StringRepresentable, EnumWithText {
 
 	WIDE,
 	SLIM;
 
-	public static final Codec<TotemDollArmsType> CODEC = StringIdentifiable.createCodec(TotemDollArmsType::values);
-
-	public Text getText() {
-		return MyTotemDoll.text("modmenu.option.standard_doll_model_arms_type.%s".formatted(this.asString()));
-	}
+	public static final Codec<TotemDollArmsType> CODEC = StringRepresentable.fromEnum(TotemDollArmsType::values);
 
 	public static TotemDollArmsType of(boolean slim) {
 		return slim ? SLIM : WIDE;
@@ -33,8 +27,12 @@ public enum TotemDollArmsType implements StringIdentifiable, EnumWithText {
 		return s.equals("slim") ? SLIM : WIDE;
 	}
 
+	public Component getText() {
+		return MyTotemDoll.text("modmenu.option.standard_doll_model_arms_type.%s".formatted(this.getSerializedName()));
+	}
+
 	@Override
-	public String asString() {
+	public String getSerializedName() {
 		return this.name().toLowerCase();
 	}
 

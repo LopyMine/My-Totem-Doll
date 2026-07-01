@@ -1,16 +1,13 @@
 package net.lopymine.mtd.skin.provider.extended;
 
 import java.util.*;
-import net.minecraft.util.Identifier;
-
+import java.util.stream.Collectors;
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.api.*;
 import net.lopymine.mtd.doll.data.TotemDollData;
 import net.lopymine.mtd.skin.data.ParsedSkinData;
 import net.lopymine.mtd.skin.provider.StandardSkinProvider;
-
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 public class MojangSkinProvider extends StandardSkinProvider {
@@ -51,7 +48,7 @@ public class MojangSkinProvider extends StandardSkinProvider {
 	}
 
 	@Override
-	protected Identifier getId(String value, String type) {
+	protected ResourceLocation getId(String value, String type) {
 		return MyTotemDoll.getDollTextureId("mojang_api/%s/%s".formatted(type, value.toLowerCase()));
 	}
 

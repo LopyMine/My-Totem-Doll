@@ -8,13 +8,17 @@ import net.lopymine.mtd.doll.model.TotemDollModel;
 import net.lopymine.mtd.doll.renderer.DollRenderContext;
 import net.lopymine.mtd.model.base.*;
 import net.lopymine.mtd.model.bb.manager.BlockBenchModelManager;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.*;
 
 @Getter
 @Setter
 public class TotemDollRenderProperties {
 
+	@NotNull
+	private final Map<ResourceLocation, MModel> cachedFrameMModels = new HashMap<>();
+	@NotNull
+	private final Int2ObjectMap<TotemDollSprites> cachedFrameTextures = new Int2ObjectArrayMap<>();
 	private boolean slim;
 	@Nullable
 	private String nickname;
@@ -32,10 +36,6 @@ public class TotemDollRenderProperties {
 	private TotemDollSprites standardSprites;
 	@Nullable
 	private TotemDollSprites frameSprites;
-	@NotNull
-	private final Map<Identifier, MModel> cachedFrameMModels = new HashMap<>();
-	@NotNull
-	private final Int2ObjectMap<TotemDollSprites> cachedFrameTextures = new Int2ObjectArrayMap<>();
 
 	@Override
 	public boolean equals(Object o) {
@@ -56,7 +56,7 @@ public class TotemDollRenderProperties {
 		return new TotemDollModel(this.frameMModel, this.isSlim());
 	}
 
-	public void consumeFrameMModel(@NotNull Identifier id, Consumer<MModel> set) {
+	public void consumeFrameMModel(@NotNull ResourceLocation id, Consumer<MModel> set) {
 		MModel model = this.cachedFrameMModels.get(id);
 		if (model == null) {
 			BlockBenchModelManager.getModelAsyncAsResponse(id, (response) -> {
@@ -71,7 +71,7 @@ public class TotemDollRenderProperties {
 		set.accept(model);
 	}
 
-	public void setFrameSprites(Identifier skinTexture, Identifier capeTexture, Identifier elytraTexture, boolean slim, boolean remapCape) {
+	public void setFrameSprites(ResourceLocation skinTexture, ResourceLocation capeTexture, ResourceLocation elytraTexture, boolean slim, boolean remapCape) {
 		int hash = Objects.hash(skinTexture, capeTexture, elytraTexture, slim);
 		TotemDollSprites cachedSprites = this.cachedFrameTextures.get(hash);
 		if (cachedSprites == null) {
@@ -87,8 +87,8 @@ public class TotemDollRenderProperties {
 			return;
 		}
 		String[] created = Arrays.copyOf(this.disabledParts, this.disabledParts.length + 1);
-		created[created.length-1] = collection.getId();
-		this.disabledParts = created;
+		created[created.length - 1] = collection.getId();
+		this.disabledParts          = created;
 	}
 
 	public void enable(MModelCollection collection) {
@@ -96,8 +96,8 @@ public class TotemDollRenderProperties {
 			return;
 		}
 		String[] created = Arrays.copyOf(this.enabledParts, this.enabledParts.length + 1);
-		created[created.length-1] = collection.getId();
-		this.enabledParts = created;
+		created[created.length - 1] = collection.getId();
+		this.enabledParts           = created;
 	}
 
 	public void refresh() {

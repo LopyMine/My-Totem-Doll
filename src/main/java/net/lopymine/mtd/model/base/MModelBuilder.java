@@ -1,29 +1,27 @@
 package net.lopymine.mtd.model.base;
 
-import java.util.function.*;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import lombok.*;
 import lombok.experimental.ExtensionMethod;
 import net.lopymine.mtd.atlas.AtlasSprite;
-import net.minecraft.client.model.ModelTransform;
-
-
 import net.lopymine.mtd.extension.*;
 import net.lopymine.mtd.model.bb.ModelState;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.*;
 
 @SuppressWarnings("unused")
-@ExtensionMethod({ModelTransformExtension.class, DilationExtension.class, IdentifierExtension.class})
+@ExtensionMethod({ModelTransformExtension.class, DilationExtension.class, ResourceLocationExtension.class})
 public class MModelBuilder {
 
 	private final List<MCubeBuilder> cuboidBuilders = new ArrayList<>();
 	private final Map<String, MModelBuilder> childrenBuilders = new HashMap<>();
 	private final ModelState state;
 	@Getter
-	private ModelTransform transform = ModelTransform.NONE;
+	private PartPose transform = PartPose.ZERO;
 	@Setter(AccessLevel.PRIVATE)
 	@Getter(AccessLevel.PRIVATE)
 	@Nullable
@@ -49,15 +47,15 @@ public class MModelBuilder {
 		return this;
 	}
 
-	public MModelBuilder addChild(String name, MModelBuilder builder, Identifier location) {
+	public MModelBuilder addChild(String name, MModelBuilder builder, ResourceLocation location) {
 		builder.setParent(this);
 		builder.setName(name, location);
 		this.childrenBuilders.put(name, builder);
 		return this;
 	}
 
-	public MModelBuilder withTransform(ModelTransform transform) {
-		this.transform = ModelTransform.of(transform.getPivotX(), transform.getPivotY(), transform.getPivotZ(), transform.getPitch(), transform.getYaw(), transform.getRoll());
+	public MModelBuilder withTransform(PartPose transform) {
+		this.transform = PartPose.offsetAndRotation(transform.getPivotX(), transform.getPivotY(), transform.getPivotZ(), transform.getPitch(), transform.getYaw(), transform.getRoll());
 		return this;
 	}
 
@@ -73,7 +71,7 @@ public class MModelBuilder {
 	}
 
 	private MModel build(int textureWidth, int textureHeight, boolean isParentRoot, boolean isRoot) {
-		ModelTransform cuboidTransform = this.transform.getBlockBenchedModelTransform();
+		PartPose cuboidTransform = this.transform.getBlockBenchedModelTransform();
 
 		Map<String, MModel> children = this.childrenBuilders.entrySet().stream().collect(Collectors.toMap(Entry::getKey, e -> e.getValue().build(textureWidth, textureHeight, isRoot, false)));
 		List<MCuboid> cuboids = this.cuboidBuilders.stream().map(builder -> builder.build(textureWidth, textureHeight, cuboidTransform)).toList();
@@ -82,12 +80,12 @@ public class MModelBuilder {
 
 		MModel part = new MModel(cuboids, children, this.state, name, this.builtinSprite);
 
-		ModelTransform transform = this.parent == null || isParentRoot ? this.transform : this.transform.subtract(this.parent.getTransform());
+		PartPose transform = this.parent == null || isParentRoot ? this.transform : this.transform.subtract(this.parent.getTransform());
 
-		ModelTransform blockBenchedModelTransform = transform.getBlockBenchedModelTransform();
+		PartPose blockBenchedModelTransform = transform.getBlockBenchedModelTransform();
 
-		part.setTransform(blockBenchedModelTransform);
-		part.setDefaultTransform(blockBenchedModelTransform);
+		part.loadPose(blockBenchedModelTransform);
+		part.setInitialPose(blockBenchedModelTransform);
 
 		part.xScale = this.xScale;
 		part.yScale = this.yScale;
@@ -96,20 +94,20 @@ public class MModelBuilder {
 		return part;
 	}
 
-	public void setName(@Nullable String name, Identifier location) {
+	public void setName(@Nullable String name, ResourceLocation location) {
 		this.name = name;
 		if (name != null && name.endsWith(".png")) {
 			if (name.contains(":")) {
 				String[] split = name.split(":");
 				String namespace = split[0];
-				boolean namespaceValid = Identifier.isNamespaceValid(namespace);
+				boolean namespaceValid = ResourceLocation.isValidNamespace(namespace);
 				String path = split[1];
-				boolean pathValid = Identifier.isPathValid(path);
+				boolean pathValid = ResourceLocation.isValidPath(path);
 				if (namespaceValid && pathValid) {
-					this.builtinSprite = AtlasSprite.of(Identifier.of(namespace, path));
+					this.builtinSprite = AtlasSprite.of(ResourceLocation.fromNamespaceAndPath(namespace, path));
 				}
 			} else {
-				this.builtinSprite = AtlasSprite.of(location.getFolderId().withSuffixedPath(this.getName()));
+				this.builtinSprite = AtlasSprite.of(location.getFolderId().withSuffix(this.getName()));
 			}
 		}
 	}
@@ -119,8 +117,8 @@ public class MModelBuilder {
 		return this.name == null ? UUID.randomUUID().toString() : this.name;
 	}
 
-	public Map<Identifier, Consumer<AtlasSprite>> collectAllBuiltinTextures() {
-		Map<Identifier, Consumer<AtlasSprite>> textures = new HashMap<>();
+	public Map<ResourceLocation, Consumer<AtlasSprite>> collectAllBuiltinTextures() {
+		Map<ResourceLocation, Consumer<AtlasSprite>> textures = new HashMap<>();
 		if (this.builtinSprite != null) {
 			textures.put(this.builtinSprite.getSpriteId(), this.builtinSprite::copyFrom);
 		}

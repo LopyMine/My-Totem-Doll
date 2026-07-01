@@ -1,40 +1,35 @@
 package net.lopymine.mtd.gui.widget.tag;
 
+import java.util.*;
+import java.util.stream.*;
 import lombok.experimental.ExtensionMethod;
-import net.lopymine.mtd.doll.data.TotemDollData;
-import net.lopymine.mtd.gui.widget.list.AbstractVersionedEntryListWidget;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.tooltip.*;
-import net.minecraft.client.gui.widget.*;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.*;
-import net.minecraft.util.*;
-
 import net.lopymine.mtd.MyTotemDoll;
+import net.lopymine.mtd.doll.data.TotemDollData;
 import net.lopymine.mtd.extension.ItemStackExtension;
+import net.lopymine.mtd.gui.widget.list.AbstractVersionedEntryListWidget;
 import net.lopymine.mtd.gui.widget.tag.TagMenuWidget.TagRow;
 import net.lopymine.mtd.tag.*;
 import net.lopymine.mtd.tag.manager.TagsManager;
 import net.lopymine.mtd.utils.*;
 import net.lopymine.mtd.utils.tooltip.IRequestableTooltipScreen;
-import java.util.*;
-import java.util.stream.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.components.ContainerObjectSelectionList;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.*;
 
 @ExtensionMethod(ItemStackExtension.class)
 public class TagMenuWidget extends AbstractVersionedEntryListWidget<TagRow> {
 
-	public static final Identifier BACKGROUND = MyTotemDoll.id("textures/gui/tag_menu/background_new.png");
+	public static final ResourceLocation BACKGROUND = MyTotemDoll.id("textures/gui/tag_menu/background_new.png");
 
 	public TagMenuWidget(int x, int y, Renamer renamer) {
 		super(x, y, 30, 125, 16);
 
-		//? if <=1.21.8 {
-		/*this.headerHeight = -2;
-		*///?}
+		this.headerHeight = -2;
 
 		List<Tag> list = TagsManager.getRegisteredTags().values().stream().toList();
 		for (int i = 0; i < list.size(); i += 2) {
@@ -66,12 +61,60 @@ public class TagMenuWidget extends AbstractVersionedEntryListWidget<TagRow> {
 		}
 	}
 
-	//? if <=1.21.8 {
-	/*@Override
+	private static @NotNull TagButtonWidget createTagButtonWidget(Renamer renamer, Tag tag) {
+		char character = tag.getTag();
+
+		TagButtonWidget tagButtonWidget = new TagButtonWidget(tag, 0, 0, (widget) -> {
+			updateItemStackName(renamer, widget, character);
+		});
+
+		tagButtonWidget.setTooltip(TagsManager.getTagDescription(character));
+		return tagButtonWidget;
+	}
+
+	private static @NotNull CustomModelTagButtonWidget createCustomModelTagButtonWidget(Renamer renamer, CustomModelTag tag, List<TagButtonWidget> allCustomModelWidgets) {
+		char character = tag.getTag();
+
+		return new CustomModelTagButtonWidget(tag, 0, 0, (tagButtonWidget) -> {
+			updateItemStackName(renamer, tagButtonWidget, character);
+
+			for (TagButtonWidget widget : allCustomModelWidgets) {
+				if (!widget.equals(tagButtonWidget)) {
+					widget.setPressed(false);
+					updateItemStackName(renamer, widget, widget.getTag().getTag());
+				}
+			}
+		});
+	}
+
+	private static @NotNull <E> List<E> getRangeOfList(List<E> list, int startIndex) {
+		List<E> tags = new ArrayList<>();
+		tags.add(list.get(startIndex));
+		if (startIndex + 1 < list.size()) {
+			tags.add(list.get(startIndex + 1));
+		}
+		return tags;
+	}
+
+	private static void updateItemStackName(Renamer renamer, TagButtonWidget b, char c) {
+		String name = b.isPressed() ? TagsManager.addTag(renamer.getName(), c) : TagsManager.removeTag(renamer.getName(), c);
+		renamer.setName(name);
+	}
+
+	@Nullable
+	private static String getTags(ItemStack stack) {
+		Component text = stack.getRealCustomName();
+		if (text == null) {
+			return null;
+		}
+		String customName = text.getString();
+		return TagsManager.getTagsFromName(customName);
+	}
+
+	@Override
 	public int getRowLeft() {
 		return this.getX() + this.width / 2 - this.getRowWidth() / 2;
 	}
-	*///?}
 
 	@Override
 	public int getRowWidth() {
@@ -79,17 +122,17 @@ public class TagMenuWidget extends AbstractVersionedEntryListWidget<TagRow> {
 	}
 
 	@Override
-	protected void drawMenuListBackground(DrawContext context) {
+	protected void renderListBackground(GuiGraphics context) {
 		//DrawUtils.drawTexture(context, BACKGROUND, this.getX(), this.getY(), 0, 0, 50, 166, 50, 166);
 	}
 
 	@Override
-	public boolean mouseScrolled(double mouseX, double mouseY, /*? if >=1.21 {*/ double horizontalAmount, /*?}*/ double verticalAmount) {
+	public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
 		TagRow entry = this.getEntryAtPosition(mouseX, mouseY);
-		if (entry != null && entry.mouseScrolled(mouseX, mouseY, /*? if >=1.21 {*/horizontalAmount, /*?}*/ verticalAmount)) {
+		if (entry != null && entry.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)) {
 			return true;
 		}
-		return super.mouseScrolled(mouseX, mouseY, /*? if >=1.21 {*/horizontalAmount, /*?}*/ verticalAmount);
+		return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
 	}
 
 	public void updateButtons(ItemStack stack) {
@@ -137,62 +180,9 @@ public class TagMenuWidget extends AbstractVersionedEntryListWidget<TagRow> {
 				.collect(Collectors.toList());
 	}
 
-	private static @NotNull TagButtonWidget createTagButtonWidget(Renamer renamer, Tag tag) {
-		char character = tag.getTag();
-
-		TagButtonWidget tagButtonWidget = new TagButtonWidget(tag, 0, 0, (widget) -> {
-			updateItemStackName(renamer, widget, character);
-		});
-
-		tagButtonWidget.setTooltip(TagsManager.getTagDescription(character));
-		return tagButtonWidget;
-	}
-
-	private static @NotNull CustomModelTagButtonWidget createCustomModelTagButtonWidget(Renamer renamer, CustomModelTag tag, List<TagButtonWidget> allCustomModelWidgets) {
-		char character = tag.getTag();
-
-		return new CustomModelTagButtonWidget(tag, 0, 0, (tagButtonWidget) -> {
-			updateItemStackName(renamer, tagButtonWidget, character);
-
-			for (TagButtonWidget widget : allCustomModelWidgets) {
-				if (!widget.equals(tagButtonWidget)) {
-					widget.setPressed(false);
-					updateItemStackName(renamer, widget, widget.getTag().getTag());
-				}
-			}
-		});
-	}
-
-	private static @NotNull <E> List<E> getRangeOfList(List<E> list, int startIndex) {
-		List<E> tags = new ArrayList<>();
-		tags.add(list.get(startIndex));
-		if (startIndex + 1 < list.size()) {
-			tags.add(list.get(startIndex + 1));
-		}
-		return tags;
-	}
-
-	private static void updateItemStackName(Renamer renamer, TagButtonWidget b, char c) {
-		String name = b.isPressed() ? TagsManager.addTag(renamer.getName(), c) : TagsManager.removeTag(renamer.getName(), c);
-		renamer.setName(name);
-	}
-
-	@Nullable
-	private static String getTags(ItemStack stack) {
-		Text text = stack.getRealCustomName();
-		if (text == null) {
-			return null;
-		}
-		String customName = text.getString();
-		return TagsManager.getTagsFromName(customName);
-	}
-
 	@Override
 	public void setPosition(int x, int y) {
 		super.setPosition(x, y);
-		//? if >=1.21.4 {
-		this.setScrollY(this.getScrollY());
-		//?}
 	}
 
 	public interface Renamer {
@@ -203,7 +193,7 @@ public class TagMenuWidget extends AbstractVersionedEntryListWidget<TagRow> {
 
 	}
 
-	public static class TagRow extends ElementListWidget.Entry<TagRow> {
+	public static class TagRow extends ContainerObjectSelectionList.Entry<TagRow> {
 
 		private final List<TagButtonWidget> buttons;
 
@@ -212,7 +202,7 @@ public class TagMenuWidget extends AbstractVersionedEntryListWidget<TagRow> {
 		}
 
 		@Override
-		public List<TagButtonWidget> selectableChildren() {
+		public List<TagButtonWidget> narratables() {
 			return this.buttons;
 		}
 
@@ -221,37 +211,8 @@ public class TagMenuWidget extends AbstractVersionedEntryListWidget<TagRow> {
 			return this.buttons;
 		}
 
-		//? if >=1.21.9 {
 		@Override
-		public void setX(int x) {
-			super.setX(x);
-
-			int pos = x;
-			for (TagButtonWidget button : this.buttons) {
-				button.setX(pos);
-				pos += button.getWidth() + 2;
-			}
-		}
-
-		@Override
-		public void setY(int y) {
-			super.setY(y);
-			for (TagButtonWidget button : this.buttons) {
-				button.setY(y);
-			}
-		}
-
-		@Override
-		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-			for (TagButtonWidget widget : this.buttons) {
-				widget.setCanBeHovered(hovered);
-				widget.render(context, mouseX, mouseY, tickDelta);
-			}
-		}
-
-		//?} else {
-		/*@Override
-		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		public void render(GuiGraphics context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
 			int xOffset = 0;
 
 			for (TagButtonWidget widget : this.buttons) {
@@ -261,47 +222,39 @@ public class TagMenuWidget extends AbstractVersionedEntryListWidget<TagRow> {
 				xOffset += widget.getWidth() + 2;
 			}
 		}
-		*///?}
 	}
 
 	public static class SeparatorRow extends TagRow {
 
-		public static final Identifier SEPARATOR = MyTotemDoll.id("textures/gui/tag_menu/separator.png");
+		public static final ResourceLocation SEPARATOR = MyTotemDoll.id("textures/gui/tag_menu/separator.png");
 
-		private final Text text;
+		private final Component text;
 
-		public SeparatorRow(Text text) {
+		public SeparatorRow(Component text) {
 			super(new ArrayList<>());
 			this.text = text;
 		}
 
-		//? if >=1.21.9 {
 		@Override
-		public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-			this.render(context, this.getY(), this.getX(), this.getHeight(), hovered);
-		}
-		//?} else {
-		/*@Override
-		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		public void render(GuiGraphics context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
 			this.render(context, y, x, entryHeight, hovered);
 		}
-		*///?}
 
-		private void render(DrawContext context, int y, int x, int entryHeight, boolean hovered) {
-			MinecraftClient client = MinecraftClient.getInstance();
-			TextRenderer textRenderer = client.textRenderer;
+		private void render(GuiGraphics context, int y, int x, int entryHeight, boolean hovered) {
+			Minecraft client = Minecraft.getInstance();
+			Font textRenderer = client.font;
 
 			RenderUtils.enableBlend();
 			DrawUtils.drawTexture(context, SEPARATOR, x - 1, y + (entryHeight / 2) - 3, 0, 0, 32, 7, 32, 7);
 			RenderUtils.disableBlend();
 
 			if (hovered) {
-				if (!(client.currentScreen instanceof IRequestableTooltipScreen tooltipScreen)) {
+				if (!(client.screen instanceof IRequestableTooltipScreen tooltipScreen)) {
 					return;
 				}
 
 				tooltipScreen.myTotemDoll$requestTooltip(((c, mx, my, d) -> {
-					DrawUtils.drawTooltip(context, textRenderer.wrapLines(this.text, 10000).stream().map(TooltipComponent::of).collect(Collectors.toList()), mx, my);
+					DrawUtils.drawTooltip(context, textRenderer.split(this.text, 10000).stream().map(ClientTooltipComponent::create).collect(Collectors.toList()), mx, my);
 				}));
 			}
 		}
