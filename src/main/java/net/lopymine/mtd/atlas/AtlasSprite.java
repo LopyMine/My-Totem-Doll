@@ -1,22 +1,26 @@
 package net.lopymine.mtd.atlas;
 
 import com.mojang.blaze3d.platform.NativeImage;
-import java.io.InputStream;
-import java.util.Objects;
+import java.io.*;
+import java.util.*;
 import lombok.*;
 import net.lopymine.mtd.atlas.stitch.OnSpriteUploaded;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.SpriteContents;
+import net.minecraft.client.resources.metadata.animation.*;
+import net.minecraft.client.resources.metadata.animation.AnimationMetadataSection;
 import net.minecraft.client.resources.metadata.animation.FrameSize;
+import net.minecraft.client.renderer.texture.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceMetadata;
 import org.jetbrains.annotations.*;
+
+import net.minecraft.client.resources.metadata.animation.*;
 
 @Setter
 @Getter
 public class AtlasSprite {
 
-	public static final ResourceMetadata STANDARD_METADATA = ResourceMetadata.EMPTY;
+	public static final AnimationMetadataSection STANDARD_METADATA =  AnimationMetadataSection.EMPTY ;
 
 	@NotNull
 	private ResourceLocation spriteId;
@@ -59,7 +63,7 @@ public class AtlasSprite {
 	}
 
 	public static void updateContents(AtlasSprite sprite, NativeImage image) {
-		ResourceMetadata metadata = getAnimationMetadataForSprite(sprite);
+		 AnimationMetadataSection metadata = getAnimationMetadataForSprite(sprite);
 		boolean animated = metadata != STANDARD_METADATA;
 		int width = image.getWidth();
 		int height = image.getHeight();
@@ -70,14 +74,18 @@ public class AtlasSprite {
 		sprite.setContents(contents);
 	}
 
-	public static ResourceMetadata getAnimationMetadataForSprite(AtlasSprite sprite) {
+	public static AnimationMetadataSection getAnimationMetadataForSprite(AtlasSprite sprite) {
 		try {
 			ResourceLocation id = sprite.getSpriteId();
 			InputStream stream = Minecraft.getInstance()
 					.getResourceManager()
-					.getResourceOrThrow(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), id.getPath() + ".mcmeta"))
+					.getResourceOrThrow(ResourceLocation.tryBuild(id.getNamespace(), id.getPath() + ".mcmeta"))
 					.open();
-			return ResourceMetadata.fromJsonStream(stream);
+			AnimationMetadataSection metadata = net.minecraft.server.packs.AbstractPackResources.getMetadataFromStream(AnimationMetadataSection.SERIALIZER, stream);
+			if (metadata == null) {
+				return STANDARD_METADATA;
+			}
+			return metadata;
 		} catch (Exception ignored) {
 			return STANDARD_METADATA;
 		}
@@ -171,11 +179,11 @@ public class AtlasSprite {
 	}
 
 	public void copyFrom(AtlasSprite registeredSprite) {
-		this.closable         = registeredSprite.isClosable();
-		this.spriteId         = registeredSprite.getSpriteId();
-		this.contents         = registeredSprite.getContents();
+		this.closable = registeredSprite.isClosable();
+		this.spriteId = registeredSprite.getSpriteId();
+		this.contents = registeredSprite.getContents();
 		this.unregisterAction = registeredSprite.getUnregisterAction();
-		this.uploaded         = registeredSprite.isUploaded();
-		this.cachedId         = registeredSprite.getCachedId();
+		this.uploaded = registeredSprite.isUploaded();
+		this.cachedId = registeredSprite.getCachedId();
 	}
 }

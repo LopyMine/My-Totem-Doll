@@ -1,10 +1,25 @@
 package net.lopymine.mtd.doll.renderer;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import lombok.experimental.ExtensionMethod;
-import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.atlas.AtlasSprite;
+import net.lopymine.mtd.extension.*;
+import net.lopymine.mtd.optimization.TotemDollRenderRequestsCollector;
+import net.lopymine.mtd.thing.ThingMarks;
+import net.lopymine.mtd.utils.*;
+import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.multiplayer.*;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.world.item.*;
+
+import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.config.MyTotemDollConfig;
 import net.lopymine.mtd.config.rendering.*;
@@ -13,21 +28,14 @@ import net.lopymine.mtd.doll.data.*;
 import net.lopymine.mtd.doll.manager.StandardTotemDollManager;
 import net.lopymine.mtd.doll.model.TotemDollModel;
 import net.lopymine.mtd.doll.model.TotemDollModel.Drawer;
-import net.lopymine.mtd.extension.*;
-import net.lopymine.mtd.optimization.TotemDollRenderRequestsCollector;
-import net.lopymine.mtd.thing.ThingMarks;
-import net.lopymine.mtd.utils.*;
 import net.lopymine.mtd.utils.plugin.TotemDollPlugin;
-import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
-import net.minecraft.client.renderer.texture.OverlayTexture;
+
 import net.minecraft.network.chat.Component;
+import net.minecraft.core.*;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraft.world.item.*;
+import net.minecraft.util.*;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.*;
 
 
@@ -191,7 +199,7 @@ public class TotemDollRenderer {
 			drawer.requestDrawingPartWithSprite("elytra", elytraSprite);
 		}
 
-		drawer.draw(matrices, provider, skinSprite, light, overlay, -1);
+		drawer.draw(matrices, provider, skinSprite, light, overlay,  1.0F, 1.0F, 1.0F, 1.0F );
 
 		matrices.popPose();
 	}

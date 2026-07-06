@@ -1,9 +1,10 @@
 package net.lopymine.mtd.mixin;
 
-import net.lopymine.mtd.utils.mixin.ItemStackWithPlayerEntity;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.*;
+
+import net.lopymine.mtd.utils.mixin.ItemStackWithPlayerEntity;
 
 
 @Mixin(ItemStack.class)

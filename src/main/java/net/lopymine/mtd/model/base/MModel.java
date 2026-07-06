@@ -1,20 +1,31 @@
 package net.lopymine.mtd.model.base;
 
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import lombok.*;
+import lombok.experimental.ExtensionMethod;
+import net.lopymine.mtd.atlas.*;
+import net.minecraft.client.model.*;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.ModelPart.Cube;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.block.model.*;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.*;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.*;
+
+import net.lopymine.mtd.extension.*;
+import net.lopymine.mtd.model.bb.*;
+
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
-import lombok.*;
-import lombok.experimental.ExtensionMethod;
-import net.lopymine.mtd.atlas.AtlasSprite;
-import net.lopymine.mtd.extension.*;
-import net.lopymine.mtd.model.bb.*;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.builders.CubeDeformation;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.texture.*;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.*;
 import org.slf4j.Logger;
@@ -24,13 +35,14 @@ import org.slf4j.Logger;
 @ExtensionMethod({ModelTransformExtension.class, DilationExtension.class, ResourceLocationExtension.class})
 public class MModel extends ModelPart {
 
+	@Setter(AccessLevel.PRIVATE)
+	private ItemTransforms transformation = ItemTransforms.NO_TRANSFORMS;
 	private final Map<String, MModel> mChildren;
 	private final List<MModel> mChildrenModels;
 	private final List<MCuboid> mCuboids;
 	private final ModelState state;
 	private final String name;
-	@Setter(AccessLevel.PRIVATE)
-	private ItemTransforms transformation = ItemTransforms.NO_TRANSFORMS;
+
 	private boolean skipRendering = false;
 
 	@Nullable
@@ -42,12 +54,12 @@ public class MModel extends ModelPart {
 
 	public MModel(List<MCuboid> mCuboids, Map<String, MModel> mChildren, ModelState state, String name, @Nullable AtlasSprite builtinTexture) {
 		super(mCuboids.stream().map(MCuboid::asCuboid).toList(), mChildren.entrySet().stream().collect(Collectors.toMap(Entry::getKey, e -> e.getValue().asModelPart())));
-		this.state           = state;
-		this.name            = name;
-		this.mChildren       = mChildren;
+		this.state     = state;
+		this.name      = name;
+		this.mChildren = mChildren;
 		this.mChildrenModels = new ArrayList<>(mChildren.values());
 		this.mChildrenModels.forEach((mmodel) -> mmodel.setParent(this));
-		this.mCuboids       = mCuboids;
+		this.mCuboids  = mCuboids;
 		this.builtinTexture = builtinTexture;
 	}
 
@@ -63,7 +75,7 @@ public class MModel extends ModelPart {
 	}
 
 	@Override
-	public void render(PoseStack matrices, VertexConsumer vertices, int light, int overlay, int color) {
+	public void render(PoseStack matrices, VertexConsumer vertices, int light, int overlay, float red, float green, float blue, float alpha ) {
 		// NO-OP
 	}
 
@@ -90,7 +102,7 @@ public class MModel extends ModelPart {
 		return this;
 	}
 
-	public void draw(PoseStack matrices, MultiBufferSource provider, TextureAtlas atlas, RenderType atlasRenderLayer, AtlasSprite mainSprite, Map<String, AtlasSprite> requestedParts, int light, int overlay, int color) {
+	public void draw(PoseStack matrices, MultiBufferSource provider, TextureAtlas atlas, RenderType atlasRenderLayer, AtlasSprite mainSprite, Map<String, AtlasSprite> requestedParts, int light, int overlay, float red, float green, float blue, float alpha ) {
 		AtlasSprite providedSprite = requestedParts.get(this.getName());
 
 		if ((this.skipRendering && providedSprite == null) || (!this.visible) || (this.mCuboids.isEmpty() && this.mChildren.isEmpty())) {
@@ -107,11 +119,11 @@ public class MModel extends ModelPart {
 		if (!this.skipDraw && !this.mCuboids.isEmpty()) {
 			TextureAtlasSprite currentSprite = atlas.getSprite(currentSpriteId.getSpriteId());
 			VertexConsumer consumer = currentSprite.wrap(provider.getBuffer(atlasRenderLayer));
-			this.compile(matrices.last(), consumer, light, overlay, color);
+			this.compile(matrices.last(), consumer, light, overlay,  red, green, blue, alpha );
 		}
 
 		for (MModel model : this.mChildrenModels) {
-			model.draw(matrices, provider, atlas, atlasRenderLayer, currentSpriteId, requestedParts, light, overlay, color);
+			model.draw(matrices, provider, atlas, atlasRenderLayer, currentSpriteId, requestedParts, light, overlay,  red, green, blue, alpha );
 		}
 
 		matrices.popPose();

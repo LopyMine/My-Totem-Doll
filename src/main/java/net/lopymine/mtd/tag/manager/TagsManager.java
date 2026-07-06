@@ -1,14 +1,17 @@
 package net.lopymine.mtd.tag.manager;
 
 import it.unimi.dsi.fastutil.chars.*;
-import java.util.*;
-import java.util.stream.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.*;
+
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.doll.data.TotemDollData;
 import net.lopymine.mtd.pack.TotemDollModelFinder;
 import net.lopymine.mtd.tag.*;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+
+import java.util.*;
+import java.util.stream.*;
 import org.jetbrains.annotations.*;
 
 public class TagsManager {

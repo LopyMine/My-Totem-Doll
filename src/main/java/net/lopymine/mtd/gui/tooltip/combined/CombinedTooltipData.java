@@ -1,8 +1,9 @@
 package net.lopymine.mtd.gui.tooltip.combined;
 
-import java.util.*;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
+
+import java.util.*;
 
 public record CombinedTooltipData(List<ClientTooltipComponent> list) implements TooltipComponent {
 

@@ -1,13 +1,16 @@
 package net.lopymine.mtd.doll.renderer;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import lombok.Getter;
 import lombok.experimental.ExtensionMethod;
+import net.minecraft.client.renderer.block.model.*;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.PoseStack.Pose;
+
 import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.extension.ModelTransformationExtension;
 import net.lopymine.mtd.model.base.MModel;
-import net.minecraft.client.renderer.block.model.*;
+import net.minecraft.client.renderer.block.model.ItemTransform;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 
 @Getter
 @ExtensionMethod(ModelTransformationExtension.class)
@@ -70,8 +73,7 @@ public enum DollRenderContext {
 
 	public void apply(MModel model, PoseStack matrices) {
 		ItemTransform transformation = get(model.getTransformation());
-		Pose peek = matrices.last();
-		transformation.apply(this.isLeftHanded(), matrices);
+		transformation.apply(this.isLeftHanded(),  matrices);
 	}
 
 	public boolean isLeftHanded() {

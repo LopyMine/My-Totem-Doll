@@ -5,6 +5,7 @@ import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+
 @Mixin(OptionDescriptionWidget.class)
 public class OptionDescriptionWidgetMixin {
 

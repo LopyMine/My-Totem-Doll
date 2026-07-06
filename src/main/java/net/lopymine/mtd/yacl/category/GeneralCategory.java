@@ -2,6 +2,7 @@ package net.lopymine.mtd.yacl.category;
 
 import dev.isxander.yacl3.api.*;
 import lombok.experimental.ExtensionMethod;
+
 import net.lopymine.mtd.config.MyTotemDollConfig;
 import net.lopymine.mtd.extension.SimpleOptionExtension;
 import net.lopymine.mtd.thread.MyTotemDollTaskExecutor;

@@ -1,7 +1,10 @@
 package net.lopymine.mtd.client.command.builder;
 
-import net.lopymine.mtd.MyTotemDoll;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.*;
+
+import net.lopymine.mtd.MyTotemDoll;
 
 public class CommandTextBuilder {
 

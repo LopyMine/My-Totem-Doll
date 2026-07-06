@@ -1,15 +1,20 @@
 package net.lopymine.mtd.gui.tooltip.preview;
 
 import lombok.experimental.ExtensionMethod;
+import net.lopymine.mtd.doll.renderer.*;
+import net.lopymine.mtd.utils.DrawUtils;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.*;
+import net.minecraft.resources.ResourceLocation;
+
+import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.config.MyTotemDollConfig;
 import net.lopymine.mtd.doll.data.TotemDollData;
-import net.lopymine.mtd.doll.renderer.*;
 import net.lopymine.mtd.extension.ResourceLocationExtension;
-import net.lopymine.mtd.utils.DrawUtils;
-import net.minecraft.client.gui.*;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
 @ExtensionMethod(ResourceLocationExtension.class)
 public class TotemDollPreviewTooltipComponent implements ClientTooltipComponent {

@@ -2,8 +2,10 @@ package net.lopymine.mtd.modmenu;
 
 //? if fabric {
 
-/*import com.terraformersmc.modmenu.api.*;
+import com.terraformersmc.modmenu.api.*;
+
 import net.fabricmc.loader.api.*;
+
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.yacl.YACLConfigurationScreen;
@@ -30,20 +32,20 @@ public class ModMenuIntegration implements ModMenuApi {
 	}
 }
 
-*///?} elif neoforge {
+//?} elif forge {
 
-import net.lopymine.mtd.MyTotemDoll;
+/*import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.loader.MyTotemDollLoader;
 import net.lopymine.mtd.yacl.YACLConfigurationScreen;
-import net.neoforged.fml.*;
-import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
+import net.minecraftforge.client.ConfigScreenHandler.ConfigScreenFactory;
+import net.minecraftforge.fml.*;
 import org.apache.maven.artifact.versioning.*;
 
 public class ModMenuIntegration {
 
 	public void register(ModContainer container) {
-		container.registerExtensionPoint(IConfigScreenFactory.class, (modContainer, parent) -> {
+		container.registerExtensionPoint(ConfigScreenFactory.class, () -> new ConfigScreenFactory((minecraft, parent) -> {
 			if (MyTotemDollLoader.isModLoaded("yet_another_config_lib_v3", false)) {
 				ModContainer yacl = ModList.get().getModContainerById("yet_another_config_lib_v3").orElseThrow();
 				ArtifactVersion version = yacl.getModInfo().getVersion();
@@ -58,8 +60,8 @@ public class ModMenuIntegration {
 				return NoConfigLibraryScreen.createScreenAboutOldVersion(parent, version.getQualifier());
 			}
 			return NoConfigLibraryScreen.createScreen(parent);
-		});
+		}));
 	}
 }
 
-//?}
+*///?}

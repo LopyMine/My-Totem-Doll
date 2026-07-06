@@ -3,6 +3,23 @@ package net.lopymine.mtd.mixin;
 import com.llamalad7.mixinextras.injector.wrapoperation.*;
 import lombok.experimental.ExtensionMethod;
 import net.lopymine.mtd.MyTotemDoll;
+import net.lopymine.mtd.utils.DrawUtils;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.screens.inventory.AnvilScreen;
+import net.minecraft.client.gui.screens.inventory.ItemCombinerScreen;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.AnvilMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import org.spongepowered.asm.mixin.*;
+import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.config.MyTotemDollConfig;
 import net.lopymine.mtd.config.other.vector.Vec2i;
@@ -11,21 +28,9 @@ import net.lopymine.mtd.gui.widget.info.*;
 import net.lopymine.mtd.gui.widget.tag.*;
 import net.lopymine.mtd.gui.widget.tag.TagMenuWidget.Renamer;
 import net.lopymine.mtd.tag.Tag;
-import net.lopymine.mtd.utils.DrawUtils;
 import net.lopymine.mtd.utils.mixin.MTDAnvilScreen;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.*;
-import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.screens.inventory.*;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.*;
-import net.minecraft.world.item.*;
+
 import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.mixin.*;
-import org.spongepowered.asm.mixin.injection.*;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(AnvilScreen.class)
 @ExtensionMethod(ItemStackExtension.class)
@@ -110,10 +115,10 @@ public abstract class AnvilScreenMixin extends ItemCombinerScreen<AnvilMenu> imp
 				(b) -> {
 					this.myTotemDoll$currentVisibleState = b.isPressed();
 					this.resize(this.minecraft, this.width, this.height);
-				});
+		});
 		this.myTotemDoll$tagButtonWidget.visible = bl;
 		this.myTotemDoll$tagButtonWidget.setPressed(this.myTotemDoll$tagMenuWidget.visible);
-
+		
 		//
 
 		if (this.myTotemDoll$tagMenuWidget.visible) {
@@ -121,20 +126,24 @@ public abstract class AnvilScreenMixin extends ItemCombinerScreen<AnvilMenu> imp
 		} else {
 			this.imageWidth = 176;
 		}
-
+		
 		//
 
 		this.addRenderableWidget(this.myTotemDoll$tagMenuWidget);
 		this.addRenderableOnly(this.myTotemDoll$infoWidget);
 		this.addRenderableOnly(this.myTotemDoll$tipsWidget);
 		this.addRenderableWidget(this.myTotemDoll$tagButtonWidget);
-
+		
 		//
 
 		this.leftPos = (this.width - this.imageWidth) / 2;
 		this.myTotemDoll$updateWidgets();
 	}
 
+	@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/EditBox;setEditable(Z)V"), method = "subInit")
+	private void fixingMojangBugOmg(EditBox instance, boolean editable, Operation<Void> original) {
+		original.call(instance, this.menu.getSlot(0).hasItem());
+	}
 
 	@Unique
 	private void myTotemDoll$updateWidgets() {
@@ -209,6 +218,13 @@ public abstract class AnvilScreenMixin extends ItemCombinerScreen<AnvilMenu> imp
 		return original.call(instance, textRenderer, text, x - this.imageWidth + 176, y, color);
 	}
 
+	@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blit(Lnet/minecraft/resources/ResourceLocation;IIIIII)V"), method = "renderErrorIcon")
+	private void swapBackgroundValue(GuiGraphics instance, ResourceLocation identifier, int x, int y, int a, int b, int c, int d, Operation<Void> original) {
+		if (!MyTotemDollConfig.getInstance().isModEnabled()) {
+			original.call(instance, identifier, x, y, a, b, c, d);
+		}
+		original.call(instance, identifier, x, y, a - this.imageWidth + 176, b, c, d);
+	}
 
 	@Inject(at = @At("HEAD"), method = "slotChanged")
 	private void checkTotem(AbstractContainerMenu handler, int slotId, ItemStack stack, CallbackInfo ci) {

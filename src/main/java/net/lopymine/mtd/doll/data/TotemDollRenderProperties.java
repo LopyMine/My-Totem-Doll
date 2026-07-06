@@ -15,10 +15,6 @@ import org.jetbrains.annotations.*;
 @Setter
 public class TotemDollRenderProperties {
 
-	@NotNull
-	private final Map<ResourceLocation, MModel> cachedFrameMModels = new HashMap<>();
-	@NotNull
-	private final Int2ObjectMap<TotemDollSprites> cachedFrameTextures = new Int2ObjectArrayMap<>();
 	private boolean slim;
 	@Nullable
 	private String nickname;
@@ -36,6 +32,10 @@ public class TotemDollRenderProperties {
 	private TotemDollSprites standardSprites;
 	@Nullable
 	private TotemDollSprites frameSprites;
+	@NotNull
+	private final Map<ResourceLocation, MModel> cachedFrameMModels = new HashMap<>();
+	@NotNull
+	private final Int2ObjectMap<TotemDollSprites> cachedFrameTextures = new Int2ObjectArrayMap<>();
 
 	@Override
 	public boolean equals(Object o) {
@@ -87,8 +87,8 @@ public class TotemDollRenderProperties {
 			return;
 		}
 		String[] created = Arrays.copyOf(this.disabledParts, this.disabledParts.length + 1);
-		created[created.length - 1] = collection.getId();
-		this.disabledParts          = created;
+		created[created.length-1] = collection.getId();
+		this.disabledParts = created;
 	}
 
 	public void enable(MModelCollection collection) {
@@ -96,8 +96,8 @@ public class TotemDollRenderProperties {
 			return;
 		}
 		String[] created = Arrays.copyOf(this.enabledParts, this.enabledParts.length + 1);
-		created[created.length - 1] = collection.getId();
-		this.enabledParts           = created;
+		created[created.length-1] = collection.getId();
+		this.enabledParts = created;
 	}
 
 	public void refresh() {

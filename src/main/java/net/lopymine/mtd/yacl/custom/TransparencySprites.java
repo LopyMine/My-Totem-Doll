@@ -1,8 +1,9 @@
 package net.lopymine.mtd.yacl.custom;
 
-import net.lopymine.mtd.MyTotemDoll;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+
+import net.lopymine.mtd.MyTotemDoll;
 
 @SuppressWarnings("unused")
 public class TransparencySprites {

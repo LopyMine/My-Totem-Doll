@@ -3,12 +3,17 @@ package net.lopymine.mtd.yacl.custom.controller.totem;
 import dev.isxander.yacl3.api.utils.Dimension;
 import dev.isxander.yacl3.gui.YACLScreen;
 import dev.isxander.yacl3.gui.controllers.ControllerWidget;
-import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.utils.DrawUtils;
-import net.lopymine.mtd.yacl.custom.screen.TotemDollModelSelectionScreen;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.*;
+
+import net.lopymine.mtd.MyTotemDoll;
+import net.lopymine.mtd.yacl.custom.screen.TotemDollModelSelectionScreen;
 
 public class TotemDollModelControllerElement extends ControllerWidget<TotemDollModelController> {
 

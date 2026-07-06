@@ -1,8 +1,10 @@
 package net.lopymine.mtd.extension;
 
 import dev.isxander.yacl3.api.*;
-import java.util.*;
+
 import net.lopymine.mtd.loader.MyTotemDollLoader;
+
+import java.util.*;
 
 public class YACLAPIExtension {
 

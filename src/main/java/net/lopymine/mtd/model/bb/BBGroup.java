@@ -1,14 +1,18 @@
 package net.lopymine.mtd.model.bb;
 
+import lombok.*;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.core.UUIDUtil;
+
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.*;
-import lombok.*;
+
 import net.lopymine.mtd.config.other.vector.Vec3f;
 import net.lopymine.mtd.utils.CodecUtils;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.core.UUIDUtil;
+
+import java.util.*;
+
 import static net.lopymine.mtd.utils.CodecUtils.option;
 
 @Setter

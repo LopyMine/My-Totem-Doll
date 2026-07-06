@@ -1,11 +1,15 @@
 package net.lopymine.mtd.config.totem;
 
-import com.mojang.serialization.Codec;
 import lombok.Getter;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.*;
+
+import com.mojang.serialization.Codec;
+
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.config.other.EnumWithText;
-import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.util.StringRepresentable.EnumCodec;
 import org.jetbrains.annotations.Nullable;
 
 @Getter
@@ -14,7 +18,11 @@ public enum TotemDollArmsType implements StringRepresentable, EnumWithText {
 	WIDE,
 	SLIM;
 
-	public static final Codec<TotemDollArmsType> CODEC = StringRepresentable.fromEnum(TotemDollArmsType::values);
+	public static final EnumCodec<TotemDollArmsType> CODEC = StringRepresentable.fromEnum(TotemDollArmsType::values);
+
+	public Component getText() {
+		return MyTotemDoll.text("modmenu.option.standard_doll_model_arms_type.%s".formatted(this.getSerializedName()));
+	}
 
 	public static TotemDollArmsType of(boolean slim) {
 		return slim ? SLIM : WIDE;
@@ -25,10 +33,6 @@ public enum TotemDollArmsType implements StringRepresentable, EnumWithText {
 			return WIDE;
 		}
 		return s.equals("slim") ? SLIM : WIDE;
-	}
-
-	public Component getText() {
-		return MyTotemDoll.text("modmenu.option.standard_doll_model_arms_type.%s".formatted(this.getSerializedName()));
 	}
 
 	@Override

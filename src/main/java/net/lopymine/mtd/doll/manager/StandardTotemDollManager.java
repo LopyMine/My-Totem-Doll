@@ -1,18 +1,23 @@
 package net.lopymine.mtd.doll.manager;
 
 import com.mojang.blaze3d.platform.NativeImage;
-import java.io.InputStream;
-import java.nio.file.*;
-import java.util.concurrent.CompletableFuture;
-import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.atlas.manager.MyTotemDollAtlasSpriteManager;
+import net.minecraft.client.renderer.texture.*;
+import net.minecraft.resources.ResourceLocation;
+import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.client.MyTotemDollClient;
+
+
 import net.lopymine.mtd.config.MyTotemDollConfig;
-import net.lopymine.mtd.config.totem.TotemDollSkinType;
+import net.lopymine.mtd.config.totem.*;
 import net.lopymine.mtd.doll.data.*;
 import net.lopymine.mtd.skin.provider.extended.MojangSkinProvider;
 import net.lopymine.mtd.utils.texture.*;
-import net.minecraft.resources.ResourceLocation;
+
+
+import java.io.InputStream;
+import java.nio.file.*;
+import java.util.concurrent.CompletableFuture;
 import org.jetbrains.annotations.*;
 
 public class StandardTotemDollManager {
@@ -77,9 +82,8 @@ public class StandardTotemDollManager {
 
 		CompletableFuture.runAsync(() -> {
 			ResourceLocation id = MyTotemDoll.getDollTextureId("file/%s".formatted(Math.abs(data.hashCode())));
-			String path = data.endsWith("\"") && data.startsWith("\"") ? data.substring(1, data.length()-1) : data;
 
-			try (InputStream inputStream = Files.newInputStream(Path.of(path))) {
+			try (InputStream inputStream = Files.newInputStream(Path.of(data))) {
 				NativeImage nativeImage = NativeImage.read(inputStream);
 
 				MyTotemDollAtlasSpriteManager.registerSpecialSkinSprite(id, nativeImage, true, (sprite) -> {

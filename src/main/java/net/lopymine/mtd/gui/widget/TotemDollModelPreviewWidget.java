@@ -1,20 +1,24 @@
 package net.lopymine.mtd.gui.widget;
 
 import lombok.*;
-import net.lopymine.mtd.MyTotemDoll;
-import net.lopymine.mtd.doll.data.TotemDollData;
-import net.lopymine.mtd.doll.manager.StandardTotemDollManager;
-import net.lopymine.mtd.doll.renderer.TotemDollRenderer;
-import net.lopymine.mtd.model.base.MModel;
-import net.lopymine.mtd.model.bb.manager.BlockBenchModelManager;
 import net.lopymine.mtd.utils.DrawUtils;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.*;
-import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.*;
+
+import net.lopymine.mtd.MyTotemDoll;
+import net.lopymine.mtd.doll.data.TotemDollData;
+import net.lopymine.mtd.doll.renderer.TotemDollRenderer;
+import net.lopymine.mtd.doll.manager.StandardTotemDollManager;
+import net.lopymine.mtd.model.base.MModel;
+import net.lopymine.mtd.model.bb.manager.BlockBenchModelManager;
 
 @Getter
 @Setter
@@ -35,7 +39,7 @@ public class TotemDollModelPreviewWidget extends AbstractWidget {
 
 	@Override
 	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		context.enableScissor(this.getX(), this.getY(), (this.getX() + this.getWidth()), this.getY() + this.getHeight());
+		context.enableScissor(this.getX(), this.getY(), (this.getX() + this.getWidth()), (int) (this.getY() + this.getHeight()));
 		if (this.loading) {
 			this.renderLoadingText(context);
 		} else {
@@ -56,7 +60,7 @@ public class TotemDollModelPreviewWidget extends AbstractWidget {
 	}
 
 	public void updateModel(ResourceLocation id) {
-		this.loading                 = true;
+		this.loading = true;
 		this.failedLoadingStatusCode = 0;
 		BlockBenchModelManager.getModelAsyncAsResponse(id, (response) -> {
 			MModel value = response.value();
@@ -76,9 +80,9 @@ public class TotemDollModelPreviewWidget extends AbstractWidget {
 	private Component getLoadingText(long tick) {
 		if (this.failedLoadingStatusCode == 100) {
 			return MyTotemDoll.text("text.loading.failed.to_load");
-		} else if (this.failedLoadingStatusCode == 102) {
+		} else if (this.failedLoadingStatusCode == 102){
 			return MyTotemDoll.text("text.loading.failed.unsupported_format");
-		} else if (this.failedLoadingStatusCode > 101 && this.failedLoadingStatusCode < 104) {
+		}  else if (this.failedLoadingStatusCode > 101 && this.failedLoadingStatusCode < 104){
 			return MyTotemDoll.text("text.loading.failed.wrong_metadata");
 		}
 

@@ -3,9 +3,10 @@ package net.lopymine.mtd.doll.data;
 import lombok.*;
 import net.lopymine.mtd.atlas.*;
 import net.lopymine.mtd.atlas.manager.*;
-import net.lopymine.mtd.config.totem.TotemDollArmsType;
-import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.resources.ResourceLocation;
+
+import net.lopymine.mtd.config.totem.TotemDollArmsType;
+
 import org.jetbrains.annotations.*;
 import static net.lopymine.mtd.atlas.manager.MyTotemDollAtlasSpriteManager.ELYTRA_SPRITE;
 import static net.lopymine.mtd.atlas.manager.MyTotemDollAtlasSpriteManager.STEVE_SKIN_SPRITE;
@@ -40,13 +41,6 @@ public class TotemDollSprites {
 		return new TotemDollSprites(null, null, null, TotemDollArmsType.WIDE);
 	}
 
-	public static TotemDollSprites of(net.minecraft.client.player.AbstractClientPlayer player) {
-		return of(player.getSkin());
-	}
-
-	public static TotemDollSprites of(net.minecraft.client.resources.PlayerSkin skinTextures) {
-		return of(skinTextures.texture(), skinTextures.capeTexture(), skinTextures.elytraTexture(), skinTextures.model() == PlayerSkin.Model.SLIM, true);
-	}
 
 	public static TotemDollSprites of(ResourceLocation skinTexture, ResourceLocation capeTexture, ResourceLocation elytraTexture, boolean slim, boolean remapCape) {
 		TotemDollSprites totemDollSprites = new TotemDollSprites(null, null, null, TotemDollArmsType.of(slim));
@@ -77,7 +71,7 @@ public class TotemDollSprites {
 	}
 
 	public void setStandardArmsType(TotemDollArmsType standardArmsType) {
-		this.armsType         = standardArmsType;
+		this.armsType = standardArmsType;
 		this.standardArmsType = standardArmsType;
 	}
 

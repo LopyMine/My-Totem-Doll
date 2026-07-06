@@ -1,7 +1,7 @@
 package net.lopymine.mtd.extension;
 
-import com.mojang.math.Axis;
 import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.math.Axis;
 
 public class DrawContextExtension {
 

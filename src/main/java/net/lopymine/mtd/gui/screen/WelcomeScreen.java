@@ -1,5 +1,16 @@
 package net.lopymine.mtd.gui.screen;
 
+import net.lopymine.mtd.utils.texture.PlayerSkinUtils;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.MultiLineLabel;
+import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.screens.*;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.client.renderer.PanoramaRenderer;
+import net.minecraft.resources.ResourceLocation;
+
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.config.MyTotemDollConfig;
 import net.lopymine.mtd.doll.model.TotemDollModel;
@@ -7,13 +18,9 @@ import net.lopymine.mtd.gui.*;
 import net.lopymine.mtd.gui.widget.TotemDollModelPreviewWidget;
 import net.lopymine.mtd.gui.widget.preview.WelcomeTotemDollModelPreviewWidget;
 import net.lopymine.mtd.utils.DrawUtils;
-import net.lopymine.mtd.utils.texture.PlayerSkinUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.MultiLineLabel;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.resources.ResourceLocation;
+
 import org.jetbrains.annotations.NotNull;
+
 
 
 public class WelcomeScreen extends Screen {
@@ -26,10 +33,12 @@ public class WelcomeScreen extends Screen {
 	private TotemDollModelPreviewWidget secondDollPreviewWidget;
 	private MultiLineLabel text;
 
+	private final PanoramaRenderer backgroundRenderer;
 
 	public WelcomeScreen(Runnable onClose) {
 		super(MyTotemDoll.text("welcome_screen.title"));
 		this.onClose = onClose;
+		this.backgroundRenderer = new PanoramaRenderer(TitleScreen.CUBE_MAP);
 	}
 
 	@Override
@@ -49,10 +58,10 @@ public class WelcomeScreen extends Screen {
 		int previewX = (screenWidth - (size * 2) - offset) / 2;
 
 		Area previewArea = new Area().size(size, size).pos(previewX, previewY);
-		this.firstDollArea  = previewArea.copy();
+		this.firstDollArea = previewArea.copy();
 		this.secondDollArea = previewArea.copy().x(previewX + size + offset);
 
-		this.firstDollPreviewWidget  = this.addWidget(createWelcomeModelPreviewWidget(this.firstDollArea, TotemDollModel.THREE_D_MODEL_id));
+		this.firstDollPreviewWidget = this.addWidget(createWelcomeModelPreviewWidget(this.firstDollArea, TotemDollModel.THREE_D_MODEL_id));
 		this.secondDollPreviewWidget = this.addWidget(createWelcomeModelPreviewWidget(this.secondDollArea, TotemDollModel.TWO_D_MODEL_ID));
 
 		if (this.firstDollArea.getX() < this.textArea.getX()) {
@@ -79,6 +88,8 @@ public class WelcomeScreen extends Screen {
 	public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		super.render(context, mouseX, mouseY, delta);
 
+		this.backgroundRenderer.render(delta, 1.0F);
+		context.fill(0, 0, this.width, this.height, -1877995504);
 
 		BackgroundRenderer.drawTransparencyWidgetBackground(context, this.textArea.getX(), this.textArea.getY(), this.textArea.getWidth(), this.textArea.getHeight(), true, false);
 		this.text.renderCentered(context, this.textArea.getX() + (this.textArea.getWidth() / 2), this.textArea.getY() + 5, 9, -1);

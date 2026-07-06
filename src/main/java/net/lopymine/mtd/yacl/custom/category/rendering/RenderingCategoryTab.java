@@ -2,20 +2,28 @@ package net.lopymine.mtd.yacl.custom.category.rendering;
 
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.utils.*;
+import dev.isxander.yacl3.gui.OptionListWidget;
 import dev.isxander.yacl3.gui.*;
-import dev.isxander.yacl3.gui.tab.TabExt;
-import java.util.function.Consumer;
+import dev.isxander.yacl3.gui.tab.*;
 import lombok.experimental.ExtensionMethod;
 import net.lopymine.mtd.extension.DrawContextExtension;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.gui.components.*;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.*;
+
 import net.lopymine.mtd.utils.*;
 import net.lopymine.mtd.yacl.custom.TransparencySprites;
 import net.lopymine.mtd.yacl.custom.screen.MyTotemDollYACLScreen;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.*;
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.navigation.ScreenRectangle;
-import net.minecraft.network.chat.*;
+
+import java.util.function.Consumer;
 import org.jetbrains.annotations.Nullable;
 
 @ExtensionMethod(DrawContextExtension.class)
@@ -28,7 +36,7 @@ public class RenderingCategoryTab implements TabExt {
 	private final Tooltip tooltip;
 	private final SearchFieldWidget searchField;
 	private final ScreenRectangle rightPaneDim;
-	private WidgetAndType<OptionListWidget> optionList;
+	public ListHolderWidget<OptionListWidget> optionList;
 
 	public RenderingCategoryTab(YACLScreen screen, ConfigCategory category, ScreenRectangle tabArea) {
 		if (!(screen instanceof MyTotemDollYACLScreen yaclScreen)) {
@@ -71,19 +79,13 @@ public class RenderingCategoryTab implements TabExt {
 				paddedWidth - 2, 18,
 				Component.translatable("gui.recipebook.search_hint"),
 				Component.translatable("gui.recipebook.search_hint"),
-				(searchQuery) -> this.optionList.getType().updateSearchQuery(searchQuery)
+				searchQuery -> optionList.getList().updateSearchQuery(searchQuery)
 		);
 
-		this.optionList = YACLSelectionList.asWidget(new OptionListWidget(
-				screen,
-				category,
-				Minecraft.getInstance(),
-				0,
-				0,
-				screen.width / 3 * 2 + 1,
-				screen.height,
-				(desc) -> {}
-		));
+		this.optionList = new ListHolderWidget<>(
+				() -> new ScreenRectangle(tabArea.position(), tabArea.width() / 3 * 2 - 2, tabArea.height()),
+				new OptionListWidget(screen, category, screen.minecraft, 0, 0, screen.width / 3 * 2 + 1, screen.height, desc -> {})
+		);
 
 		updateButtons();
 	}
@@ -95,7 +97,7 @@ public class RenderingCategoryTab implements TabExt {
 
 	@Override
 	public void visitChildren(Consumer<AbstractWidget> consumer) {
-		consumer.accept(this.optionList.getWidget());
+		consumer.accept(this.optionList);
 		consumer.accept(this.saveFinishedButton);
 		consumer.accept(this.cancelResetButton);
 		consumer.accept(this.undoButton);
@@ -137,11 +139,6 @@ public class RenderingCategoryTab implements TabExt {
 
 	@Override
 	public void doLayout(ScreenRectangle area) {
-		ScreenRectangle rect = new ScreenRectangle(area.position(), area.width() / 3 * 2, area.height());
-		this.optionList.getType().setX(rect.left());
-		this.optionList.getType().setY(rect.top() + 1);
-		this.optionList.getType().setWidth(rect.width());
-		this.optionList.getType().setHeight(rect.height() - 1);
 	}
 
 	@Nullable

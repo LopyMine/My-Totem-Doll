@@ -2,20 +2,27 @@ package net.lopymine.mtd.yacl.custom.renderer;
 
 import dev.isxander.yacl3.gui.image.ImageRenderer;
 import lombok.experimental.ExtensionMethod;
+import net.lopymine.mtd.extension.DrawContextExtension;
+import net.lopymine.mtd.utils.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+
 import net.lopymine.mtd.MyTotemDoll;
+import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.config.MyTotemDollConfig;
 import net.lopymine.mtd.config.totem.TotemDollSkinType;
 import net.lopymine.mtd.doll.data.TotemDollData;
-import net.lopymine.mtd.doll.manager.StandardTotemDollManager;
 import net.lopymine.mtd.doll.renderer.TotemDollRenderer;
-import net.lopymine.mtd.extension.DrawContextExtension;
+import net.lopymine.mtd.doll.manager.StandardTotemDollManager;
 import net.lopymine.mtd.gui.BackgroundRenderer;
-import net.lopymine.mtd.utils.*;
 import net.lopymine.mtd.utils.plugin.TotemDollPlugin;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.*;
+
 import net.minecraft.client.gui.components.MultiLineLabel;
 import org.jetbrains.annotations.Nullable;
+
 
 
 @ExtensionMethod(DrawContextExtension.class)

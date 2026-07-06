@@ -1,24 +1,31 @@
 package net.lopymine.mtd.gui.widget.tag;
 
-import java.util.*;
-import java.util.stream.*;
 import lombok.experimental.ExtensionMethod;
-import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.doll.data.TotemDollData;
-import net.lopymine.mtd.extension.ItemStackExtension;
 import net.lopymine.mtd.gui.widget.list.AbstractVersionedEntryListWidget;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.ContainerObjectSelectionList;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.*;
+import net.minecraft.client.gui.components.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.*;
+import net.minecraft.util.*;
+
+import net.lopymine.mtd.MyTotemDoll;
+import net.lopymine.mtd.extension.ItemStackExtension;
 import net.lopymine.mtd.gui.widget.tag.TagMenuWidget.TagRow;
 import net.lopymine.mtd.tag.*;
 import net.lopymine.mtd.tag.manager.TagsManager;
 import net.lopymine.mtd.utils.*;
 import net.lopymine.mtd.utils.tooltip.IRequestableTooltipScreen;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.*;
-import net.minecraft.client.gui.components.ContainerObjectSelectionList;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
+import java.util.*;
+import java.util.stream.*;
 import org.jetbrains.annotations.*;
 
 @ExtensionMethod(ItemStackExtension.class)
@@ -59,6 +66,75 @@ public class TagMenuWidget extends AbstractVersionedEntryListWidget<TagRow> {
 			}
 			this.addEntry(new TagRow(tagRowWidget));
 		}
+	}
+
+	@Override
+	public int getRowLeft() {
+		return this.getX() + this.width / 2 - this.getRowWidth() / 2;
+	}
+
+	@Override
+	public int getRowWidth() {
+		return 30;
+	}
+
+	@Override
+	protected void drawMenuListBackground(GuiGraphics context) {
+		//DrawUtils.drawTexture(context, BACKGROUND, this.getX(), this.getY(), 0, 0, 50, 166, 50, 166);
+	}
+
+	@Override
+	public boolean mouseScrolled(double mouseX, double mouseY,  double verticalAmount) {
+		TagRow entry = this.getEntryAtPosition(mouseX, mouseY);
+		if (entry != null && entry.mouseScrolled(mouseX, mouseY,  verticalAmount)) {
+			return true;
+		}
+		return super.mouseScrolled(mouseX, mouseY,  verticalAmount);
+	}
+
+	public void updateButtons(ItemStack stack) {
+		String tags = getTags(stack);
+
+		for (TagButtonWidget widget : this.getAllTagButtons()) {
+			if (tags != null) {
+				widget.setPressed(tags.contains(widget.getText()));
+			} else {
+				widget.setPressed(false);
+			}
+		}
+	}
+
+	public void updateCustomModelTagButtons(ItemStack stack) {
+		this.updateCustomModelTagButtonsData(stack);
+	}
+
+	private void updateCustomModelTagButtonsData(ItemStack stack) {
+		TotemDollData totemDollData = stack.getTotemDollData();
+		for (CustomModelTagButtonWidget widget : this.getCustomModelTagButtons()) {
+			widget.updateData(totemDollData);
+		}
+	}
+
+	private List<TagButtonWidget> getAllTagButtons() {
+		return this.children()
+				.stream()
+				.map(TagRow::children)
+				.flatMap(Collection::stream)
+				.collect(Collectors.toList());
+	}
+
+	private List<CustomModelTagButtonWidget> getCustomModelTagButtons() {
+		return this.children()
+				.stream()
+				.map(TagRow::children)
+				.flatMap(Collection::stream)
+				.flatMap((widget) -> {
+					if (widget instanceof CustomModelTagButtonWidget tagButtonWidget) {
+						return Stream.of(tagButtonWidget);
+					}
+					return Stream.empty();
+				})
+				.collect(Collectors.toList());
 	}
 
 	private static @NotNull TagButtonWidget createTagButtonWidget(Renamer renamer, Tag tag) {
@@ -109,75 +185,6 @@ public class TagMenuWidget extends AbstractVersionedEntryListWidget<TagRow> {
 		}
 		String customName = text.getString();
 		return TagsManager.getTagsFromName(customName);
-	}
-
-	@Override
-	public int getRowLeft() {
-		return this.getX() + this.width / 2 - this.getRowWidth() / 2;
-	}
-
-	@Override
-	public int getRowWidth() {
-		return 30;
-	}
-
-	@Override
-	protected void renderListBackground(GuiGraphics context) {
-		//DrawUtils.drawTexture(context, BACKGROUND, this.getX(), this.getY(), 0, 0, 50, 166, 50, 166);
-	}
-
-	@Override
-	public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
-		TagRow entry = this.getEntryAtPosition(mouseX, mouseY);
-		if (entry != null && entry.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)) {
-			return true;
-		}
-		return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
-	}
-
-	public void updateButtons(ItemStack stack) {
-		String tags = getTags(stack);
-
-		for (TagButtonWidget widget : this.getAllTagButtons()) {
-			if (tags != null) {
-				widget.setPressed(tags.contains(widget.getText()));
-			} else {
-				widget.setPressed(false);
-			}
-		}
-	}
-
-	public void updateCustomModelTagButtons(ItemStack stack) {
-		this.updateCustomModelTagButtonsData(stack);
-	}
-
-	private void updateCustomModelTagButtonsData(ItemStack stack) {
-		TotemDollData totemDollData = stack.getTotemDollData();
-		for (CustomModelTagButtonWidget widget : this.getCustomModelTagButtons()) {
-			widget.updateData(totemDollData);
-		}
-	}
-
-	private List<TagButtonWidget> getAllTagButtons() {
-		return this.children()
-				.stream()
-				.map(TagRow::children)
-				.flatMap(Collection::stream)
-				.collect(Collectors.toList());
-	}
-
-	private List<CustomModelTagButtonWidget> getCustomModelTagButtons() {
-		return this.children()
-				.stream()
-				.map(TagRow::children)
-				.flatMap(Collection::stream)
-				.flatMap((widget) -> {
-					if (widget instanceof CustomModelTagButtonWidget tagButtonWidget) {
-						return Stream.of(tagButtonWidget);
-					}
-					return Stream.empty();
-				})
-				.collect(Collectors.toList());
 	}
 
 	@Override

@@ -1,14 +1,17 @@
 package net.lopymine.mtd.modmenu;
 
 import com.google.common.collect.Sets;
-import java.net.*;
-import java.util.*;
-import net.lopymine.mtd.client.MyTotemDollClient;
-import net.lopymine.mtd.utils.ModMenuUtils;
-import net.minecraft.*;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.*;
+import net.minecraft.client.gui.screens.ConfirmScreen;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.Util;
+import net.lopymine.mtd.client.MyTotemDollClient;
+import net.lopymine.mtd.utils.ModMenuUtils;
+import java.net.*;
+import java.util.*;
 import org.jetbrains.annotations.*;
 
 public class NoConfigLibraryScreen {

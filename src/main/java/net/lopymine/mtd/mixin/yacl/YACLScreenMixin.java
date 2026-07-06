@@ -1,13 +1,15 @@
 package net.lopymine.mtd.mixin.yacl;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import dev.isxander.yacl3.api.YetAnotherConfigLib;
+import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.gui.YACLScreen;
-import net.lopymine.mtd.yacl.YACLConfigurationScreen;
+
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.*;
-import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.*;
+
+import net.lopymine.mtd.yacl.YACLConfigurationScreen;
 
 @Mixin(YACLScreen.class)
 public abstract class YACLScreenMixin extends Screen {

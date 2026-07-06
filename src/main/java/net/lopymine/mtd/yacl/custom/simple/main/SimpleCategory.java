@@ -2,9 +2,9 @@ package net.lopymine.mtd.yacl.custom.simple.main;
 
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.ConfigCategory.Builder;
+import net.minecraft.network.chat.Component;
 import net.lopymine.mtd.utils.ModMenuUtils;
 import net.lopymine.mtd.yacl.custom.category.better.BetterConfigCategory;
-import net.minecraft.network.chat.Component;
 
 public class SimpleCategory {
 

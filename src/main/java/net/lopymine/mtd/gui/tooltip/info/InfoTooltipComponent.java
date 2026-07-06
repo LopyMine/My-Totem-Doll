@@ -1,13 +1,19 @@
 package net.lopymine.mtd.gui.tooltip.info;
 
-import net.lopymine.mtd.MyTotemDoll;
-import net.lopymine.mtd.utils.DrawUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.MultiLineLabel;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
+
+import net.lopymine.mtd.MyTotemDoll;
+import net.lopymine.mtd.utils.*;
+
 
 
 public class InfoTooltipComponent implements ClientTooltipComponent {
@@ -20,7 +26,7 @@ public class InfoTooltipComponent implements ClientTooltipComponent {
 	public InfoTooltipComponent(String key, int color) {
 		this.title = MyTotemDoll.text("%s.title".formatted(key));
 		this.title.setStyle(this.title.getStyle().withColor(color));
-		this.text = MultiLineLabel.create(Minecraft.getInstance().font, MyTotemDoll.text("%s.text".formatted(key)), 140);
+		this.text  = MultiLineLabel.create(Minecraft.getInstance().font, MyTotemDoll.text("%s.text".formatted(key)), 140);
 	}
 
 	@Override

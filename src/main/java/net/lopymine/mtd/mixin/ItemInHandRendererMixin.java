@@ -2,17 +2,23 @@ package net.lopymine.mtd.mixin;
 
 
 import com.llamalad7.mixinextras.injector.wrapoperation.*;
-import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.experimental.ExtensionMethod;
-import net.lopymine.mtd.extension.ItemStackExtension;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.ItemInHandRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.*;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.*;
+
+import net.lopymine.mtd.extension.ItemStackExtension;
+
+import net.minecraft.world.item.ItemDisplayContext;
 
 @ExtensionMethod(ItemStackExtension.class)
 @Mixin(ItemInHandRenderer.class)

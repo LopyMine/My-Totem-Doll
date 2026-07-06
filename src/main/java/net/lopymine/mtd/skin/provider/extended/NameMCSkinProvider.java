@@ -1,11 +1,12 @@
 package net.lopymine.mtd.skin.provider.extended;
 
+import net.minecraft.resources.ResourceLocation;
+
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.api.*;
 import net.lopymine.mtd.doll.data.TotemDollData;
 import net.lopymine.mtd.skin.data.ParsedSkinData;
 import net.lopymine.mtd.skin.provider.StandardSkinProvider;
-import net.minecraft.resources.ResourceLocation;
 
 public class NameMCSkinProvider extends StandardSkinProvider {
 
@@ -36,7 +37,7 @@ public class NameMCSkinProvider extends StandardSkinProvider {
 
 	@Override
 	public boolean canProcess(String value) {
-		if (value == null || value.length() != 16) {
+		if (value == null || value.length() != 16){
 			return false;
 		}
 

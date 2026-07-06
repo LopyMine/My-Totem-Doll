@@ -2,33 +2,45 @@ package net.lopymine.mtd.yacl.custom.screen;
 
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.utils.*;
-import java.util.*;
-import java.util.Map.Entry;
-import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.config.MyTotemDollConfig;
 import net.lopymine.mtd.doll.model.TotemDollModel;
+import net.lopymine.mtd.utils.DrawUtils;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.components.*;
+import net.minecraft.client.gui.components.Button.OnPress;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.*;
+import net.minecraft.util.*;
+
+import net.lopymine.mtd.MyTotemDoll;
+import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.gui.BackgroundRenderer;
 import net.lopymine.mtd.gui.widget.TotemDollModelPreviewWidget;
 import net.lopymine.mtd.gui.widget.button.*;
 import net.lopymine.mtd.pack.TotemDollModelFinder;
-import net.lopymine.mtd.utils.DrawUtils;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.*;
-import net.minecraft.client.gui.components.*;
-import net.minecraft.client.gui.components.Button.OnPress;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.*;
-import net.minecraft.resources.ResourceLocation;
+
+import java.util.*;
+import java.util.Map.Entry;
 import org.jetbrains.annotations.*;
 
 public class TotemDollModelSelectionScreen extends Screen {
 
 	private final Option<ResourceLocation> option;
 	private final Screen parent;
-	private final List<Dimension<Integer>> dimensions = new ArrayList<>();
+
 	@SuppressWarnings("all")
 	private MutableDimension<Integer> modelPanelDimension, listPanelDimension, modelPathDimension, titleDimension, listTitleDimension;
+
+	private final List<Dimension<Integer>> dimensions = new ArrayList<>();
+
 	private TotemDollModelPreviewWidget totemDollModelPreviewWidget;
 	private ButtonListWidget listWidget;
 
@@ -45,24 +57,16 @@ public class TotemDollModelSelectionScreen extends Screen {
 		this.parent = parent;
 	}
 
-	private static @NotNull String getModelName(String path) {
-		int i = path.lastIndexOf('/');
-		if (i != -1) {
-			return path.substring(i + 1);
-		}
-		return path;
-	}
-
 	@Override
 	protected void init() {
 		int o = 10;
 		int h = 20;
 
 		this.modelPanelDimension = this.getModelPanelDimension(o);
-		this.listTitleDimension  = this.getListTitleDimension(o, h);
+		this.listTitleDimension = this.getListTitleDimension(o, h);
 		this.listPanelDimension  = this.getListPanelDimension(this.listTitleDimension, o, h);
-		this.modelPathDimension  = this.getModelPathDimension(this.modelPanelDimension, this.listPanelDimension, o, h);
-		this.titleDimension      = this.getTitleDimension(o, h, this.modelPanelDimension);
+		this.modelPathDimension = this.getModelPathDimension(this.modelPanelDimension, this.listPanelDimension, o, h);
+		this.titleDimension     = this.getTitleDimension(o, h, this.modelPanelDimension);
 		MutableDimension<Integer> textFieldDimension = this.getTextFieldDimension(h, o);
 		MutableDimension<Integer> buttonPanelDimension = this.getButtonPanelDimension(o, h, this.modelPathDimension, textFieldDimension);
 
@@ -125,6 +129,14 @@ public class TotemDollModelSelectionScreen extends Screen {
 		return this.listPanelDimension.clone().setHeight(h).setY(this.listPanelDimension.yLimit() + (o / 2));
 	}
 
+	private static @NotNull String getModelName(String path) {
+		int i = path.lastIndexOf('/');
+		if (i != -1) {
+			return path.substring(i + 1);
+		}
+		return path;
+	}
+
 	private void close(boolean applyCurrent) {
 		if (applyCurrent && this.selectedModelId != null) {
 			if (this.totemDollModelPreviewWidget.getFailedLoadingStatusCode() != 0) {
@@ -142,8 +154,8 @@ public class TotemDollModelSelectionScreen extends Screen {
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.renderBackground(context, mouseX, mouseY, delta);
+	public void renderBackground(GuiGraphics context ) {
+		super.renderBackground(context);
 
 		for (Dimension<Integer> dimension : this.dimensions) {
 			BackgroundRenderer.drawTransparencyBackground(context, dimension.x(), dimension.y(), dimension.width(), dimension.height(), true);

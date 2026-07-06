@@ -1,22 +1,26 @@
 package net.lopymine.mtd.utils;
 
 import com.google.gson.*;
+
 import com.mojang.serialization.*;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import java.util.*;
 import java.util.function.*;
 import net.lopymine.mtd.MyTotemDoll;
+
+import static net.lopymine.mtd.client.MyTotemDollClient.LOGGER;
 
 @SuppressWarnings("unused")
 public final class CodecUtils {
 
 	public static <A> Codec<A> recursive(String name, Function<Codec<A>, Codec<A>> wrapped) {
-		return Codec.recursive(name, wrapped);
+		return new RecursiveCodec<>(name, wrapped);
 	}
 
 	public static <A> A parseNewInstanceHacky(Codec<A> codec) {
 		try {
-			return codec.decode(JsonOps.INSTANCE, JsonParser.parseString("{}")).getOrThrow().getFirst();
+			return codec.decode(JsonOps.INSTANCE, JsonParser.parseString("{}")).getOrThrow(false, MyTotemDoll.LOGGER::error).getFirst();
 		} catch (Exception e) {
 			throw new IllegalArgumentException("Failed to create new instance of config in the %s mod".formatted(MyTotemDoll.MOD_NAME), e);
 		}
@@ -45,7 +49,7 @@ public final class CodecUtils {
 
 	public static <T> void decode(Codec<T> codec, JsonElement o, Consumer<T> consumer) {
 		try {
-			T value = codec.decode(JsonOps.INSTANCE, o).getOrThrow().getFirst();
+			T value = codec.decode(JsonOps.INSTANCE, o).getOrThrow(false, LOGGER::error).getFirst();
 			consumer.accept(value);
 		} catch (Exception e) {
 			MyTotemDoll.LOGGER.warn("Failed to decode JsonElement:", e);
@@ -55,7 +59,7 @@ public final class CodecUtils {
 	public static <T> T decode(String id, Codec<T> codec, JsonObject o) {
 		if (o.has(id)) {
 			try {
-				return codec.decode(JsonOps.INSTANCE, o.get(id)).getOrThrow().getFirst();
+				return codec.decode(JsonOps.INSTANCE, o.get(id)).getOrThrow(false, LOGGER::error).getFirst();
 			} catch (Exception e) {
 				MyTotemDoll.LOGGER.warn("Failed to decode \"%s\" from JsonObject:".formatted(id), e);
 			}
@@ -66,7 +70,7 @@ public final class CodecUtils {
 	public static <T> T decode(String id, T fallback, Codec<T> codec, JsonObject o) {
 		if (o.has(id)) {
 			try {
-				return codec.decode(JsonOps.INSTANCE, o.get(id)).getOrThrow().getFirst();
+				return codec.decode(JsonOps.INSTANCE, o.get(id)).getOrThrow(false, LOGGER::error).getFirst();
 			} catch (Exception e) {
 				MyTotemDoll.LOGGER.warn("Failed to decode \"%s\" from JsonObject:".formatted(id), e);
 			}

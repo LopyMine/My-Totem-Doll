@@ -1,6 +1,5 @@
 package net.lopymine.mtd.optimization;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.*;
 import lombok.experimental.ExtensionMethod;
 import net.lopymine.mtd.atlas.LockableAtlasTexture;
@@ -10,29 +9,37 @@ import net.lopymine.mtd.doll.data.*;
 import net.lopymine.mtd.doll.model.TotemDollModel;
 import net.lopymine.mtd.doll.renderer.*;
 import net.lopymine.mtd.extension.MatrixStackEntryExtension;
+import net.lopymine.mtd.utils.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.OutlineBufferSource;
 import org.jetbrains.annotations.Nullable;
+import org.joml.*;
 
 @ExtensionMethod(MatrixStackEntryExtension.class)
 public class TotemDollRenderRequestsCollector {
 
 	private static final TotemDollRenderRequestsCollector INSTANCE = new TotemDollRenderRequestsCollector();
-	private final PoseStack matrices = new PoseStack();
-	private final List<TotemDollRenderRequest> requests = new ArrayList<>();
-	private final TotemDollRenderProperties tempProperties = new TotemDollRenderProperties();
-	private TotemDollRenderRequestsCollector() {
-	}
 
 	public static TotemDollRenderRequestsCollector getInstance() {
 		return INSTANCE;
 	}
 
+	private final PoseStack matrices = new PoseStack();
+	private final List<TotemDollRenderRequest> requests = new ArrayList<>();
+	private final TotemDollRenderProperties tempProperties = new TotemDollRenderProperties();
+
+	private TotemDollRenderRequestsCollector() {
+
+	}
+
 	public void requestRender(PoseStack matrices, TotemDollData data, AbstractClientPlayer holdingPlayer, DollRenderContext context, int light, int overlay, int outlineColor, @Nullable MultiBufferSource provider) {
 		PoseStack.Pose entry = matrices.last();
-		this.requests.add(new TotemDollRenderRequest(entry.copy(), data, data.getRenderProperties().copy(), holdingPlayer, context, light, overlay, outlineColor, provider));
+		this.requests.add(new TotemDollRenderRequest( new PoseStack.Pose(new Matrix4f(entry.pose()), new Matrix3f(entry.normal())) , data, data.getRenderProperties().copy(), holdingPlayer, context, light, overlay, outlineColor, provider));
 	}
 
 	public void render() {

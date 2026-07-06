@@ -1,7 +1,10 @@
 package net.lopymine.mtd.tag;
 
 import lombok.*;
+import net.minecraft.network.chat.Component;
+
 import net.lopymine.mtd.doll.data.TotemDollData;
+
 import org.jetbrains.annotations.Nullable;
 
 @AllArgsConstructor(access = AccessLevel.PROTECTED)

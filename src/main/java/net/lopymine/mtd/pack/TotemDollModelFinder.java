@@ -1,9 +1,14 @@
 package net.lopymine.mtd.pack;
 
-import java.util.*;
-import net.lopymine.mtd.MyTotemDoll;
+import net.minecraft.server.packs.resources.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.*;
+
+import net.lopymine.mtd.MyTotemDoll;
+import net.lopymine.mtd.loader.MyTotemDollLoader;
+
+import java.util.*;
+import net.minecraft.server.packs.PackResources;
+import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 public class TotemDollModelFinder {
@@ -25,7 +30,7 @@ public class TotemDollModelFinder {
 		FOUNDED_TOTEM_MODELS.clear();
 		for (PackResources pack : list) {
 			String packId = pack.packId().replace("file/", "").replace("mod/", "");
-			if (packId.equals(MyTotemDoll.MOD_ID)) {
+			if (packId.equals(MyTotemDoll.MOD_ID) || MyTotemDollLoader.isModResourcePack(pack)) {
 				continue;
 			}
 			pack.listResources(PackType.CLIENT_RESOURCES, MyTotemDoll.MOD_ID, "dolls", (id, input) -> {

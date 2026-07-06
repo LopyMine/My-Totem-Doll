@@ -7,35 +7,32 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.*;
 import net.lopymine.mtd.atlas.*;
-import net.lopymine.mtd.atlas.stitch.OnSpriteUploaded;
+import net.lopymine.mtd.atlas.stitch.*;
 import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.utils.texture.PlayerSkinUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.AbstractTexture;
+import net.minecraft.client.renderer.texture.HttpTexture;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.*;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.*;
 
 public class MyTotemDollAtlasSpriteManager {
 
-	@NotNull
-	public static final AtlasSprite STEVE_SKIN_SPRITE = Objects.requireNonNull(AtlasSprite.of(ResourceLocation.fromNamespaceAndPath("minecraft", "textures/entity/player/wide/steve.png")));
-	@NotNull
-	public static final RemappedAtlasSprite ELYTRA_SPRITE = RemappedAtlasSprite.ofResource(Objects.requireNonNull(ResourceLocation.fromNamespaceAndPath("minecraft", "textures/entity/elytra.png")));
 	private static final AtlasSprite MISSING_SPRITE = AtlasSprite.of(MissingTextureAtlasSprite.create());
+
+	@NotNull
+	public static final AtlasSprite STEVE_SKIN_SPRITE = Objects.requireNonNull(AtlasSprite.of(ResourceLocation.tryBuild("minecraft", "textures/entity/player/wide/steve.png")));
+	@NotNull
+	public static final RemappedAtlasSprite ELYTRA_SPRITE = RemappedAtlasSprite.ofResource(Objects.requireNonNull(ResourceLocation.tryBuild("minecraft","textures/entity/elytra.png")));
+
 	private static final Map<Long, AtlasSprite> CONTENT_CACHED_SPECIAL_SKIN_SPRITES = new ConcurrentHashMap<>();
 	private static final Map<Long, AtlasSprite> CONTENT_CACHED_SPECIAL_REMAPPED_SPRITES = new ConcurrentHashMap<>();
 	private static final Map<ResourceLocation, AtlasSprite> DYNAMIC_SPRITES = new ConcurrentHashMap<>();
 
 	private static final AtomicReference<Set<AtlasSprite>> ATLAS_SPRITES = new AtomicReference<>(Set.of());
-
-	static {
-		MISSING_SPRITE.setClosable(false);
-		MISSING_SPRITE.setUnregisterAction(() -> handleSprite(MISSING_SPRITE, false));
-
-		STEVE_SKIN_SPRITE.setClosable(false);
-		STEVE_SKIN_SPRITE.setUnregisterAction(() -> handleSprite(STEVE_SKIN_SPRITE, false));
-	}
 
 	public static Set<AtlasSprite> getSprites() {
 		return ATLAS_SPRITES.get();
@@ -207,6 +204,14 @@ public class MyTotemDollAtlasSpriteManager {
 		registerDynamicSprite(STEVE_SKIN_SPRITE.getSpriteId(), false, null);
 
 		registerSpecialRemappedSprite(ELYTRA_SPRITE, false);
+	}
+
+	static {
+		MISSING_SPRITE.setClosable(false);
+		MISSING_SPRITE.setUnregisterAction(() -> handleSprite(MISSING_SPRITE, false));
+
+		STEVE_SKIN_SPRITE.setClosable(false);
+		STEVE_SKIN_SPRITE.setUnregisterAction(() -> handleSprite(STEVE_SKIN_SPRITE, false));
 	}
 
 	private interface SpriteFactory {

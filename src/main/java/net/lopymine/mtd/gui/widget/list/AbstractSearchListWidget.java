@@ -4,10 +4,13 @@ import java.util.*;
 import lombok.*;
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.utils.DrawUtils;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList.Entry;
 import net.minecraft.network.chat.MutableComponent;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.*;
 
 @Getter
 @Setter
@@ -24,7 +27,7 @@ public abstract class AbstractSearchListWidget<E extends Entry<E>> extends Abstr
 
 
 	@Override
-	protected void renderListBackground(GuiGraphics context) {
+	protected void drawMenuListBackground(GuiGraphics context) {
 		if (this.searching && this.children.isEmpty()) {
 			int a = (this.getWidth() - this.getRowWidth()) / 2;
 			DrawUtils.drawText(context, NOTHING_FOUND_TEXT, this.getX() + a, this.getY(), this.getWidth() - a, this.getHeight() + 4);

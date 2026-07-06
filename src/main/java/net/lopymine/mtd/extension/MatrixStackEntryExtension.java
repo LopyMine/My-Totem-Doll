@@ -7,7 +7,6 @@ public class MatrixStackEntryExtension {
 	public static void copyFrom(Pose entry, Pose anotherEntry) {
 		entry.pose().set(anotherEntry.pose());
 		entry.normal().set(anotherEntry.normal());
-		entry.trustedNormals = anotherEntry.trustedNormals;
 	}
 
 }

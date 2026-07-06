@@ -1,7 +1,7 @@
 package net.lopymine.mtd.gui.widget.button;
 
-import java.util.List;
 import lombok.Getter;
+import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Button.OnPress;
@@ -9,6 +9,8 @@ import net.minecraft.client.gui.components.ContainerObjectSelectionList.Entry;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.Component;
+
+import java.util.List;
 
 @Getter
 public class ButtonListEntryWidget extends Entry<ButtonListEntryWidget> {
@@ -34,8 +36,7 @@ public class ButtonListEntryWidget extends Entry<ButtonListEntryWidget> {
 		this.widget.setWidth(entryWidth);
 		this.widget.setX(x);
 
-		this.widget.setHeight(entryHeight);
-		this.widget.setY(y);
+		this.widget.setY(y + ((entryHeight - 20) / 2));
 		this.widget.render(context, mouseX, mouseY, tickDelta);
 	}
 

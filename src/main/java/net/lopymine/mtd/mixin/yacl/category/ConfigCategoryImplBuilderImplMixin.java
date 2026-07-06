@@ -4,11 +4,11 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.ConfigCategory.Builder;
 import dev.isxander.yacl3.impl.ConfigCategoryImpl;
+import org.spongepowered.asm.mixin.*;
+import org.spongepowered.asm.mixin.injection.At;
 import net.lopymine.mtd.utils.mixin.yacl.BetterYACLCategoryBuilder;
 import net.lopymine.mtd.yacl.custom.category.better.BetterConfigCategoryImpl;
 import net.lopymine.mtd.yacl.custom.category.rendering.RenderingConfigCategoryImpl;
-import org.spongepowered.asm.mixin.*;
-import org.spongepowered.asm.mixin.injection.At;
 
 @SuppressWarnings("UnstableApiUsage")
 @Mixin(ConfigCategoryImpl.BuilderImpl.class)

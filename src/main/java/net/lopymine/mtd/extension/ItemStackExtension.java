@@ -1,22 +1,34 @@
 package net.lopymine.mtd.extension;
 
-import net.lopymine.mtd.doll.data.TotemDollData;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
+import net.lopymine.mtd.doll.data.*;
 import net.lopymine.mtd.doll.manager.*;
 import net.lopymine.mtd.tag.manager.TagsManager;
 import net.lopymine.mtd.utils.mixin.*;
-import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
+
 import org.jetbrains.annotations.Nullable;
 
 public class ItemStackExtension {
 
 	@Nullable
 	public static Component getRealCustomName(ItemStack itemStack) {
-		if (itemStack.components == null) {
-			return null;
+		net.minecraft.nbt.CompoundTag nbtCompound = itemStack.getTagElement("display");
+		if (nbtCompound != null && nbtCompound.contains("Name", 8)) {
+			try {
+				Component text = net.minecraft.network.chat.Component.Serializer.fromJson(nbtCompound.getString("Name"));
+				if (text != null) {
+					return text;
+				}
+
+				nbtCompound.remove("Name");
+			} catch (Exception var3) {
+				nbtCompound.remove("Name");
+			}
 		}
-		return itemStack.components.get(net.minecraft.core.component.DataComponents.CUSTOM_NAME);
+
+		return null;
 	}
 
 	public static TotemDollData getTotemDollData(ItemStack stack) {

@@ -2,9 +2,13 @@ package net.lopymine.mtd.yacl.custom.screen;
 
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.utils.OptionUtils;
-import dev.isxander.yacl3.gui.YACLScreen;
+import dev.isxander.yacl3.gui.*;
 import lombok.Getter;
+import lombok.experimental.ExtensionMethod;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+
+import net.lopymine.mtd.MyTotemDoll;
 
 @Getter
 public class MyTotemDollYACLScreen extends YACLScreen {

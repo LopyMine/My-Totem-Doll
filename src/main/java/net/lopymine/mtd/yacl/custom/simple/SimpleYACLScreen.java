@@ -3,10 +3,10 @@ package net.lopymine.mtd.yacl.custom.simple;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.YetAnotherConfigLib.Builder;
 import dev.isxander.yacl3.gui.YACLScreen;
-import java.util.function.Consumer;
+import net.minecraft.client.gui.screens.Screen;
 import net.lopymine.mtd.utils.ModMenuUtils;
 import net.lopymine.mtd.utils.mixin.yacl.BetterYACLScreenBuilder;
-import net.minecraft.client.gui.screens.Screen;
+import java.util.function.Consumer;
 
 public class SimpleYACLScreen {
 

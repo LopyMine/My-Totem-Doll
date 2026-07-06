@@ -1,20 +1,27 @@
 package net.lopymine.mtd.gui.widget.tag;
 
-import java.util.Optional;
 import lombok.*;
+import net.lopymine.mtd.doll.data.*;
+import net.lopymine.mtd.model.base.MModel;
+import net.lopymine.mtd.utils.ScreenUtils;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+
+import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.config.MyTotemDollConfig;
-import net.lopymine.mtd.doll.data.TotemDollData;
 import net.lopymine.mtd.doll.manager.StandardTotemDollManager;
 import net.lopymine.mtd.doll.renderer.TotemDollRenderer;
 import net.lopymine.mtd.gui.tooltip.preview.TotemDollPreviewTooltipData;
 import net.lopymine.mtd.tag.*;
 import net.lopymine.mtd.tag.manager.TagsManager;
-import net.lopymine.mtd.utils.ScreenUtils;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
+
+import java.util.Optional;
 import org.jetbrains.annotations.Nullable;
 
 @Setter
@@ -31,7 +38,7 @@ public class CustomModelTagButtonWidget extends TagButtonWidget {
 	public CustomModelTagButtonWidget(Tag tag, int x, int y, TagPressAction pressAction) {
 		super(tag, x, y, pressAction);
 		this.model = Optional.ofNullable(TagsManager.getCustomModelIdsTags().get(tag.getTag())).map(CustomModelTag::getModelId).orElse(null);
-		this.data  = StandardTotemDollManager.getStandardDoll().copy();
+		this.data = StandardTotemDollManager.getStandardDoll().copy();
 	}
 
 	public void updateData(TotemDollData data) {
@@ -56,7 +63,7 @@ public class CustomModelTagButtonWidget extends TagButtonWidget {
 	@Override
 	protected void renderIcon(GuiGraphics context, int x, int y) {
 		context.enableScissor(this.getX() + 1, this.getY() + 1, this.getX() + this.getWidth() - 1, this.getY() + this.getHeight() - 1);
-		TotemDollRenderer.renderPreview(context, x, y, this.getWidth(), this.getHeight(), Math.min(this.getWidth(), this.getHeight()), this.getData());
+		TotemDollRenderer.renderPreview(context, x, y, this.getWidth(), this.getHeight(),  Math.min(this.getWidth(), this.getHeight()), this.getData());
 		context.disableScissor();
 	}
 
@@ -74,7 +81,7 @@ public class CustomModelTagButtonWidget extends TagButtonWidget {
 	}
 
 	@Override
-	public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+	public boolean mouseScrolled(double mouseX, double mouseY,  double verticalAmount) {
 		if (!this.isMouseOver(mouseX, mouseY)) {
 			return false;
 		}

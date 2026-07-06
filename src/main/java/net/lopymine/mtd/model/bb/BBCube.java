@@ -1,16 +1,25 @@
 package net.lopymine.mtd.model.bb;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.*;
+import com.google.common.collect.*;
 import lombok.*;
 import lombok.experimental.ExtensionMethod;
-import net.lopymine.mtd.config.other.vector.Vec3f;
-import net.lopymine.mtd.extension.DilationExtension;
 import net.minecraft.Util;
+import net.minecraft.client.model.*;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
-import net.minecraft.core.*;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.util.*;
+import net.minecraft.core.Direction;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import net.lopymine.mtd.config.other.vector.Vec3f;
+import net.lopymine.mtd.extension.DilationExtension;
+
+import java.util.*;
+import org.jetbrains.annotations.*;
+
 import static net.lopymine.mtd.utils.CodecUtils.option;
 
 
@@ -78,7 +87,7 @@ public class BBCube {
 
 		public static final Codec<BBCubeFace> CODEC = RecordCodecBuilder.create(inst -> inst.group(
 				option("uv", UV.CODEC, BBCubeFace::getUv),
-				option("rotation", 0, Codec.INT, BBCubeFace::getRotation)
+				option("rotation",0, Codec.INT, BBCubeFace::getRotation)
 		).apply(inst, BBCubeFace::new));
 
 		private UV uv;

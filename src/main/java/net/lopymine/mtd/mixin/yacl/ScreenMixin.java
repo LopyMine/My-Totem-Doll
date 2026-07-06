@@ -1,29 +1,48 @@
 package net.lopymine.mtd.mixin.yacl;
 
-import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
-import net.lopymine.mtd.yacl.YACLConfigurationScreen;
-import net.lopymine.mtd.yacl.custom.TransparencySprites;
+import com.llamalad7.mixinextras.injector.wrapoperation.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.resources.ResourceLocation;
-import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import net.lopymine.mtd.yacl.YACLConfigurationScreen;
+
+import org.jetbrains.annotations.Nullable;
 
 @Mixin(Screen.class)
 public abstract class ScreenMixin {
 
-	@WrapWithCondition(method = "renderBackground", at = @At(value = "INVOKE",
-			target =
-					"Lnet/minecraft/client/gui/screens/Screen;renderBlurredBackground(F)V"
-	))
-	public boolean disableBlur(Screen instance, float v) {
-		return YACLConfigurationScreen.notOpen(((Screen) (Object) this));
+	@Shadow @Nullable
+	public Minecraft minecraft;
+
+	@Inject(at = @At("HEAD"), method = "renderDirtBackground", cancellable = true)
+	private void disableBackgroundTextureRendering(GuiGraphics context, CallbackInfo ci) {
+		if (!YACLConfigurationScreen.notOpen(((Screen) (Object) this)) && this.minecraft != null && this.minecraft.level != null) {
+			ci.cancel();
+		}
 	}
 
-	@ModifyArg(method = "renderMenuBackground(Lnet/minecraft/client/gui/GuiGraphics;IIII)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;renderMenuBackgroundTexture(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/resources/ResourceLocation;IIFFII)V"), index = 1)
-	private ResourceLocation swapBackgroundTexture(ResourceLocation original) {
-		if (YACLConfigurationScreen.notOpen(((Screen) (Object) this))) {
-			return original;
+	@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;fillGradient(IIIIII)V"), method = "renderBackground")
+	private void swapBackgroundGradientColor(GuiGraphics context, int startX, int startY, int endX, int endY, int colorStart, int colorEnd, Operation<Void> original) {
+		if (!YACLConfigurationScreen.notOpen(((Screen) (Object) this)) && this.minecraft != null && this.minecraft.level != null) {
+			original.call(context, startX, startY, endX, endY, 335544320, 335544320);
+			return;
 		}
-		return TransparencySprites.getMenuBackgroundTexture();
+		original.call(context, startX, startY, endX, endY, colorStart, colorEnd);
 	}
+
+
+	@Shadow public abstract void renderBackground(GuiGraphics context);
+
+	@Inject(at = @At("HEAD"), method = "render")
+	private void renderWithBackground(GuiGraphics context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+		if (!YACLConfigurationScreen.notOpen(((Screen)(Object)this))) {
+			this.renderBackground(context);
+		}
+	}
+
+
 }

@@ -1,11 +1,14 @@
 package net.lopymine.mtd.config.totem;
 
-import com.mojang.serialization.Codec;
 import lombok.Getter;
-import net.lopymine.mtd.MyTotemDoll;
-import net.lopymine.mtd.config.other.EnumWithText;
+
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
+import com.mojang.serialization.Codec;
+import net.lopymine.mtd.MyTotemDoll;
+import net.lopymine.mtd.config.other.EnumWithText;
+import net.minecraft.util.StringRepresentable.EnumCodec;
 
 @Getter
 public enum TotemDollSkinType implements StringRepresentable, EnumWithText {
@@ -16,7 +19,7 @@ public enum TotemDollSkinType implements StringRepresentable, EnumWithText {
 	URL_SKIN(true),
 	FILE_SKIN(true);
 
-	public static final Codec<TotemDollSkinType> CODEC = StringRepresentable.fromEnum(TotemDollSkinType::values);
+	public static final EnumCodec<TotemDollSkinType> CODEC = StringRepresentable.fromEnum(TotemDollSkinType::values);
 
 	private final boolean needData;
 

@@ -1,14 +1,15 @@
 package net.lopymine.mtd.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.*;
-import java.util.function.Consumer;
+import java.util.function.*;
 import net.lopymine.mtd.config.MyTotemDollConfig;
-import net.lopymine.mtd.utils.mixin.MTDAnvilScreen;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.ItemCombinerScreen;
 import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
+
+import net.lopymine.mtd.utils.mixin.MTDAnvilScreen;
 
 
 @Mixin(ItemCombinerScreen.class)

@@ -25,7 +25,7 @@ public class ResourceLocationExtension {
 		if (i + 1 >= path.length()) {
 			return identifier;
 		}
-		return identifier.withPath(path.substring(0, i + 1));
+		return identifier.withPath(path.substring(0, i+1));
 	}
 
 }

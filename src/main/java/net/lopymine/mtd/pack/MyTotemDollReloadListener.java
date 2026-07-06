@@ -1,20 +1,26 @@
 package net.lopymine.mtd.pack;
 
 import java.util.concurrent.*;
-//? if fabric {
-/*import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
-*///?}
-import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.atlas.manager.*;
+import net.minecraft.server.packs.resources.*;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.minecraft.server.packs.resources.PreparableReloadListener.PreparationBarrier;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.*;
+//? if fabric {
+import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
+//?}
+import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.loader.MyTotemDollLoader;
 import net.lopymine.mtd.model.bb.manager.BlockBenchModelManager;
 import net.lopymine.mtd.tag.manager.TagsManager;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.*;
-import net.minecraft.util.Unit;
+import net.minecraft.util.profiling.*;
 import net.minecraft.util.profiling.ProfilerFiller;
 
-public class MyTotemDollReloadListener implements /*? if fabric {*/ /*IdentifiableResourceReloadListener *//*?} else {*/ PreparableReloadListener /*?}*/ {
+
+public class MyTotemDollReloadListener implements /*? if fabric {*/ IdentifiableResourceReloadListener /*?} else {*/ /*PreparableReloadListener *//*?}*/ {
 
 	public static void register() {
 		MyTotemDollLoader.registerReloadListener(getId(), new MyTotemDollReloadListener());
@@ -25,11 +31,11 @@ public class MyTotemDollReloadListener implements /*? if fabric {*/ /*Identifiab
 	}
 
 	//? if fabric {
-	/*@Override
+	@Override
 	public ResourceLocation getFabricId() {
 		return getId();
 	}
-	*///?}
+	//?}
 
 	@Override
 	public CompletableFuture<Void> reload(PreparableReloadListener.PreparationBarrier synchronizer, ResourceManager manager, ProfilerFiller prepareProfiler, ProfilerFiller applyProfiler, Executor prepareExecutor, Executor applyExecutor) {
@@ -41,6 +47,7 @@ public class MyTotemDollReloadListener implements /*? if fabric {*/ /*Identifiab
 			applyProfiler.endTick();
 		}, applyExecutor);
 	}
+
 
 	private void reloadStuff(PreparationBarrier synchronizer, ResourceManager resourceManager, Executor prepareExecutor, Executor applyExecutor) {
 		this.reloadAtlas(synchronizer, prepareExecutor, applyExecutor);

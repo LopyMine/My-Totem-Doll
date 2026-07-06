@@ -2,35 +2,40 @@ package net.lopymine.mtd.model.bb.manager;
 
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
+import net.lopymine.mtd.loader.MyTotemDollLoader;
+import net.lopymine.mtd.atlas.manager.*;
+import net.lopymine.mtd.model.bb.BBOutliner;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.renderer.block.model.*;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.*;
+import net.minecraft.core.Direction;
+import net.minecraft.core.UUIDUtil;
+import org.slf4j.*;
+
 import com.mojang.datafixers.util.Either;
-import com.mojang.serialization.Codec;
-import java.io.*;
-import java.nio.file.NoSuchFileException;
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.function.Consumer;
+import com.mojang.serialization.*;
+
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.api.Response;
-import net.lopymine.mtd.atlas.manager.*;
 import net.lopymine.mtd.config.other.vector.Vec3f;
 import net.lopymine.mtd.doll.data.TotemDollData;
 import net.lopymine.mtd.doll.manager.*;
 import net.lopymine.mtd.doll.model.TotemDollModel;
-import net.lopymine.mtd.loader.MyTotemDollLoader;
 import net.lopymine.mtd.model.base.*;
 import net.lopymine.mtd.model.bb.*;
 import net.lopymine.mtd.model.bb.BBCube.*;
 import net.lopymine.mtd.model.bb.BBModel.*;
 import net.lopymine.mtd.utils.CodecUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.core.Direction;
-import net.minecraft.core.UUIDUtil;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
+
+import java.io.*;
+import java.nio.file.NoSuchFileException;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.function.*;
 import org.jetbrains.annotations.*;
-import org.slf4j.*;
 
 // 0 - success
 // -1 - failed
@@ -270,6 +275,10 @@ public class BlockBenchModelManager {
 		return new BBModelGroupsAndRootCubes(rootCubes, groups);
 	}
 
+	private record BBModelGroupsAndRootCubes(List<UUID> rootCubes, List<BBGroup> groups) {
+
+	}
+
 	private static @NotNull BBModel createFinalBBModel(ResourceLocation id, JsonObject jsonObject, String name, BBModelMeta meta, List<UUID> rootCubes, List<BBGroup> groups, BBModelResolution resolution, List<BBCube> cubes) {
 		BBGroup rootGroup = new BBGroup(
 				"root",
@@ -383,9 +392,5 @@ public class BlockBenchModelManager {
 		}
 		TotemDollModel.createDollModel(); // Reloading doll at resource reloading while we can
 		StandardTotemDollManager.initializeStandardDollData();
-	}
-
-	private record BBModelGroupsAndRootCubes(List<UUID> rootCubes, List<BBGroup> groups) {
-
 	}
 }

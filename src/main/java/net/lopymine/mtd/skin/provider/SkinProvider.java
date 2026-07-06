@@ -1,9 +1,10 @@
 package net.lopymine.mtd.skin.provider;
 
+import net.lopymine.mtd.doll.data.TotemDollData;
+
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import net.lopymine.mtd.doll.data.TotemDollData;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.*;
 
 public interface SkinProvider {
 

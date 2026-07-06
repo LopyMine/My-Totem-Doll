@@ -1,15 +1,17 @@
 package net.lopymine.mtd.model.base;
 
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
+import java.util.function.*;
 import lombok.*;
 import lombok.experimental.ExtensionMethod;
 import net.lopymine.mtd.atlas.AtlasSprite;
+import net.minecraft.client.model.geom.PartPose;
+
+
 import net.lopymine.mtd.extension.*;
 import net.lopymine.mtd.model.bb.ModelState;
-import net.minecraft.client.model.geom.PartPose;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.*;
 
@@ -104,7 +106,7 @@ public class MModelBuilder {
 				String path = split[1];
 				boolean pathValid = ResourceLocation.isValidPath(path);
 				if (namespaceValid && pathValid) {
-					this.builtinSprite = AtlasSprite.of(ResourceLocation.fromNamespaceAndPath(namespace, path));
+					this.builtinSprite = AtlasSprite.of(ResourceLocation.tryBuild(namespace, path));
 				}
 			} else {
 				this.builtinSprite = AtlasSprite.of(location.getFolderId().withSuffix(this.getName()));

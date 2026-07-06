@@ -1,16 +1,21 @@
 package net.lopymine.mtd.gui.widget.info;
 
-import java.util.List;
 import lombok.*;
-import net.lopymine.mtd.utils.DrawUtils;
-import net.lopymine.mtd.utils.tooltip.IRequestableTooltipScreen;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.gui.screens.inventory.tooltip.*;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
+import net.minecraft.resources.ResourceLocation;
+
+import net.lopymine.mtd.utils.DrawUtils;
+import net.lopymine.mtd.utils.tooltip.IRequestableTooltipScreen;
+
+import java.util.List;
 import org.jetbrains.annotations.Nullable;
 
 @Setter
@@ -45,7 +50,7 @@ public class InfoWidget implements Renderable {
 			return;
 		}
 
-		this.hovered = context.containsPointInScissor(mouseX, mouseY) && mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
+		this.hovered =  mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
 
 		DrawUtils.drawTexture(context, this.texture, this.getX(), this.getY(), 0, 0, this.getWidth(), this.getHeight(), this.getWidth(), this.getHeight());
 

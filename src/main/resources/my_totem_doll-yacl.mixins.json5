@@ -18,7 +18,9 @@
 		"category.AbstractSelectionListMixin",
 		"category.ItemInHandRendererMixin",
 		"widget.AbstractButtonMixin",
-		"widget.EditBoxMixin"
+		"widget.EditBoxMixin",
+		"category.TabButtonMixin",
+		"category.TabNavigationBarMixin"
 	],
     "injectors": {
         "defaultRequire": 1

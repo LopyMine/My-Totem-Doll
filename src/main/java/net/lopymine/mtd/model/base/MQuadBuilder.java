@@ -2,11 +2,14 @@ package net.lopymine.mtd.model.base;
 
 import lombok.*;
 import lombok.experimental.ExtensionMethod;
-import net.lopymine.mtd.extension.*;
-import net.minecraft.client.model.geom.ModelPart.*;
+import net.minecraft.client.model.geom.ModelPart.Polygon;
+import net.minecraft.client.model.geom.ModelPart.Vertex;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.model.geom.ModelPart.*;
 import net.minecraft.core.Direction;
 import org.joml.Vector3f;
+
+import net.lopymine.mtd.extension.*;
 
 @Setter
 @Getter

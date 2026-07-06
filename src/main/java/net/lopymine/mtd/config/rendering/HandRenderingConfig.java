@@ -1,9 +1,10 @@
 package net.lopymine.mtd.config.rendering;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.function.Supplier;
 import lombok.*;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.lopymine.mtd.utils.CodecUtils;
 import static net.lopymine.mtd.utils.CodecUtils.option;
 

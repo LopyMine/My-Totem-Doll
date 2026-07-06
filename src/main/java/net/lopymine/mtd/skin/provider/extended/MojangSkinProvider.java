@@ -1,13 +1,16 @@
 package net.lopymine.mtd.skin.provider.extended;
 
 import java.util.*;
-import java.util.stream.Collectors;
+import net.minecraft.resources.ResourceLocation;
+
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.api.*;
 import net.lopymine.mtd.doll.data.TotemDollData;
 import net.lopymine.mtd.skin.data.ParsedSkinData;
 import net.lopymine.mtd.skin.provider.StandardSkinProvider;
-import net.minecraft.resources.ResourceLocation;
+
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.jetbrains.annotations.Nullable;
 
 public class MojangSkinProvider extends StandardSkinProvider {

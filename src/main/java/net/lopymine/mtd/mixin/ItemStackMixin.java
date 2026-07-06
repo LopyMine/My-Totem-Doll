@@ -1,31 +1,35 @@
 package net.lopymine.mtd.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import java.util.*;
-import java.util.stream.Stream;
 import lombok.experimental.ExtensionMethod;
-import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.config.MyTotemDollConfig;
+import net.lopymine.mtd.utils.ScreenUtils;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AnvilScreen;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import org.spongepowered.asm.mixin.*;
+import org.spongepowered.asm.mixin.injection.At;
+
+import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.doll.data.TotemDollData;
 import net.lopymine.mtd.doll.manager.TotemDollManager;
 import net.lopymine.mtd.doll.renderer.TotemDollRenderer;
 import net.lopymine.mtd.extension.ItemStackExtension;
 import net.lopymine.mtd.gui.tooltip.combined.CombinedTooltipData;
 import net.lopymine.mtd.gui.tooltip.state.LoadingStateTooltipData;
-import net.lopymine.mtd.gui.tooltip.tags.TagsTooltipData;
+import net.lopymine.mtd.gui.tooltip.tags.*;
 import net.lopymine.mtd.gui.tooltip.wrapped.WrappedTextTooltipData;
 import net.lopymine.mtd.tag.manager.TagsManager;
-import net.lopymine.mtd.utils.ScreenUtils;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.AnvilScreen;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.inventory.tooltip.TooltipComponent;
-import net.minecraft.world.item.*;
-import org.spongepowered.asm.mixin.*;
-import org.spongepowered.asm.mixin.injection.At;
+
+import java.util.*;
+import java.util.stream.Stream;
 
 @Mixin(ItemStack.class)
 @ExtensionMethod(ItemStackExtension.class)
@@ -102,8 +106,8 @@ public abstract class ItemStackMixin {
 			return Optional.empty();
 		}
 		return Optional.of(new CombinedTooltipData(
-						new WrappedTextTooltipData(MyTotemDoll.text("tags.title").withStyle(ChatFormatting.GRAY)),
-						new TagsTooltipData(tags)
+					new WrappedTextTooltipData(MyTotemDoll.text("tags.title").withStyle(ChatFormatting.GRAY)),
+					new TagsTooltipData(tags)
 				)
 		);
 	}

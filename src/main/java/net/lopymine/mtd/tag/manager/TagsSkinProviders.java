@@ -1,10 +1,12 @@
 package net.lopymine.mtd.tag.manager;
 
-import java.util.*;
 import net.lopymine.mtd.doll.data.TotemDollData;
+
+
 import net.lopymine.mtd.doll.manager.StandardTotemDollManager;
 import net.lopymine.mtd.skin.provider.SkinProvider;
 import net.lopymine.mtd.skin.provider.extended.NameMCSkinProvider;
+import java.util.*;
 import org.jetbrains.annotations.Nullable;
 
 

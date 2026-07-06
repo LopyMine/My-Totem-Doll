@@ -1,16 +1,25 @@
 package net.lopymine.mtd.yacl.custom.category.better;
 
 import dev.isxander.yacl3.api.ConfigCategory;
-import dev.isxander.yacl3.gui.YACLScreen;
+import dev.isxander.yacl3.gui.*;
 import dev.isxander.yacl3.gui.YACLScreen.CategoryTab;
+import dev.isxander.yacl3.gui.utils.GuiUtils;
 import lombok.experimental.ExtensionMethod;
 import net.lopymine.mtd.extension.DrawContextExtension;
-import net.lopymine.mtd.utils.*;
-import net.lopymine.mtd.yacl.custom.TransparencySprites;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import com.mojang.math.Axis;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+
+import net.lopymine.mtd.utils.*;
+import net.lopymine.mtd.yacl.custom.TransparencySprites;
+import net.lopymine.mtd.yacl.custom.screen.MyTotemDollYACLScreen;
 
 @ExtensionMethod(DrawContextExtension.class)
 public class BetterCategoryTab extends CategoryTab {

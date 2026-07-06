@@ -1,13 +1,21 @@
 package net.lopymine.mtd.gui.widget.button;
 
-import java.util.Comparator;
 import net.lopymine.mtd.gui.widget.list.AbstractSearchListWidget;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.*;
+import net.minecraft.network.chat.*;
+
+import net.lopymine.mtd.MyTotemDoll;
+
+import java.util.*;
 import org.jetbrains.annotations.NotNull;
 
 public class ButtonListWidget extends AbstractSearchListWidget<ButtonListEntryWidget> {
 
 	public ButtonListWidget(int x, int y, int width, int height, int buttonHeight) {
-		super(x, y, width, height - 5, buttonHeight);
+		super(x, y, width, height - 5, buttonHeight  + 4 );
 	}
 
 	@Override

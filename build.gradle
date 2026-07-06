@@ -9,7 +9,7 @@ mossyDependencies {
 	fabricApi = prop("build.fabric_api")
 	fabricLoader = prop("build.fabric_loader")
 
-	neoForge = prop("build.neoforge")
+	forge = prop("build.forge")
 	parchment = prop("build.parchment")
 
 	additional {
@@ -34,12 +34,6 @@ dependencies {
 	} else {
 		compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:${prop("build.mixin_squared")}"))
 		implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-neoforge:${prop("build.mixin_squared")}"))
-	}
-}
-
-stonecutter {
-	replacements.string(current.parsed >= "26.1") {
-		replace("atlas.location()", "atlas.location()")
 	}
 }
 

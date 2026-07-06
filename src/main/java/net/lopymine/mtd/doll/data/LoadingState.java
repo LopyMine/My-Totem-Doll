@@ -1,8 +1,9 @@
 package net.lopymine.mtd.doll.data;
 
 import lombok.Getter;
-import net.lopymine.mtd.MyTotemDoll;
 import net.minecraft.network.chat.Component;
+
+import net.lopymine.mtd.MyTotemDoll;
 
 @Getter
 public enum LoadingState {

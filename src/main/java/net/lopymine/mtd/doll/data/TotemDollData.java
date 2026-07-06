@@ -1,12 +1,14 @@
 package net.lopymine.mtd.doll.data;
 
 import lombok.*;
-import net.lopymine.mtd.doll.model.TotemDollModel;
-import net.lopymine.mtd.model.base.MModel;
 import net.lopymine.mtd.model.bb.manager.BlockBenchModelManager;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.resources.PlayerSkin;
+
 import net.minecraft.resources.ResourceLocation;
+
+import net.lopymine.mtd.doll.model.TotemDollModel;
+import net.lopymine.mtd.model.base.MModel;
+
 import org.jetbrains.annotations.*;
 
 @Getter
@@ -131,11 +133,10 @@ public class TotemDollData {
 			return;
 		}
 
-		PlayerSkin skinTextures = playerEntity.getSkin();
-		ResourceLocation skinTexture = skinTextures.texture();
-		ResourceLocation capeTexture = skinTextures.capeTexture();
-		ResourceLocation elytraTexture = skinTextures.elytraTexture();
-		boolean slim = skinTextures.model() == PlayerSkin.Model.SLIM;
+		ResourceLocation skinTexture = playerEntity.getSkinTextureLocation();
+		ResourceLocation capeTexture = playerEntity.getCloakTextureLocation();
+		ResourceLocation elytraTexture = playerEntity.getElytraTextureLocation();
+		boolean slim = playerEntity.getModelName().equalsIgnoreCase("slim");
 
 		this.renderProperties.setFrameSprites(skinTexture, capeTexture, elytraTexture, slim, true);
 	}

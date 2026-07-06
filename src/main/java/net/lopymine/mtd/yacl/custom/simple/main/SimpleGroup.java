@@ -1,9 +1,10 @@
 package net.lopymine.mtd.yacl.custom.simple.main;
 
 import dev.isxander.yacl3.api.*;
+import net.minecraft.network.chat.Component;
+
 import net.lopymine.mtd.utils.ModMenuUtils;
 import net.lopymine.mtd.yacl.custom.renderer.TotemDollPreviewRenderer;
-import net.minecraft.network.chat.Component;
 
 public class SimpleGroup {
 

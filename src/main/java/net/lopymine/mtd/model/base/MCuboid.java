@@ -1,12 +1,16 @@
 package net.lopymine.mtd.model.base;
 
-import java.util.Set;
 import lombok.Getter;
+import net.minecraft.client.model.*;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.ModelPart.*;
+import net.minecraft.client.model.geom.ModelPart.Cube;
+import net.minecraft.client.model.geom.ModelPart.Polygon;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.core.Direction;
 import org.joml.Vector3f;
+
+import java.util.Set;
 
 @Getter
 public class MCuboid extends ModelPart.Cube {

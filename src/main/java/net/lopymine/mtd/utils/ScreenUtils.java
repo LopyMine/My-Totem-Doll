@@ -1,9 +1,10 @@
 package net.lopymine.mtd.utils;
 
+import net.lopymine.mtd.client.MyTotemDollClient;
+import net.minecraft.client.Minecraft;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.Util;
 import net.minecraft.Util.OS;
-import net.minecraft.client.Minecraft;
 
 public class ScreenUtils {
 

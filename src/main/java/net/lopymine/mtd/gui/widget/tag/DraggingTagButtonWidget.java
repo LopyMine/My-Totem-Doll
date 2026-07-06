@@ -1,6 +1,9 @@
 package net.lopymine.mtd.gui.widget.tag;
 
 import lombok.*;
+import net.minecraft.client.gui.*;
+
+import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.config.MyTotemDollConfig;
 import net.lopymine.mtd.config.other.vector.Vec2i;
 import net.lopymine.mtd.tag.Tag;
@@ -65,7 +68,7 @@ public class DraggingTagButtonWidget extends TagButtonWidget {
 
 	private void renderPlease(GuiGraphics context, int mouseX, int mouseY) {
 		int x = this.isDragging() ? mouseX - (this.getWidth() / 2) : this.getX();
-		int y = this.isDragging() ? mouseY - (this.getHeight() / 2) : this.getY();
+		int y = this.isDragging() ? mouseY - (this.getHeight() / 2): this.getY();
 		super.renderButton(context, x, y);
 		if (!this.isDragging()) {
 			this.requestTooltip();

@@ -1,14 +1,26 @@
 package net.lopymine.mtd.utils.texture;
 
 import com.mojang.blaze3d.platform.NativeImage;
-import java.io.IOException;
 import java.net.*;
-import net.lopymine.mtd.atlas.manager.MyTotemDollAtlasSpriteManager;
-import net.lopymine.mtd.client.MyTotemDollClient;
+import lombok.experimental.ExtensionMethod;
+import net.lopymine.mtd.atlas.RemappedAtlasSprite;
+import net.lopymine.mtd.atlas.manager.*;
 import net.lopymine.mtd.doll.data.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.*;
 import net.minecraft.resources.ResourceLocation;
+
+import net.lopymine.mtd.client.MyTotemDollClient;
+
+import java.io.*;
+import java.nio.file.*;
+import net.minecraft.util.FastColor;
 import org.jetbrains.annotations.*;
+
+import net.lopymine.mtd.atlas.manager.*;
+import net.lopymine.mtd.config.totem.TotemDollArmsType;
+import net.lopymine.mtd.doll.data.*;
+import net.lopymine.mtd.thread.MyTotemDollTaskExecutor;
 
 public class PlayerSkinUtils {
 
@@ -103,8 +115,8 @@ public class PlayerSkinUtils {
 
 	@SuppressWarnings("all")
 	private static void stripColor(NativeImage image, int x1, int y1, int x2, int y2) {
-		for (int i = x1; i < x2; ++i) {
-			for (int j = y1; j < y2; ++j) {
+		for(int i = x1; i < x2; ++i) {
+			for(int j = y1; j < y2; ++j) {
 				int k = image.getPixelRGBA(i, j);
 				if ((k >> 24 & 255) < 128) {
 					return;
@@ -112,8 +124,8 @@ public class PlayerSkinUtils {
 			}
 		}
 
-		for (int i = x1; i < x2; ++i) {
-			for (int j = y1; j < y2; ++j) {
+		for(int i = x1; i < x2; ++i) {
+			for(int j = y1; j < y2; ++j) {
 				image.setPixelRGBA(i, j, image.getPixelRGBA(i, j) & 16777215);
 			}
 		}
@@ -122,8 +134,8 @@ public class PlayerSkinUtils {
 
 	@SuppressWarnings("all")
 	private static void stripAlpha(NativeImage image, int x1, int y1, int x2, int y2) {
-		for (int i = x1; i < x2; ++i) {
-			for (int j = y1; j < y2; ++j) {
+		for(int i = x1; i < x2; ++i) {
+			for(int j = y1; j < y2; ++j) {
 				image.setPixelRGBA(i, j, image.getPixelRGBA(i, j) | -16777216);
 			}
 		}
@@ -131,8 +143,29 @@ public class PlayerSkinUtils {
 	}
 
 	public static void setupClientTextures(TotemDollData data) {
-		Minecraft.getInstance().getSkinManager().getOrLoad(Minecraft.getInstance().getGameProfile()).thenAccept((skinTextures) -> {
-			data.setSprites(TotemDollSprites.of(skinTextures));
-		});
+		Minecraft.getInstance().getSkinManager().registerSkins(Minecraft.getInstance().getUser().getGameProfile(), (type, id, texture) -> {
+			MyTotemDollTaskExecutor.execute(() -> {
+				Minecraft.getInstance().execute(() -> {
+					TotemDollSprites textures = data.getStandardSprites();
+
+					switch (type) {
+						case SKIN -> {
+							MyTotemDollAtlasSpriteManager.registerSpecialSkinSprite(id, false, textures::setSkinSprite);
+							if (texture != null) {
+								textures.setArmsType(TotemDollArmsType.of(texture.getMetadata("model")));
+							}
+						}
+						case CAPE -> {
+							RemappedAtlasSprite capeSprite = RemappedAtlasSprite.ofResource(id);
+							MyTotemDollAtlasSpriteManager.registerSpecialRemappedSprite(capeSprite);
+							textures.setCapeSprite(capeSprite);
+						}
+						case ELYTRA -> MyTotemDollAtlasSpriteManager.registerSpecialSkinSprite(id, false, textures::setElytraSprite);
+					}
+
+					MyTotemDollAtlasManager.stitchAndUpdate(MyTotemDollAtlasSpriteManager.getSprites(), null);
+				});
+			});
+		}, false);
 	}
 }

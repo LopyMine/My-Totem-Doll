@@ -1,18 +1,23 @@
 package net.lopymine.mtd.skin.provider;
 
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.concurrent.*;
 import lombok.*;
+import net.minecraft.resources.ResourceLocation;
+
+
 import net.lopymine.mtd.api.Response;
 import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.config.totem.TotemDollArmsType;
 import net.lopymine.mtd.doll.data.*;
 import net.lopymine.mtd.doll.manager.StandardTotemDollManager;
 import net.lopymine.mtd.skin.data.ParsedSkinData;
+
+
 import net.lopymine.mtd.thread.MyTotemDollTaskExecutor;
 import net.lopymine.mtd.utils.texture.*;
-import net.minecraft.resources.ResourceLocation;
+
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.*;
 import org.jetbrains.annotations.*;
 
 @Setter

@@ -1,14 +1,17 @@
 package net.lopymine.mtd.model.base;
 
-import java.util.*;
 import lombok.Getter;
 import lombok.experimental.ExtensionMethod;
-import net.lopymine.mtd.extension.ModelTransformExtension;
+import net.minecraft.client.model.*;
 import net.minecraft.client.model.geom.ModelPart.Polygon;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.core.Direction;
 import org.joml.Vector3f;
+
+import net.lopymine.mtd.extension.ModelTransformExtension;
+
+import java.util.*;
 
 @SuppressWarnings("unused")
 @ExtensionMethod(ModelTransformExtension.class)

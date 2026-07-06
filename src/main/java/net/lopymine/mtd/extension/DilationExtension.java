@@ -1,7 +1,8 @@
 package net.lopymine.mtd.extension;
 
-import net.lopymine.mtd.mixin.accessor.CubeDeformationAccessor;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
+
+import net.lopymine.mtd.mixin.accessor.CubeDeformationAccessor;
 
 public class DilationExtension {
 

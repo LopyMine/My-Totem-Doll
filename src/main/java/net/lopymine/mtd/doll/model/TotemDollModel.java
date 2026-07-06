@@ -1,24 +1,27 @@
 package net.lopymine.mtd.doll.model;
 
-import com.mojang.blaze3d.vertex.*;
-import java.util.*;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import lombok.*;
-import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.atlas.*;
 import net.lopymine.mtd.atlas.manager.MyTotemDollAtlasManager;
-import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.config.MyTotemDollConfig;
+import net.minecraft.client.model.Model;
+import net.minecraft.client.renderer.*;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
+import net.lopymine.mtd.MyTotemDoll;
+import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.doll.data.TotemDollSprites;
 import net.lopymine.mtd.model.base.*;
 import net.lopymine.mtd.model.bb.manager.BlockBenchModelManager;
-import net.minecraft.client.model.Model;
-import net.minecraft.client.renderer.*;
-import net.minecraft.resources.ResourceLocation;
+import java.util.*;
 import org.jetbrains.annotations.Nullable;
 
 @Getter
 @Setter
-public class TotemDollModel extends Model {
+public class TotemDollModel extends  Model  {
 
 	public static final ResourceLocation TWO_D_MODEL_ID = MyTotemDoll.id("dolls/2d_doll.bbmodel");
 	public static final ResourceLocation THREE_D_MODEL_id = MyTotemDoll.id("dolls/3d_doll.bbmodel");
@@ -75,6 +78,27 @@ public class TotemDollModel extends Model {
 		this.resetPartsVisibility();
 	}
 
+	private void initCollectionsMap() {
+		this.addCollectionToCollectionsMap(this.head);
+		this.addCollectionToCollectionsMap(this.body);
+		this.addCollectionToCollectionsMap(this.leftArmSlim);
+		this.addCollectionToCollectionsMap(this.rightArmSlim);
+		this.addCollectionToCollectionsMap(this.leftArmWide);
+		this.addCollectionToCollectionsMap(this.rightArmWide);
+		this.addCollectionToCollectionsMap(this.leftLeg);
+		this.addCollectionToCollectionsMap(this.rightLeg);
+		this.addCollectionToCollectionsMap(this.cape);
+		this.addCollectionToCollectionsMap(this.elytra);
+		this.addCollectionToCollectionsMap(this.ears);
+	}
+
+	private void addCollectionToCollectionsMap(MModelCollection collection) {
+		if (collection.isEmpty()) {
+			return;
+		}
+		this.collections.put(collection.getId(), collection);
+	}
+
 	public static MModel createDollModel() {
 		MModel model = BlockBenchModelManager.getModel(MyTotemDollConfig.getInstance().getStandardTotemDollModelValue());
 		MModel mmodel = model == null ? BlockBenchModelManager.getModel(THREE_D_MODEL_id) : model;
@@ -100,27 +124,6 @@ public class TotemDollModel extends Model {
 		collection.setSkipRendering(false);
 	}
 
-	private void initCollectionsMap() {
-		this.addCollectionToCollectionsMap(this.head);
-		this.addCollectionToCollectionsMap(this.body);
-		this.addCollectionToCollectionsMap(this.leftArmSlim);
-		this.addCollectionToCollectionsMap(this.rightArmSlim);
-		this.addCollectionToCollectionsMap(this.leftArmWide);
-		this.addCollectionToCollectionsMap(this.rightArmWide);
-		this.addCollectionToCollectionsMap(this.leftLeg);
-		this.addCollectionToCollectionsMap(this.rightLeg);
-		this.addCollectionToCollectionsMap(this.cape);
-		this.addCollectionToCollectionsMap(this.elytra);
-		this.addCollectionToCollectionsMap(this.ears);
-	}
-
-	private void addCollectionToCollectionsMap(MModelCollection collection) {
-		if (collection.isEmpty()) {
-			return;
-		}
-		this.collections.put(collection.getId(), collection);
-	}
-
 	public void resetPartsVisibility() {
 		enableSkipRenderingIfPresent(this.cape);
 		enableIfPresent(this.cape);
@@ -134,7 +137,7 @@ public class TotemDollModel extends Model {
 
 
 	@Override
-	public void renderToBuffer(PoseStack matrices, VertexConsumer vertices, int light, int overlay, int color) {
+	public void renderToBuffer(PoseStack matrices, VertexConsumer vertices, int light, int overlay, float r, float g, float b, float a) {
 		// NO-OP
 	}
 
@@ -179,7 +182,7 @@ public class TotemDollModel extends Model {
 			this.sprites.put(part, sprite);
 		}
 
-		public void draw(PoseStack matrices, MultiBufferSource provider, AtlasSprite mainTexture, int light, int overlay, int color) {
+		public void draw(PoseStack matrices, MultiBufferSource provider, AtlasSprite mainTexture, int light, int overlay, float red, float green, float blue, float alpha ) {
 			LockableAtlasTexture atlasTexture = MyTotemDollAtlasManager.getNullableAtlasTexture();
 			if (atlasTexture == null) {
 				MyTotemDollClient.LOGGER.error("Game tried to render doll model, but atlas not initialized yet!");
@@ -198,7 +201,7 @@ public class TotemDollModel extends Model {
 			if (!wasLocked) {
 				atlasTexture.setLocked(true);
 			}
-			this.model.getMain().draw(matrices, provider, atlasTexture.getAtlas(), renderLayer, mainTexture, this.sprites, light, overlay, color);
+			this.model.getMain().draw(matrices, provider, atlasTexture.getAtlas(), renderLayer, mainTexture, this.sprites, light, overlay,  red, green, blue, alpha);
 			if (!wasLocked) {
 				atlasTexture.setLocked(false);
 			}

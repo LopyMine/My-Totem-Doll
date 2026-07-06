@@ -1,5 +1,5 @@
 accessWidener v2 named
-# 1.21.1 AW
+# 1.20.1 AW
 
 accessible field net/minecraft/client/gui/screens/Screen font Lnet/minecraft/client/gui/Font;
 accessible field net/minecraft/client/gui/screens/Screen minecraft Lnet/minecraft/client/Minecraft;
@@ -14,11 +14,14 @@ accessible field net/minecraft/client/model/geom/ModelPart$Cube polygons [Lnet/m
 mutable field net/minecraft/client/model/geom/ModelPart$Cube polygons [Lnet/minecraft/client/model/geom/ModelPart$Polygon;
 
 extendable class net/minecraft/client/model/geom/ModelPart
-accessible method net/minecraft/client/model/geom/ModelPart compile (Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lcom/mojang/blaze3d/vertex/VertexConsumer;III)V
+accessible method net/minecraft/client/model/geom/ModelPart compile (Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lcom/mojang/blaze3d/vertex/VertexConsumer;IIFFFF)V
 accessible field net/minecraft/client/gui/GuiGraphics bufferSource Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;
 
-accessible field com/mojang/blaze3d/vertex/PoseStack$Pose trustedNormals Z
+accessible method net/minecraft/resources/ResourceLocation isValidNamespace (Ljava/lang/String;)Z
+accessible method net/minecraft/resources/ResourceLocation isValidPath (Ljava/lang/String;)Z
+
 accessible field net/minecraft/client/renderer/texture/TextureManager byPath Ljava/util/Map;
+accessible method com/mojang/blaze3d/vertex/PoseStack$Pose <init> (Lorg/joml/Matrix4f;Lorg/joml/Matrix3f;)V
 
 accessible field net/minecraft/client/renderer/texture/HttpTexture file Ljava/io/File;
 accessible field net/minecraft/client/renderer/texture/HttpTexture urlString Ljava/lang/String;
@@ -26,7 +29,6 @@ accessible field net/minecraft/client/renderer/texture/HttpTexture urlString Lja
 accessible field com/mojang/blaze3d/platform/NativeImage pixels J
 
 accessible field net/minecraft/world/item/ItemStack item Lnet/minecraft/world/item/Item;
-accessible field net/minecraft/world/item/ItemStack components Lnet/minecraft/core/component/PatchedDataComponentMap;
 
 accessible class net/minecraft/client/renderer/ItemInHandRenderer$HandRenderSelection
 

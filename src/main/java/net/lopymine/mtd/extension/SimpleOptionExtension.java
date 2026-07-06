@@ -1,11 +1,13 @@
 package net.lopymine.mtd.extension;
 
 import dev.isxander.yacl3.api.controller.*;
-import java.util.function.Function;
+import net.minecraft.network.chat.Component;
 import net.lopymine.mtd.config.other.EnumWithText;
 import net.lopymine.mtd.utils.ModMenuUtils;
 import net.lopymine.mtd.yacl.custom.simple.main.SimpleOption.Builder;
-import net.minecraft.network.chat.Component;
+
+
+import java.util.function.Function;
 import org.jetbrains.annotations.Nullable;
 
 public class SimpleOptionExtension {
@@ -21,7 +23,7 @@ public class SimpleOptionExtension {
 
 	//
 
-	public static <T extends Enum<T>&EnumWithText> Builder<T> withController(Builder<T> builder, Class<T> clazz) {
+	public static <T extends Enum<T> & EnumWithText> Builder<T> withController(Builder<T> builder, Class<T> clazz) {
 		builder.getOptionBuilder().controller((o) -> EnumControllerBuilder.create(o).enumClass(clazz).formatValue(EnumWithText::getText));
 		return builder;
 	}

@@ -1,10 +1,13 @@
 package net.lopymine.mtd.gui.tooltip.wrapped;
 
-import java.util.List;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.*;
+
+import java.util.List;
 import net.minecraft.util.FormattedCharSequence;
 
 public class WrappedTextTooltipComponent implements ClientTooltipComponent {

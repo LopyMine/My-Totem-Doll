@@ -1,16 +1,23 @@
 package net.lopymine.mtd.gui.tooltip.tags;
 
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
-import java.util.*;
-import java.util.Map.Entry;
 import net.lopymine.mtd.tag.*;
-import net.lopymine.mtd.tag.manager.TagsManager;
-import net.lopymine.mtd.utils.DrawUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.*;
+import net.minecraft.util.*;
+
+import net.lopymine.mtd.tag.manager.TagsManager;
+import net.lopymine.mtd.utils.DrawUtils;
+
+import java.util.*;
+import java.util.Map.Entry;
 import org.jetbrains.annotations.Nullable;
 
 public class TagsTooltipComponent implements ClientTooltipComponent {

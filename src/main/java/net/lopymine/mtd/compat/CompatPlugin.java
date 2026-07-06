@@ -1,9 +1,11 @@
 package net.lopymine.mtd.compat;
 
-import java.util.*;
-import net.lopymine.mtd.loader.MyTotemDollLoader;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.*;
+
+import net.lopymine.mtd.loader.MyTotemDollLoader;
+
+import java.util.*;
 
 public abstract class CompatPlugin implements IMixinConfigPlugin {
 

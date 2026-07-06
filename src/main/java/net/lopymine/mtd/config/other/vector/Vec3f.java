@@ -1,10 +1,13 @@
 package net.lopymine.mtd.config.other.vector;
 
-import com.mojang.serialization.Codec;
-import java.util.List;
 import lombok.*;
+import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.Util;
 import org.joml.*;
+
+import com.mojang.serialization.Codec;
+
+import java.util.List;
 
 @Getter
 @Setter

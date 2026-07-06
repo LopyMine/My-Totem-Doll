@@ -1,10 +1,12 @@
 package net.lopymine.mtd.utils;
 
-import java.util.function.Function;
-import net.lopymine.mtd.MyTotemDoll;
-import net.lopymine.mtd.yacl.custom.simple.utils.SimpleContent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+
+import net.lopymine.mtd.MyTotemDoll;
+import net.lopymine.mtd.yacl.custom.simple.utils.SimpleContent;
+
+import java.util.function.Function;
 
 public final class ModMenuUtils {
 

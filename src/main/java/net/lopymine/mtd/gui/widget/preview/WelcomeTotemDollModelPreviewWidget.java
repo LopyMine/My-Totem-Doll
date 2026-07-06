@@ -1,11 +1,27 @@
 package net.lopymine.mtd.gui.widget.preview;
 
 import lombok.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.*;
+import net.minecraft.util.Mth;
+
+import net.lopymine.mtd.MyTotemDoll;
+import net.lopymine.mtd.client.MyTotemDollClient;
+import net.lopymine.mtd.doll.data.TotemDollData;
 import net.lopymine.mtd.doll.manager.StandardTotemDollManager;
 import net.lopymine.mtd.doll.renderer.TotemDollRenderer;
 import net.lopymine.mtd.gui.widget.TotemDollModelPreviewWidget;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.util.Mth;
+import net.lopymine.mtd.model.base.MModel;
+import net.lopymine.mtd.model.bb.manager.BlockBenchModelManager;
 
 @Getter
 @Setter

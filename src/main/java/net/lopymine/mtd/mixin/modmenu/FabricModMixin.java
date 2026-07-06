@@ -2,7 +2,7 @@ package net.lopymine.mtd.mixin.modmenu;
 
 //? if fabric {
 
-/*import com.terraformersmc.modmenu.util.mod.fabric.FabricMod;
+import com.terraformersmc.modmenu.util.mod.fabric.FabricMod;
 import java.util.*;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.lopymine.mtd.MyTotemDoll;
@@ -14,31 +14,25 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(FabricMod.class)
 public class FabricModMixin {
 
+	@Shadow(remap = false) @Final protected ModMetadata metadata;
 	@Unique
 	private static final Map<String, List<String>> MODEL_AUTHORS = Map.of(
 			"Kreo_gen", List.of("gnom", "mini_3d", "parrot", "player_bucket", "pots", "rat", "stairs", "wheelchair")
 	);
-	@Shadow(remap = false)
-	@Final
-	protected ModMetadata metadata;
 
-	@Dynamic
 	@Inject(at = @At("RETURN"), method = "getContributors", remap = false)
-	private void addMoreContributors(CallbackInfoReturnable<Map<String, Collection<String>>> cir) {
+	private void addMoreContributors(CallbackInfoReturnable<List<String>> cir) {
 		if (!MyTotemDoll.MOD_ID.equals(this.metadata.getId())) {
 			return;
 		}
-		Map<String, Collection<String>> map = cir.getReturnValue();
+		List<String> list = cir.getReturnValue();
+		list.add(" ");
+		list.add("Community Model Authors");
 		MODEL_AUTHORS.forEach((nickname, models) -> {
-			this.addBuiltinCustomModelAuthor(map, nickname, models);
+			list.add(nickname + " " + Arrays.toString(models.toArray()));
 		});
-	}
-
-	@Unique
-	private void addBuiltinCustomModelAuthor(Map<String, Collection<String>> map, @SuppressWarnings("all") String nickname, List<String> models) {
-		map.put(nickname + " " + Arrays.toString(models.toArray()), List.of("Community Model Author"));
 	}
 
 }
 
-*///?}
+//?}

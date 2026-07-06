@@ -2,7 +2,7 @@ package net.lopymine.mtd.entrypoint;
 
 //? if fabric {
 
-/*import net.fabricmc.api.ModInitializer;
+import net.fabricmc.api.ModInitializer;
 import net.lopymine.mtd.MyTotemDoll;
 
 public class CommonEntrypoint implements ModInitializer {
@@ -13,18 +13,21 @@ public class CommonEntrypoint implements ModInitializer {
 	}
 }
 
-*///?} elif neoforge {
+//?} elif forge {
 
-import net.lopymine.mtd.MyTotemDoll;
-import net.neoforged.fml.common.Mod;
+/*import net.lopymine.mtd.MyTotemDoll;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.common.Mod;
 
 @Mod(MyTotemDoll.MOD_ID)
 public class CommonEntrypoint {
 
 	public CommonEntrypoint() {
 		MyTotemDoll.onInitialize();
+		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> ClientEntrypoint::onInitializeClient);
 	}
 
 }
 
-//?}
+*///?}

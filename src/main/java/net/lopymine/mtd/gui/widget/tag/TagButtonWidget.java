@@ -1,19 +1,25 @@
 package net.lopymine.mtd.gui.widget.tag;
 
-import java.util.List;
 import lombok.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.*;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.*;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.resources.ResourceLocation;
+
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.tag.Tag;
 import net.lopymine.mtd.tag.manager.TagsManager;
 import net.lopymine.mtd.utils.DrawUtils;
 import net.lopymine.mtd.utils.tooltip.IRequestableTooltipScreen;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.*;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.resources.ResourceLocation;
+
+import java.util.List;
 import org.jetbrains.annotations.Nullable;
+
+import net.lopymine.mtd.utils.ButtonTextures;
 
 
 @Getter
@@ -22,7 +28,7 @@ public class TagButtonWidget extends Button {
 
 	public static final ResourceLocation INACTIVE_TEXTURE = MyTotemDoll.id("textures/gui/tag_menu/button_inactive.png");
 
-	public static final WidgetSprites TEXTURES = new WidgetSprites(
+	public static final ButtonTextures TEXTURES = new ButtonTextures(
 			MyTotemDoll.id("textures/gui/tag_menu/button_pressed.png"),
 			MyTotemDoll.id("textures/gui/tag_menu/button_unpressed.png"),
 			MyTotemDoll.id("textures/gui/tag_menu/button_pressed_hovered.png"),
@@ -40,9 +46,9 @@ public class TagButtonWidget extends Button {
 
 	public TagButtonWidget(Tag tag, int x, int y, TagPressAction pressAction) {
 		super(x, y, 14, 14, net.minecraft.network.chat.Component.nullToEmpty(""), (widget) -> pressAction.onPress((TagButtonWidget) widget), Button.DEFAULT_NARRATION);
-		this.tag  = tag;
-		this.text = String.valueOf(tag.getTag());
-		this.icon = TagsManager.getTagIcon(this.text.charAt(0));
+		this.tag          = tag;
+		this.text         = String.valueOf(tag.getTag());
+		this.icon         = TagsManager.getTagIcon(this.text.charAt(0));
 	}
 
 	@Override
@@ -122,10 +128,10 @@ public class TagButtonWidget extends Button {
 	public boolean over(double mouseX, double mouseY) {
 		return this.active
 				&& this.visible
-				&& mouseX >= (double) this.getX()
-				&& mouseY >= (double) this.getY()
-				&& mouseX < (double) (this.getX() + this.getWidth())
-				&& mouseY < (double) (this.getY() + this.getHeight());
+				&& mouseX >= (double)this.getX()
+				&& mouseY >= (double)this.getY()
+				&& mouseX < (double)(this.getX() + this.getWidth())
+				&& mouseY < (double)(this.getY() + this.getHeight());
 	}
 
 	@Override

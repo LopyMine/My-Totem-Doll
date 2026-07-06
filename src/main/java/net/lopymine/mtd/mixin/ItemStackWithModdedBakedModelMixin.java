@@ -1,10 +1,11 @@
 package net.lopymine.mtd.mixin;
 
-import net.lopymine.mtd.utils.mixin.ItemStackWithModdedBakedModel;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import net.lopymine.mtd.utils.mixin.ItemStackWithModdedBakedModel;
 
 @Mixin(ItemStack.class)
 public class ItemStackWithModdedBakedModelMixin implements ItemStackWithModdedBakedModel {

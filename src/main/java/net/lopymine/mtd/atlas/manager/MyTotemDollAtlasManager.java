@@ -9,19 +9,24 @@ import net.lopymine.mtd.atlas.stitch.*;
 import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.thread.MyTotemDollTaskExecutor;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.SpriteContents;
+import net.minecraft.client.renderer.texture.SpriteLoader;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.*;
 import net.minecraft.client.renderer.texture.SpriteLoader.Preparations;
+import net.minecraft.server.packs.resources.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import org.jetbrains.annotations.*;
 
 public class MyTotemDollAtlasManager {
 
-	public static final ResourceLocation ATLAS_ID = MyTotemDoll.id("main_atlas.png");
-	public static final RenderType ATLAS_RENDER_LAYER = RenderType.entityTranslucent(ATLAS_ID);
 	private static final StitchHooksManager STITCH_HOOKS_MANAGER = new StitchHooksManager();
 	private static final AtomicInteger LATEST_ATLAS_VERSION = new AtomicInteger();
+	public static final ResourceLocation ATLAS_ID = MyTotemDoll.id("main_atlas.png");
+	public static final RenderType ATLAS_RENDER_LAYER = RenderType.entityTranslucent(ATLAS_ID);
 	@Nullable
 	private static LockableAtlasTexture ATLAS_TEXTURE;
 
@@ -101,7 +106,7 @@ public class MyTotemDollAtlasManager {
 			this.atlasSprites.forEach(AtlasSprite::markUploaded);
 			MyTotemDollAtlasManager.setAtlas(this.atlas);
 			STITCH_HOOKS_MANAGER.runAllHooks();
-		}
+ 		}
 
 	}
 

@@ -14,29 +14,29 @@ public class ModelTransformExtension {
 				getRoll(root)
 		);
 	}
-
+	
 	public static float getPivotX(PartPose transform) {
-		return transform.x;
+		return  transform.x;
 	}
 
 	public static float getPivotY(PartPose transform) {
-		return transform.y;
+		return  transform.y;
 	}
 
 	public static float getPivotZ(PartPose transform) {
-		return transform.z;
+		return  transform.z;
 	}
 
 	public static float getPitch(PartPose transform) {
-		return transform.xRot;
+		return  transform.xRot;
 	}
 
 	public static float getYaw(PartPose transform) {
-		return transform.yRot;
+		return  transform.yRot;
 	}
 
 	public static float getRoll(PartPose transform) {
-		return transform.zRot;
+		return  transform.zRot;
 	}
 
 	public static PartPose getBlockBenchedModelTransform(PartPose transform) {

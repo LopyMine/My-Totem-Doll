@@ -1,5 +1,7 @@
 package net.lopymine.mtd;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.*;
@@ -9,10 +11,10 @@ public class MyTotemDoll {
 	public static final String MOD_NAME = /*$ mod_name*/ "My Totem Doll";
 	public static final String MOD_ID = /*$ mod_id*/ "my_totem_doll";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);
-	public static final String YACL_DEPEND_VERSION = /*$ yacl*/ "3.8.2+1.21.1-neoforge";
+	public static final String YACL_DEPEND_VERSION = /*$ yacl*/ "3.6.6+1.20.1-fabric";
 
 	public static ResourceLocation id(String path) {
-		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+		return ResourceLocation.tryBuild(MOD_ID, path);
 	}
 
 	public static ResourceLocation getDollTextureId(String path) {
@@ -28,7 +30,7 @@ public class MyTotemDoll {
 	}
 
 	public static ResourceLocation spriteId(String path) {
-		return id(path);
+		return id(String.format("textures/1.20.1/gui/sprites/%s.png", path));
 	}
 
 	public static void onInitialize() {

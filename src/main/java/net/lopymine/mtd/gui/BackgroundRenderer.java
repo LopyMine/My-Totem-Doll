@@ -2,10 +2,11 @@ package net.lopymine.mtd.gui;
 
 import lombok.experimental.ExtensionMethod;
 import net.lopymine.mtd.extension.DrawContextExtension;
-import net.lopymine.mtd.utils.*;
-import net.lopymine.mtd.yacl.custom.TransparencySprites;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
+
+import net.lopymine.mtd.utils.*;
+import net.lopymine.mtd.yacl.custom.TransparencySprites;
 
 @ExtensionMethod(DrawContextExtension.class)
 public class BackgroundRenderer {
@@ -56,7 +57,7 @@ public class BackgroundRenderer {
 
 		// UP
 		if (up) {
-			DrawUtils.drawTexture(context, separatorTexture, x + 2, y, 0, 0, width - 4, 2, 32, 2);
+			DrawUtils.drawTexture(context, separatorTexture, x + 2, y,0, 0, width - 4, 2, 32, 2);
 		}
 
 		// BOTTOM
