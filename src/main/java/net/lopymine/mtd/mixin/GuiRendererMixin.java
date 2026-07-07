@@ -28,11 +28,11 @@ public class GuiRendererMixin {
 			PictureInPictureRenderState elementState,
 			int guiScale,
 			//? if fabric {
-			/*CallbackInfo ci
-			*///?} else {
-			boolean firstPass,
+			CallbackInfo ci
+			//?} else {
+			/*boolean firstPass,
 			CallbackInfoReturnable<Boolean> cir
-			//?}
+			*///?}
 	) {
 		if (!(elementState instanceof TotemDollRenderState totemDollRenderState)) {
 			return;
@@ -54,10 +54,10 @@ public class GuiRendererMixin {
 		guiRenderer.setActive(true);
 		guiRenderer.prepare(totemDollRenderState, this.renderState, guiScale);
 		//? if fabric {
-		/*ci.cancel();
-		*///?} else {
-		cir.setReturnValue(true);
-		 //?}
+		ci.cancel();
+		//?} else {
+		/*cir.setReturnValue(true);
+		 *///?}
 	}
 
 	@Inject(at = @At(value = "TAIL"), method = "preparePictureInPicture")

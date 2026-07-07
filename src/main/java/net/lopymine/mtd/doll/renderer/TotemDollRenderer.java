@@ -32,6 +32,11 @@ import org.jetbrains.annotations.*;
 @ExtensionMethod({ItemStackExtension.class, DrawContextExtension.class})
 public class TotemDollRenderer {
 
+	public static void submitAnyway(SubmitNodeCollector collector, PoseStack matrices, ItemStack stack, DollRenderContext context, int light, int overlay, int outlineColor) {
+		TotemDollData totemDollData = stack.getTotemDollData(false);
+		renderOrSubmitDoll(matrices, totemDollData, stack.getPlayerEntity(), context, null, collector, light, overlay, outlineColor);
+	}
+
 	public static boolean submit(SubmitNodeCollector collector, PoseStack matrices, ItemStack stack, DollRenderContext context, int light, int overlay, int outlineColor) {
 		if (canSubmit(stack)) {
 			TotemDollData totemDollData = stack.getTotemDollData(false);

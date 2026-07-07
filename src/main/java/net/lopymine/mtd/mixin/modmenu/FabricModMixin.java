@@ -2,7 +2,7 @@ package net.lopymine.mtd.mixin.modmenu;
 
 //? if fabric {
 
-/*import com.terraformersmc.modmenu.util.mod.fabric.FabricMod;
+import com.terraformersmc.modmenu.util.mod.fabric.FabricMod;
 import java.util.*;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.lopymine.mtd.MyTotemDoll;
@@ -40,4 +40,4 @@ public class FabricModMixin {
 	}
 }
 
-*///?}
+//?}

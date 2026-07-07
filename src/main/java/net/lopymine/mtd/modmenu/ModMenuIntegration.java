@@ -2,7 +2,7 @@ package net.lopymine.mtd.modmenu;
 
 //? if fabric {
 
-/*import com.terraformersmc.modmenu.api.*;
+import com.terraformersmc.modmenu.api.*;
 import net.fabricmc.loader.api.*;
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.client.MyTotemDollClient;
@@ -30,9 +30,9 @@ public class ModMenuIntegration implements ModMenuApi {
 	}
 }
 
-*///?} elif neoforge {
+//?} elif neoforge {
 
-import net.lopymine.mtd.MyTotemDoll;
+/*import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.loader.MyTotemDollLoader;
 import net.lopymine.mtd.yacl.YACLConfigurationScreen;
@@ -62,4 +62,4 @@ public class ModMenuIntegration {
 	}
 }
 
-//?}
+*///?}
