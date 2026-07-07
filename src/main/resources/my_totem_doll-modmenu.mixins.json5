@@ -8,8 +8,8 @@
     ],
 	"client": [
 		//? if fabric {
-		/*"FabricModMixin"
-		*///?}
+		"FabricModMixin"
+		//?}
 	],
     "injectors": {
         "defaultRequire": 1

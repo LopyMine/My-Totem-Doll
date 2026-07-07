@@ -2,7 +2,7 @@ package net.lopymine.mtd.entrypoint;
 
 //? if fabric {
 
-/*import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.ClientModInitializer;
 import net.lopymine.mtd.client.MyTotemDollClient;
 
 public class ClientEntrypoint implements ClientModInitializer {
@@ -13,9 +13,9 @@ public class ClientEntrypoint implements ClientModInitializer {
 	}
 }
 
-*///?} elif neoforge {
+//?} elif neoforge {
 
-import net.lopymine.mtd.MyTotemDoll;
+/*import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.modmenu.ModMenuIntegration;
 import net.neoforged.api.distmarker.Dist;
@@ -32,4 +32,4 @@ public class ClientEntrypoint {
 
 }
 
-//?}
+*///?}

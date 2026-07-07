@@ -12,8 +12,8 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 //? if neoforge {
-import net.minecraft.client.resources.model.ModelResourceLocation;
-//?}
+/*import net.minecraft.client.resources.model.ModelResourceLocation;
+*///?}
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
@@ -35,7 +35,7 @@ public class ItemRendererMixin {
 			return;
 		}
 		if (TotemDollPlugin.work(stack)) {
-			BakedModel model = this.itemModelShaper.getModelManager().getModel(/*? if fabric {*/ /*TotemDollPlugin.ID *//*?} else {*/ ModelResourceLocation.standalone(TotemDollPlugin.ID)/*?}*/);
+			BakedModel model = this.itemModelShaper.getModelManager().getModel(/*? if fabric {*/ TotemDollPlugin.ID /*?} else {*/ /*ModelResourceLocation.standalone(TotemDollPlugin.ID)*//*?}*/);
 			stack.setModdedModel(true);
 			cir.setReturnValue(model);
 		}

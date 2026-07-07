@@ -2,8 +2,8 @@ package net.lopymine.mtd.pack;
 
 import java.util.concurrent.*;
 //? if fabric {
-/*import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
-*///?}
+import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
+//?}
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.atlas.manager.*;
 import net.lopymine.mtd.loader.MyTotemDollLoader;
@@ -14,7 +14,7 @@ import net.minecraft.server.packs.resources.*;
 import net.minecraft.util.Unit;
 import net.minecraft.util.profiling.ProfilerFiller;
 
-public class MyTotemDollReloadListener implements /*? if fabric {*/ /*IdentifiableResourceReloadListener *//*?} else {*/ PreparableReloadListener /*?}*/ {
+public class MyTotemDollReloadListener implements /*? if fabric {*/ IdentifiableResourceReloadListener /*?} else {*/ /*PreparableReloadListener *//*?}*/ {
 
 	public static void register() {
 		MyTotemDollLoader.registerReloadListener(getId(), new MyTotemDollReloadListener());
@@ -25,11 +25,11 @@ public class MyTotemDollReloadListener implements /*? if fabric {*/ /*Identifiab
 	}
 
 	//? if fabric {
-	/*@Override
+	@Override
 	public ResourceLocation getFabricId() {
 		return getId();
 	}
-	*///?}
+	//?}
 
 	@Override
 	public CompletableFuture<Void> reload(PreparableReloadListener.PreparationBarrier synchronizer, ResourceManager manager, ProfilerFiller prepareProfiler, ProfilerFiller applyProfiler, Executor prepareExecutor, Executor applyExecutor) {

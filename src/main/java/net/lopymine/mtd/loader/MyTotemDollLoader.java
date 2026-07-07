@@ -2,7 +2,7 @@ package net.lopymine.mtd.loader;
 
 //? if fabric {
 
-/*import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.CommandDispatcher;
 import java.nio.file.Path;
 import java.util.function.*;
 import net.fabricmc.fabric.api.client.command.v2.*;
@@ -61,15 +61,15 @@ public class MyTotemDollLoader {
 	}
 
 	//~ client_fabric_commands
-	public static void registerCommands(Consumer<CommandDispatcher<CommandSourceStack>> consumer) {
+	public static void registerCommands(Consumer<CommandDispatcher<FabricClientCommandSource>> consumer) {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> consumer.accept(dispatcher));
 	}
 	//~ !client_fabric_commands
 
 }
-*///?} elif neoforge {
+//?} elif neoforge {
 
-import com.mojang.brigadier.CommandDispatcher;
+/*import com.mojang.brigadier.CommandDispatcher;
 import java.nio.file.Path;
 import java.util.function.*;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -145,4 +145,4 @@ public class MyTotemDollLoader {
 	}
 
 }
-//?}
+*///?}

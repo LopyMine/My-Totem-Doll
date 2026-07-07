@@ -21,7 +21,7 @@ import net.lopymine.mtd.utils.plugin.TotemDollPlugin;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.player.*;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -33,6 +33,14 @@ import org.jetbrains.annotations.*;
 
 @ExtensionMethod({ItemStackExtension.class, DrawContextExtension.class})
 public class TotemDollRenderer {
+
+	public static void renderAnyway(PoseStack matrices, ItemStack stack, DollRenderContext context, int light, int overlay, int outlineColor, @Nullable MultiBufferSource provider) {
+		TotemDollData totemDollData = stack.getTotemDollData(false);
+		TotemDollRenderRequestsCollector.getInstance().requestRender(matrices, totemDollData, stack.getPlayerEntity(), context, light, overlay, outlineColor, provider);
+		if (!ThingMarks.WORLD_RENDERING.get().isMarked()) {
+			TotemDollRenderRequestsCollector.getInstance().render();
+		}
+	}
 
 	public static boolean sentRenderRequest(PoseStack matrices, ItemStack stack, DollRenderContext context, int light, int overlay, int outlineColor, @Nullable MultiBufferSource provider) {
 		if (canRender(stack)) {
@@ -211,7 +219,8 @@ public class TotemDollRenderer {
 
 	private static void prepareStandardDollForRendering(AbstractClientPlayer playerEntity, TotemDollData totemDollData) {
 		if (playerEntity != null && MyTotemDollConfig.getInstance().getStandardTotemDollSkinType() == TotemDollSkinType.HOLDING_PLAYER) {
-			if (!playerEntity.equals(Minecraft.getInstance().player) && playerEntity.isInvisibleTo(Minecraft.getInstance().player)) {
+			LocalPlayer player = Minecraft.getInstance().player;
+			if (player != null && !playerEntity.equals(player) && playerEntity.isInvisibleTo(player)) {
 				return;
 			}
 			totemDollData.setFrameSprites(playerEntity);

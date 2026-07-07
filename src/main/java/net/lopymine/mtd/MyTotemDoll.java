@@ -9,7 +9,7 @@ public class MyTotemDoll {
 	public static final String MOD_NAME = /*$ mod_name*/ "My Totem Doll";
 	public static final String MOD_ID = /*$ mod_id*/ "my_totem_doll";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);
-	public static final String YACL_DEPEND_VERSION = /*$ yacl*/ "3.8.2+1.21.1-neoforge";
+	public static final String YACL_DEPEND_VERSION = /*$ yacl*/ "3.8.2+1.21.1-fabric";
 
 	public static ResourceLocation id(String path) {
 		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
