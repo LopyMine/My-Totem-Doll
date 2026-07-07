@@ -1,2 +1,2 @@
-- Fixed using player skin in totem activation animation with "Holding Player" option
-- Added NeoForge support
+- Added (Neo)Forge support
+- Many bug fixes
