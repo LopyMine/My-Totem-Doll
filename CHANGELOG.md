@@ -1,2 +1,2 @@
-- Added NeoForge support
+- Added (Neo)Forge support
 - Many bug fixes
