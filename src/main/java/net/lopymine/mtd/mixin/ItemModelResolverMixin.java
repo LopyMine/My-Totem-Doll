@@ -25,6 +25,7 @@ public class ItemModelResolverMixin {
 	@Inject(at = @At("HEAD"), method = "appendItemLayers")
 	private void captureEntityForDoll(ItemStackRenderState renderState, ItemStack stack, ItemDisplayContext displayContext, Level world, ItemOwner context, int seed, CallbackInfo ci) {
 		this.myTotemDoll$captureEntity(stack, context == null ? null : context.asLivingEntity(), renderState);
+
 	}
 
 	@WrapOperation(

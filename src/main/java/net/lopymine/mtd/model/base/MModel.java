@@ -41,6 +41,9 @@ public class MModel extends ModelPart {
 	@Nullable
 	private AtlasSprite builtinTexture;
 
+	@Nullable
+	private MAnimation animation;
+
 	public MModel(List<MCuboid> mCuboids, Map<String, MModel> mChildren, ModelState state, String name, @Nullable AtlasSprite builtinTexture) {
 		super(mCuboids.stream().map(MCuboid::asCuboid).toList(), mChildren.entrySet().stream().collect(Collectors.toMap(Entry::getKey, e -> e.getValue().asModelPart())));
 		this.state           = state;
@@ -122,7 +125,7 @@ public class MModel extends ModelPart {
 		if (renderType.isOutline()) {
 			return renderType;
 		} else {
-			return renderType.outline().isPresent() ? (RenderType)renderType.outline().get() : null;
+			return renderType.outline().isPresent() ? renderType.outline().get() : null;
 		}
 	}
 

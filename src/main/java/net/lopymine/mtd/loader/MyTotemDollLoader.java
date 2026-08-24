@@ -6,7 +6,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import java.nio.file.Path;
 import java.util.function.*;
 import net.fabricmc.fabric.api.client.command.v2.*;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.*;
 import net.fabricmc.fabric.api.client.rendering.v1.*;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.fabricmc.loader.api.*;
@@ -47,6 +47,10 @@ public class MyTotemDollLoader {
 
 	public static void registerClientStopping(Runnable runnable) {
 		ClientLifecycleEvents.CLIENT_STOPPING.register((client) -> runnable.run());
+	}
+
+	public static void registerClientTick(Runnable runnable) {
+		ClientTickEvents.START_CLIENT_TICK.register((client) -> runnable.run());
 	}
 
 	public static <T extends TooltipComponent> void registerTooltipComponentFactory(Class<T> type, Function<T, ClientTooltipComponent> factory) {

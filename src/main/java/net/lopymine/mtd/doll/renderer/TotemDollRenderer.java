@@ -2,6 +2,7 @@ package net.lopymine.mtd.doll.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import java.util.Set;
 import lombok.experimental.ExtensionMethod;
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.atlas.AtlasSprite;
@@ -15,6 +16,7 @@ import net.lopymine.mtd.doll.manager.StandardTotemDollManager;
 import net.lopymine.mtd.doll.model.TotemDollModel;
 import net.lopymine.mtd.doll.model.TotemDollModel.Drawer;
 import net.lopymine.mtd.doll.renderer.special.*;
+import net.lopymine.mtd.doll.tick.TotemDollAnimationKey;
 import net.lopymine.mtd.extension.*;
 import net.lopymine.mtd.utils.*;
 import net.lopymine.mtd.utils.plugin.TotemDollPlugin;

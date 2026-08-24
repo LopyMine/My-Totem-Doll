@@ -134,6 +134,12 @@ public class TotemDollRenderProperties {
 			TotemDollModel.enableIfPresent(collection);
 		}
 		model.setSlim(this.isSlim());
+
+		MModel main = model.getMain();
+		MAnimation animation = main.getAnimation();
+		if (animation != null && this.renderContext != null) {
+			animation.apply(main, this.renderContext);
+		}
 	}
 
 	public TotemDollRenderProperties copyFrom(TotemDollRenderProperties properties) {

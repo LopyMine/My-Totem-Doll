@@ -1,0 +1,10 @@
+{
+	"animation_file": "test.json",
+	"standard_model": "3d_doll.bbmodel",
+	"definition": {
+		"FIRST_PERSON_RIGHT_HAND": {
+			"animation_name": "TEST_ANIMATION",
+			"override_model": "3d_doll.bbmodel"
+		}
+	}
+}

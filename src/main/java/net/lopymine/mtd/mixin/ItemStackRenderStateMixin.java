@@ -3,6 +3,7 @@ package net.lopymine.mtd.mixin;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.experimental.ExtensionMethod;
 import net.lopymine.mtd.doll.renderer.*;
+import net.lopymine.mtd.doll.tick.TotemDollAnimationKey;
 import net.lopymine.mtd.extension.ItemStackExtension;
 import net.lopymine.mtd.utils.mixin.ItemRenderStateWithStack;
 import net.minecraft.client.renderer.SubmitNodeCollector;

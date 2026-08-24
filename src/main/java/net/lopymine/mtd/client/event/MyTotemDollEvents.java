@@ -2,6 +2,9 @@ package net.lopymine.mtd.client.event;
 
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.atlas.manager.*;
+import net.lopymine.mtd.doll.data.TotemDollData;
+import net.lopymine.mtd.doll.manager.*;
+import net.lopymine.mtd.doll.tick.TotemDollAnimationTickManager;
 import net.lopymine.mtd.gui.tooltip.combined.*;
 import net.lopymine.mtd.gui.tooltip.info.*;
 import net.lopymine.mtd.gui.tooltip.preview.*;
@@ -33,6 +36,9 @@ public class MyTotemDollEvents {
 			MyTotemDollTaskExecutor.stop();
 			MyTotemDollAtlasManager.close();
 			MyTotemDollAtlasSpriteManager.close();
+		});
+		MyTotemDollLoader.registerClientTick(() -> {
+			TotemDollAnimationTickManager.getInstance().tick();
 		});
 	}
 }

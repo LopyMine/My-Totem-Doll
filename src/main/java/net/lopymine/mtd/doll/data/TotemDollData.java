@@ -174,5 +174,4 @@ public class TotemDollData {
 	public TotemDollGuiElementRenderer createGuiRenderer() {
 		return TotemDollGuiElementRenderer.createGuiRenderer(this.renderProperties);
 	}
-
 }
