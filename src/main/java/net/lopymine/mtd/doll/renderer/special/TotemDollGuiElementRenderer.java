@@ -8,11 +8,11 @@ import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.config.MyTotemDollConfig;
 import net.lopymine.mtd.doll.data.TotemDollRenderProperties;
-import net.lopymine.mtd.doll.renderer.*;
+import net.lopymine.mtd.doll.renderer.TotemDollRenderer;
 import net.lopymine.mtd.extension.ItemStackExtension;
 import net.lopymine.mtd.utils.LightningUtils;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.LightCoordsUtil;
 import org.jetbrains.annotations.NotNull;
@@ -64,12 +64,12 @@ public class TotemDollGuiElementRenderer extends PictureInPictureRenderer<TotemD
 	protected void renderToTexture(TotemDollGuiRenderState state, PoseStack matrices, SubmitNodeCollector collector) {
 		LightningUtils.flat();
 
-		if (state.renderContext() == DollRenderContext.D_PREVIEW && state.data() != null) {
-			TotemDollRenderer.submitPreview(collector, matrices, state.size() + 1, state.data());
+		if (state.data() != null) {
+			TotemDollRenderer.submitPreview(collector, matrices, state.size() + 1, state.data(), state.renderContext(), state.sourceId());
 		} else if (state.stack() != null) {
 			matrices.pushPose();
 			matrices.scale(16F, -16F, -16F);
-			TotemDollRenderer.submitItem(collector, matrices, state.renderContext(), state.stack(), LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0);
+			TotemDollRenderer.submitItem(collector, matrices, state.renderContext(), state.sourceId(), state.stack(), LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0);
 			matrices.popPose();
 
 			if (state.stack().hasModdedModel()) {

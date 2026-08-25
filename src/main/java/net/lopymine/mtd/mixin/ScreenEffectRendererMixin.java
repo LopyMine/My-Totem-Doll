@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.lopymine.mtd.config.MyTotemDollConfig;
 import net.lopymine.mtd.config.totem.TotemDollSkinType;
 import net.lopymine.mtd.doll.renderer.*;
-import net.lopymine.mtd.doll.tick.TotemDollAnimationKey;
 import net.lopymine.mtd.utils.LightningUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -38,9 +37,7 @@ public class ScreenEffectRendererMixin {
 		LightningUtils.flat();
 		AbstractClientPlayer holdingPlayer = MyTotemDollConfig.getInstance().getStandardTotemDollSkinType() == TotemDollSkinType.HOLDING_PLAYER ? Minecraft.getInstance().player : null;
 
-		TotemDollAnimationKey key = TotemDollAnimationKey.of("activation", DollRenderContext.D_FLOATING, )
-
-		TotemDollRenderer.submitItemAnyway(submitNodeCollector, poseStack, DollRenderContext.D_FLOATING, stack, holdingPlayer, lightCoords, overlayCoords, outlineColor);
+		TotemDollRenderer.submitItemAnyway(submitNodeCollector, poseStack, DollRenderContext.D_FLOATING, null, stack, holdingPlayer, lightCoords, overlayCoords, outlineColor);
 	}
 
 }

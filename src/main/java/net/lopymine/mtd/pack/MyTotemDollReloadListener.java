@@ -3,9 +3,10 @@ package net.lopymine.mtd.pack;
 import java.util.concurrent.*;
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.atlas.manager.*;
+import net.lopymine.mtd.doll.tick.TotemDollAnimationTickManager;
 import net.lopymine.mtd.loader.MyTotemDollLoader;
 import net.lopymine.mtd.model.bb.manager.*;
-import net.lopymine.mtd.pack.manager.AdvancedDollConfigsManager;
+import net.lopymine.mtd.pack.manager.AnimatedDollConfigsManager;
 import net.lopymine.mtd.tag.manager.TagsManager;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.*;
@@ -34,8 +35,9 @@ public class MyTotemDollReloadListener implements PreparableReloadListener {
 
 	private void reloadStuff(PreparationBarrier synchronizer, ResourceManager resourceManager, Executor prepareExecutor, Executor applyExecutor) {
 		this.reloadAtlas(synchronizer, prepareExecutor, applyExecutor);
-		AdvancedDollConfigsManager.getInstance().reload();
+		TotemDollAnimationTickManager.getInstance().clear();
 		BlockBenchAnimationsManager.getInstance().reload();
+		AnimatedDollConfigsManager.getInstance().reload();
 		BlockBenchModelManager.reload();
 		TotemDollModelFinder.reload(resourceManager);
 		TagsManager.reloadCustomModelIdsTags();

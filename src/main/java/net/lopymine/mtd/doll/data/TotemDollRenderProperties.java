@@ -36,6 +36,8 @@ public class TotemDollRenderProperties {
 	private TotemDollSprites standardSprites;
 	@Nullable
 	private TotemDollSprites frameSprites;
+	@Nullable
+	private MAnimationRequest animation;
 
 	@Override
 	public boolean equals(Object o) {
@@ -111,6 +113,7 @@ public class TotemDollRenderProperties {
 		this.slim            = sprites.getArmsType().isSlim();
 		this.frameMModel     = null;
 		this.renderContext   = null;
+		this.animation = null;
 	}
 
 	public void clearCachedFrameMModels() {
@@ -134,12 +137,7 @@ public class TotemDollRenderProperties {
 			TotemDollModel.enableIfPresent(collection);
 		}
 		model.setSlim(this.isSlim());
-
-		MModel main = model.getMain();
-		MAnimation animation = main.getAnimation();
-		if (animation != null && this.renderContext != null) {
-			animation.apply(main, this.renderContext);
-		}
+		model.getMain().applyAnimation(this.animation);
 	}
 
 	public TotemDollRenderProperties copyFrom(TotemDollRenderProperties properties) {
@@ -152,6 +150,7 @@ public class TotemDollRenderProperties {
 		this.setFrameMModel(properties.getFrameMModel());
 		this.setStandardSprites(properties.getStandardSprites());
 		this.setFrameSprites(properties.getFrameSprites());
+		this.setAnimation(properties.getAnimation());
 		return this;
 	}
 

@@ -10,6 +10,11 @@ public class TotemDollModelFinder {
 
 	private static final Set<Identifier> BUILTIN_TOTEM_MODELS = new LinkedHashSet<>();
 	private static final Map<String, Set<Identifier>> FOUNDED_TOTEM_MODELS = new LinkedHashMap<>();
+	private static final Map<String, Set<Identifier>> FOUNDED_ANIMATED_TOTEM_MODELS = new LinkedHashMap<>();
+
+	public static Map<String, Set<Identifier>> getFoundedAnimatedTotemModels() {
+		return FOUNDED_ANIMATED_TOTEM_MODELS;
+	}
 
 	public static Map<String, Set<Identifier>> getFoundedTotemModels() {
 		return FOUNDED_TOTEM_MODELS;
@@ -29,7 +34,7 @@ public class TotemDollModelFinder {
 				continue;
 			}
 			pack.listResources(PackType.CLIENT_RESOURCES, MyTotemDoll.MOD_ID, "dolls", (id, input) -> {
-				if (!isModelPath(id)) {
+				if (!isModelFile(id)) {
 					return;
 				}
 
@@ -41,9 +46,33 @@ public class TotemDollModelFinder {
 				}
 			});
 		}
+
+		FOUNDED_ANIMATED_TOTEM_MODELS.clear();
+		for (PackResources pack : list) {
+			String packId = pack.packId().replace("file/", "").replace("mod/", "");
+			if (packId.equals(MyTotemDoll.MOD_ID)) {
+				continue;
+			}
+			pack.listResources(PackType.CLIENT_RESOURCES, MyTotemDoll.MOD_ID, "dolls/animated", (id, input) -> {
+				if (!isJsonFile(id)) {
+					return;
+				}
+
+				Set<Identifier> set = FOUNDED_ANIMATED_TOTEM_MODELS.getOrDefault(packId, new LinkedHashSet<>());
+				set.add(id);
+
+				if (!FOUNDED_ANIMATED_TOTEM_MODELS.containsKey(packId)) {
+					FOUNDED_ANIMATED_TOTEM_MODELS.put(packId, set);
+				}
+			});
+		}
 	}
 
-	private static boolean isModelPath(Identifier id) {
+	private static boolean isJsonFile(Identifier id) {
+		return id.getPath().endsWith(".json") || id.getPath().endsWith(".json5");
+	}
+
+	private static boolean isModelFile(Identifier id) {
 		return id.getPath().endsWith(".bbmodel");
 	}
 }

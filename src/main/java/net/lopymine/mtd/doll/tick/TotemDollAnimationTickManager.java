@@ -3,7 +3,16 @@ package net.lopymine.mtd.doll.tick;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.*;
+import net.lopymine.mtd.config.resourcepack.AnimatedDollConfig;
+import net.lopymine.mtd.config.resourcepack.AnimatedDollConfig.AnimationReference;
+import net.lopymine.mtd.doll.data.TotemDollData;
+import net.lopymine.mtd.doll.renderer.DollRenderContext;
+import net.lopymine.mtd.model.base.*;
+import net.lopymine.mtd.model.bb.BBAnimation;
 import net.lopymine.mtd.model.bb.BBAnimation.BBAnimationEntry;
+import net.lopymine.mtd.model.bb.manager.BlockBenchAnimationsManager;
+import net.lopymine.mtd.pack.manager.AnimatedDollConfigsManager;
+import net.minecraft.client.Minecraft;
 import org.jetbrains.annotations.*;
 
 @Getter
@@ -11,11 +20,12 @@ import org.jetbrains.annotations.*;
 public class TotemDollAnimationTickManager {
 
 	private static final int EXPIRE_TICKS = 20;
+	private static final int RESTART_GAP_TICKS = 2;
+
+	private static final TotemDollAnimationTickManager INSTANCE = new TotemDollAnimationTickManager();
 
 	private final Map<TotemDollAnimationKey, TotemDollAnimationState> states = new ConcurrentHashMap<>();
 	private int currentTick;
-
-	private static final TotemDollAnimationTickManager INSTANCE = new TotemDollAnimationTickManager();
 
 	public static TotemDollAnimationTickManager getInstance() {
 		return INSTANCE;
@@ -35,18 +45,42 @@ public class TotemDollAnimationTickManager {
 		}
 	}
 
-	public TotemDollAnimationState getOrCreate(@NotNull TotemDollAnimationKey key, @NotNull BBAnimationEntry entry) {
-		TotemDollAnimationState state = this.states.computeIfAbsent(key, (createdKey) -> new TotemDollAnimationState(createdKey.animationId(), entry.isLoop(), this.getLengthInTicks(entry), this.currentTick));
-		state.setLastSeenTick(this.currentTick);
-		return state;
+	public static float getPartialTick() {
+		Minecraft client = Minecraft.getInstance();
+		return client.getDeltaTracker().getGameTimeDeltaPartialTick(false);
 	}
 
-	public float getAnimationTicks(@NotNull TotemDollAnimationKey key, @NotNull BBAnimationEntry entry, float partialTick) {
-		return this.getOrCreate(key, entry).getAnimationTicks(partialTick);
+	@Nullable
+	public MAnimationRequest resolve(@NotNull TotemDollData data, @NotNull DollRenderContext renderContext, @Nullable String sourceId) {
+		MModel main = data.getModelToRender().getMain();
+
+		AnimatedDollConfig config = AnimatedDollConfigsManager.getConfigByModelId(main.getLocation());
+		if (config == null) {
+			return null;
+		}
+
+		AnimationReference reference = config.getAnimationReference(renderContext);
+		if (reference == null) {
+			return null;
+		}
+
+		BBAnimation animation = BlockBenchAnimationsManager.getRegisteredConfigs().get(reference.fileId());
+		if (animation == null) {
+			return null;
+		}
+
+		BBAnimationEntry entry = animation.getAnimations().get(reference.name());
+		if (entry == null) {
+			return null;
+		}
+
+		TotemDollAnimationKey key = TotemDollAnimationKey.of(sourceId == null ? TotemDollAnimationKey.sourceOf(renderContext) : sourceId, renderContext, reference.bakeKey());
+
+		return new MAnimationRequest(reference.bakeKey(), reference.name(), entry, this.getAnimationTicks(key, entry));
 	}
 
-	public int getLengthInTicks(@NotNull BBAnimationEntry entry) {
-		return Math.max(entry.getAnimationLength() * 20, 1);
+	public float getAnimationTicks(@NotNull TotemDollAnimationKey key, @NotNull BBAnimationEntry entry) {
+		return this.getOrCreate(key, entry).getAnimationTicks(getPartialTick());
 	}
 
 	@Nullable
@@ -61,11 +95,26 @@ public class TotemDollAnimationTickManager {
 		}
 	}
 
+	public TotemDollAnimationState getOrCreate(@NotNull TotemDollAnimationKey key, @NotNull BBAnimationEntry entry) {
+		TotemDollAnimationState state = this.states.computeIfAbsent(key, (createdKey) -> new TotemDollAnimationState(createdKey.animationId(), entry.isLoop(), MAnimation.getLengthInTicks(entry), this.currentTick));
+
+		if (this.currentTick - state.getLastSeenTick() > RESTART_GAP_TICKS) {
+			state.restart();
+		}
+
+		state.setLastSeenTick(this.currentTick);
+		return state;
+	}
+
 	public void remove(@NotNull TotemDollAnimationKey key) {
-		states.remove(key);
+		this.states.remove(key);
+	}
+
+	public void removeBySource(@NotNull String sourceId) {
+		this.states.keySet().removeIf((key) -> key.sourceId().equals(sourceId));
 	}
 
 	public void clear() {
-		states.clear();
+		this.states.clear();
 	}
 }

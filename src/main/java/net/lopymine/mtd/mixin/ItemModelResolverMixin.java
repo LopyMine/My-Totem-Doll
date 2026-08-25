@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.*;
 import java.util.function.Supplier;
 import lombok.experimental.ExtensionMethod;
 import net.lopymine.mtd.client.MyTotemDollClient;
+import net.lopymine.mtd.doll.tick.TotemDollAnimationKey;
 import net.lopymine.mtd.extension.ItemStackExtension;
 import net.lopymine.mtd.utils.mixin.ItemRenderStateWithStack;
 import net.lopymine.mtd.utils.plugin.TotemDollPlugin;
@@ -24,7 +25,7 @@ public class ItemModelResolverMixin {
 
 	@Inject(at = @At("HEAD"), method = "appendItemLayers")
 	private void captureEntityForDoll(ItemStackRenderState renderState, ItemStack stack, ItemDisplayContext displayContext, Level world, ItemOwner context, int seed, CallbackInfo ci) {
-		this.myTotemDoll$captureEntity(stack, context == null ? null : context.asLivingEntity(), renderState);
+		this.myTotemDoll$captureEntity(stack, context, renderState);
 
 	}
 
@@ -54,13 +55,16 @@ public class ItemModelResolverMixin {
 	}
 
 	@Unique
-	private void myTotemDoll$captureEntity(ItemStack stack, @Nullable LivingEntity entity, ItemStackRenderState renderState) {
+	private void myTotemDoll$captureEntity(ItemStack stack, @Nullable ItemOwner context, ItemStackRenderState renderState) {
+		LivingEntity entity = context == null ? null : context.asLivingEntity();
+
 		stack.setPlayerEntity(null);
 		if (entity instanceof AbstractClientPlayer player) {
 			stack.setPlayerEntity(player);
 		}
 		if (renderState instanceof ItemRenderStateWithStack itemRenderStateWithStack) {
 			itemRenderStateWithStack.myTotemDoll$setStack(stack);
+			itemRenderStateWithStack.myTotemDoll$setSourceId(context instanceof Entity owner ? TotemDollAnimationKey.sourceOf(owner) : null);
 		}
 	}
 

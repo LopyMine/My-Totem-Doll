@@ -61,7 +61,8 @@ public class TagsManager {
 	}
 
 	public static void reloadCustomModelIdsTags() {
-		Collection<Set<Identifier>> values = TotemDollModelFinder.getFoundedTotemModels().values();
+		Collection<Set<Identifier>> values = new ArrayList<>(TotemDollModelFinder.getFoundedTotemModels().values());
+		values.addAll(TotemDollModelFinder.getFoundedTotemModels().values());
 		Set<Character> characters = getRegisteredTags().keySet();
 		TagsGenerator generator = new TagsGenerator();
 

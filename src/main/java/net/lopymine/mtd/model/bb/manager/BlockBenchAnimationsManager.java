@@ -3,7 +3,6 @@ package net.lopymine.mtd.model.bb.manager;
 import com.mojang.serialization.Codec;
 import java.util.*;
 import net.lopymine.mtd.client.MyTotemDollClient;
-import net.lopymine.mtd.config.resourcepack.AdvancedDollConfig;
 import net.lopymine.mtd.model.bb.BBAnimation;
 import net.lopymine.mtd.pack.manager.AbstractConfigsManager;
 import net.minecraft.resources.Identifier;

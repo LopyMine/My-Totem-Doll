@@ -1,0 +1,18 @@
+{
+	"standard_animation": "test/TEST_ANIMATION",
+	"standard_model": "3d_doll.bbmodel",
+	"definition": {
+		"FIRST_PERSON_RIGHT_HAND": {
+			"animation": "test/TEST_ANIMATION",
+			"model": "3d_doll.bbmodel"
+		},
+		"GUI": {
+			"animation": "test/TEST_ANIMATION2",
+			"model": "3d_doll.bbmodel"
+		},
+		"THIRD_PERSON_LEFT_HAND": {
+			"animation": "test/TEST_ANIMATION3",
+			"model": "3d_doll.bbmodel"
+		}
+	}
+}

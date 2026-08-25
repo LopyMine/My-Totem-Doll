@@ -3,7 +3,6 @@ package net.lopymine.mtd.mixin;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.experimental.ExtensionMethod;
 import net.lopymine.mtd.doll.renderer.*;
-import net.lopymine.mtd.doll.tick.TotemDollAnimationKey;
 import net.lopymine.mtd.extension.ItemStackExtension;
 import net.lopymine.mtd.utils.mixin.ItemRenderStateWithStack;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -26,6 +25,10 @@ public class ItemStackRenderStateMixin implements ItemRenderStateWithStack {
 	private ItemStack myTotemDoll$stack;
 
 	@Unique
+	@Nullable
+	private String myTotemDoll$sourceId;
+
+	@Unique
 	private boolean myTotemDoll$shouldClear = true;
 
 	@Inject(at = @At("HEAD"), method = "submit", cancellable = true)
@@ -33,7 +36,7 @@ public class ItemStackRenderStateMixin implements ItemRenderStateWithStack {
 		DollRenderContext context = DollRenderContext.of(this.displayContext);
 
 		if (this.myTotemDoll$stack != null) {
-			if (TotemDollRenderer.submitItem(submitNodeCollector, poseStack, context, this.myTotemDoll$stack, lightCoords, overlayCoords, outlineColor)) {
+			if (TotemDollRenderer.submitItem(submitNodeCollector, poseStack, context, this.myTotemDoll$sourceId, this.myTotemDoll$stack, lightCoords, overlayCoords, outlineColor)) {
 				ci.cancel();
 			}
 		}
@@ -42,13 +45,25 @@ public class ItemStackRenderStateMixin implements ItemRenderStateWithStack {
 			if (this.myTotemDoll$stack != null && this.myTotemDoll$stack.hasModdedModel()) {
 				this.myTotemDoll$stack.setModdedModel(false);
 			}
-			this.myTotemDoll$stack = null;
+			this.myTotemDoll$stack    = null;
+			this.myTotemDoll$sourceId = null;
 		}
 	}
 
 	@Override
 	public void myTotemDoll$setStack(ItemStack stack) {
 		this.myTotemDoll$stack = stack;
+	}
+
+	@Override
+	public void myTotemDoll$setSourceId(@Nullable String sourceId) {
+		this.myTotemDoll$sourceId = sourceId;
+	}
+
+	@Override
+	@Nullable
+	public String myTotemDoll$getSourceId() {
+		return this.myTotemDoll$sourceId;
 	}
 
 	@Override
@@ -59,7 +74,7 @@ public class ItemStackRenderStateMixin implements ItemRenderStateWithStack {
 	@Override
 	public void myTotemDoll$reset() {
 		this.myTotemDoll$stack       = null;
+		this.myTotemDoll$sourceId = null;
 		this.myTotemDoll$shouldClear = false;
 	}
 }
-

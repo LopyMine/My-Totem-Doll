@@ -2,7 +2,6 @@ package net.lopymine.mtd.doll.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import java.util.Set;
 import lombok.experimental.ExtensionMethod;
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.atlas.AtlasSprite;
@@ -16,7 +15,7 @@ import net.lopymine.mtd.doll.manager.StandardTotemDollManager;
 import net.lopymine.mtd.doll.model.TotemDollModel;
 import net.lopymine.mtd.doll.model.TotemDollModel.Drawer;
 import net.lopymine.mtd.doll.renderer.special.*;
-import net.lopymine.mtd.doll.tick.TotemDollAnimationKey;
+import net.lopymine.mtd.doll.tick.*;
 import net.lopymine.mtd.extension.*;
 import net.lopymine.mtd.utils.*;
 import net.lopymine.mtd.utils.plugin.TotemDollPlugin;
@@ -25,7 +24,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.player.*;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.*;
+import net.minecraft.util.Util;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.*;
 import org.jetbrains.annotations.*;
@@ -36,29 +35,32 @@ public class TotemDollRenderer {
 
 	// SUBMIT METHODS
 
-	public static void submitItemAnyway(SubmitNodeCollector collector, PoseStack matrices, DollRenderContext context, ItemStack stack, @Nullable AbstractClientPlayer holdingPlayer, int light, int overlay, int outlineColor) {
+	public static void submitItemAnyway(SubmitNodeCollector collector, PoseStack matrices, DollRenderContext context, @Nullable String sourceId, ItemStack stack, @Nullable AbstractClientPlayer holdingPlayer, int light, int overlay, int outlineColor) {
 		TotemDollData totemDollData = stack.getTotemDollData(false);
 		TotemDollRenderState renderState = new TotemDollRenderState(totemDollData, light, overlay, outlineColor);
-		TotemDollRenderer.submitSpecial(collector, matrices, holdingPlayer, context, renderState);
+		TotemDollRenderer.submitSpecial(collector, matrices, holdingPlayer, context, sourceId, renderState);
 	}
 
-	public static boolean submitItem(SubmitNodeCollector collector, PoseStack matrices, DollRenderContext context, ItemStack stack, int light, int overlay, int outlineColor) {
+	public static boolean submitItem(SubmitNodeCollector collector, PoseStack matrices, DollRenderContext context, @Nullable String sourceId, ItemStack stack, int light, int overlay, int outlineColor) {
 		if (canSubmit(stack)) {
 			TotemDollData totemDollData = stack.getTotemDollData(false);
 			TotemDollRenderState renderState = new TotemDollRenderState(totemDollData, light, overlay, outlineColor);
-			TotemDollRenderer.submitSpecial(collector, matrices, stack.getPlayerEntity(), context, renderState);
+			TotemDollRenderer.submitSpecial(collector, matrices, stack.getPlayerEntity(), context, sourceId, renderState);
 			return true;
 		}
 		return false;
 	}
 
-	public static void submitPreview(SubmitNodeCollector collector, PoseStack matrices, float size, @NotNull TotemDollData data) {
+	public static void submitPreview(SubmitNodeCollector collector, PoseStack matrices, float size, @NotNull TotemDollData data, DollRenderContext renderContext, @Nullable String sourceId) {
 		float i = (size / 2F);
 
 		long currentTime = Util.getMillis();
 		float rotationSpeed = 0.05f;
 
 		float rotation = (currentTime * rotationSpeed) % 360;
+
+		data.getRenderProperties().setRenderContext(renderContext);
+		prepareAnimation(data, renderContext, sourceId);
 
 		matrices.pushPose();
 		matrices.scale(-i, -i, i);
@@ -68,7 +70,7 @@ public class TotemDollRenderer {
 		matrices.popPose();
 	}
 
-	public static void submitSpecial(SubmitNodeCollector collector, PoseStack matrices, AbstractClientPlayer holdingPlayer, DollRenderContext context, TotemDollRenderState renderState) {
+	public static void submitSpecial(SubmitNodeCollector collector, PoseStack matrices, AbstractClientPlayer holdingPlayer, DollRenderContext context, @Nullable String sourceId, TotemDollRenderState renderState) {
 		DollRenderContext renderContext = context == DollRenderContext.D_NONE ? DollRenderContext.D_GUI : context;
 		TotemDollData data = renderState.data();
 
@@ -77,6 +79,7 @@ public class TotemDollRenderer {
 		matrices.pushPose();
 		renderContext.apply(data.getModelToRender().getMain(), matrices);
 		data.getRenderProperties().setRenderContext(renderContext);
+		prepareAnimation(data, renderContext, sourceId);
 		matrices.translate(-0.5F, -1.0F, -0.5F);
 
 		String nickname = data.getNickname();
@@ -97,6 +100,10 @@ public class TotemDollRenderer {
 		afterDollSubmit();
 	}
 
+	private static void prepareAnimation(TotemDollData data, DollRenderContext renderContext, @Nullable String sourceId) {
+		data.getRenderProperties().setAnimation(TotemDollAnimationTickManager.getInstance().resolve(data, renderContext, sourceId));
+	}
+
 	// EXTRACT METHODS
 
 	public static void extractPreview(GuiGraphicsExtractor context, int x, int y, int width, int height, float size, @Nullable TotemDollData data) {
@@ -115,7 +122,7 @@ public class TotemDollRenderer {
 			context.guiRenderState.addPicturesInPictureState(new ItemGuiRenderState(Items.TOTEM_OF_UNDYING.getDefaultInstance(), x, y, width, height, size, Axis.YP.rotationDegrees(rotation), context.scissorStack.peek()));
 		} else {
 			data.getRenderProperties().setRenderContext(renderContext);
-			context.guiRenderState.addPicturesInPictureState(TotemDollGuiRenderState.getPreview(data, x, y, width, height, size, context.scissorStack.peek()));
+			context.guiRenderState.addPicturesInPictureState(TotemDollGuiRenderState.getPreview(data, TotemDollAnimationKey.sourceOf("preview", x, y), renderContext, x, y, width, height, size, context.scissorStack.peek()));
 		}
 	}
 

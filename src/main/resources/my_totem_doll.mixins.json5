@@ -28,8 +28,7 @@
 	    "accessor.CubeDeformationAccessor",
 	    "bruh.FeatureRenderDispatcherMixin",
 	    "bruh.SubmitNodeCollectionAccessor",
-	    "TextureAtlasMixin",
-	    "EntityRenderDispatcherMixin"
+	    "TextureAtlasMixin",
     ],
     "injectors": {
         "defaultRequire": 1

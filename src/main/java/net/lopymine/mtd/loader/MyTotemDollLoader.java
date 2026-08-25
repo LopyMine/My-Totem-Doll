@@ -119,6 +119,10 @@ public class MyTotemDollLoader {
 		NeoForge.EVENT_BUS.addListener(ClientStoppingEvent.class, (event) -> runnable.run());
 	}
 
+	public static void registerClientTick(Runnable runnable) {
+		NeoForge.EVENT_BUS.addListener(ClientTickEvent.Pre.class, (event) -> runnable.run());
+	}
+
 	public static <T extends TooltipComponent> void registerTooltipComponentFactory(Class<T> type, Function<T, ClientTooltipComponent> factory) {
 		getModBus().addListener(RegisterClientTooltipComponentFactoriesEvent.class, (event) -> event.register(type, factory));
 	}

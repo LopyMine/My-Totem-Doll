@@ -9,12 +9,9 @@ import net.lopymine.mtd.atlas.manager.MyTotemDollAtlasManager;
 import net.lopymine.mtd.bruh.BufferConsumer;
 import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.config.MyTotemDollConfig;
-import net.lopymine.mtd.config.resourcepack.AdvancedDollConfig;
 import net.lopymine.mtd.doll.data.TotemDollSprites;
 import net.lopymine.mtd.model.base.*;
-import net.lopymine.mtd.model.bb.BBAnimation;
-import net.lopymine.mtd.model.bb.manager.*;
-import net.lopymine.mtd.pack.manager.AdvancedDollConfigsManager;
+import net.lopymine.mtd.model.bb.manager.BlockBenchModelManager;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.rendertype.*;
 import net.minecraft.resources.Identifier;
@@ -78,19 +75,6 @@ public class TotemDollModel extends Model<Object> {
 		disableIfPresent(this.rightArmWide);
 
 		this.resetPartsVisibility();
-	}
-
-	public static MModel createMModel(Identifier modelId) {
-		MModel model = BlockBenchModelManager.getModel(modelId);
-
-		AdvancedDollConfig config = AdvancedDollConfigsManager.getRegisteredConfigs().get(modelId);
-		if (config == null) {
-			return model;
-		}
-
-
-
-		return model;
 	}
 
 	public static MModel createDollModel() {

@@ -1,5 +1,6 @@
 package net.lopymine.mtd.model.bb;
 
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import java.util.*;
 import java.util.Map.Entry;
@@ -29,14 +30,19 @@ public class BBAnimation {
 	@AllArgsConstructor
 	public static class BBAnimationEntry {
 
+		public static final Codec<Boolean> LOOP_CODEC = Codec.either(BOOL, STRING).xmap(
+				(either) -> either.map((value) -> value, (value) -> value.equals("loop")),
+				Either::left
+		);
+
 		public static final Codec<BBAnimationEntry> CODEC = create((instance) -> instance.group(
-				option("loop", false, BOOL, BBAnimationEntry::isLoop),
-				option("animation_length", 0, INT, BBAnimationEntry::getAnimationLength),
+				option("loop", false, LOOP_CODEC, BBAnimationEntry::isLoop),
+				option("animation_length", 0F, FLOAT, BBAnimationEntry::getAnimationLength),
 				option("bones", new HashMap<>(), Codec.unboundedMap(STRING, BBAnimationBone.CODEC), BBAnimationEntry::getBones)
 		).apply(instance, BBAnimationEntry::new));
 
 		private boolean loop;
-		private int animationLength;
+		private float animationLength;
 		private Map<String, BBAnimationBone> bones;
 
 	}

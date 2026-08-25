@@ -3,6 +3,7 @@ package net.lopymine.mtd.mixin;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.lopymine.mtd.doll.renderer.TotemDollRenderer;
 import net.lopymine.mtd.doll.renderer.special.TotemDollGuiRenderState;
+import net.lopymine.mtd.doll.tick.TotemDollAnimationKey;
 import net.lopymine.mtd.utils.mixin.ItemRenderStateWithStack;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.GuiGraphicsExtractor.ScissorStack;
@@ -53,7 +54,7 @@ public class GuiGraphicsMixin {
 		if (!TotemDollRenderer.canSubmit(stack)) {
 			return false;
 		}
-		this.guiRenderState.addPicturesInPictureState(TotemDollGuiRenderState.getGui(stack, x, y, new Matrix3x2f(this.pose), this.scissorStack.peek()));
+		this.guiRenderState.addPicturesInPictureState(TotemDollGuiRenderState.getGui(stack, TotemDollAnimationKey.sourceOfGui(x, y), x, y, new Matrix3x2f(this.pose), this.scissorStack.peek()));
 		ci.cancel();
 		return true;
 	}

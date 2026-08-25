@@ -5,7 +5,7 @@ import net.lopymine.mtd.doll.renderer.DollRenderContext;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.renderer.state.gui.pip.PictureInPictureRenderState;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.*;
 import org.joml.*;
 import org.jspecify.annotations.NonNull;
 
@@ -14,6 +14,8 @@ public record TotemDollGuiRenderState(
 		TotemDollData data,
 		@Nullable
 		ItemStack stack,
+		@NotNull
+		String sourceId,
 		int x,
 		int y,
 		int width,
@@ -25,12 +27,12 @@ public record TotemDollGuiRenderState(
 		@Nullable ScreenRectangle bounds
 ) implements PictureInPictureRenderState {
 
-	public static TotemDollGuiRenderState getGui(ItemStack stack, int x, int y, Matrix3x2f matrices, @Nullable ScreenRectangle scissorArea) {
-		return new TotemDollGuiRenderState(null, stack, x, y, 16, 16, 16, DollRenderContext.D_GUI, matrices, scissorArea, PictureInPictureRenderState.getBounds(x, y, x + 16, y + 16, scissorArea));
+	public static TotemDollGuiRenderState getGui(ItemStack stack, @NotNull String sourceId, int x, int y, Matrix3x2f matrices, @Nullable ScreenRectangle scissorArea) {
+		return new TotemDollGuiRenderState(null, stack, sourceId, x, y, 16, 16, 16, DollRenderContext.D_GUI, matrices, scissorArea, PictureInPictureRenderState.getBounds(x, y, x + 16, y + 16, scissorArea));
 	}
 
-	public static TotemDollGuiRenderState getPreview(TotemDollData data, int x, int y, int width, int height, float size, @Nullable ScreenRectangle scissorArea) {
-		return new TotemDollGuiRenderState(data, null, x, y, width, height, size, DollRenderContext.D_PREVIEW, null, scissorArea, PictureInPictureRenderState.getBounds(x, y, x + width, y + height, scissorArea));
+	public static TotemDollGuiRenderState getPreview(TotemDollData data, @NotNull String sourceId, DollRenderContext renderContext, int x, int y, int width, int height, float size, @Nullable ScreenRectangle scissorArea) {
+		return new TotemDollGuiRenderState(data, null, sourceId, x, y, width, height, size, renderContext, null, scissorArea, PictureInPictureRenderState.getBounds(x, y, x + width, y + height, scissorArea));
 	}
 
 	@Override

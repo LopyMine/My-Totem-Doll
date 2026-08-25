@@ -12,7 +12,7 @@ import net.lopymine.mtd.extension.*;
 import net.lopymine.mtd.model.bb.*;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
-import net.minecraft.client.renderer.rendertype.*;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.*;
 import net.minecraft.client.resources.model.cuboid.ItemTransforms;
 import net.minecraft.resources.Identifier;
@@ -41,8 +41,9 @@ public class MModel extends ModelPart {
 	@Nullable
 	private AtlasSprite builtinTexture;
 
+	private final Map<String, Optional<MAnimation>> bakedAnimations = new HashMap<>();
 	@Nullable
-	private MAnimation animation;
+	private MAnimation activeAnimation;
 
 	public MModel(List<MCuboid> mCuboids, Map<String, MModel> mChildren, ModelState state, String name, @Nullable AtlasSprite builtinTexture) {
 		super(mCuboids.stream().map(MCuboid::asCuboid).toList(), mChildren.entrySet().stream().collect(Collectors.toMap(Entry::getKey, e -> e.getValue().asModelPart())));
@@ -69,6 +70,55 @@ public class MModel extends ModelPart {
 	@Override
 	public void render(PoseStack matrices, VertexConsumer vertices, int light, int overlay, int color) {
 		// NO-OP
+	}
+
+	@Nullable
+	public MModel findModelByName(String modelName) {
+		if (this.name.equals(modelName)) {
+			return this;
+		}
+
+		MModel model = this.mChildren.get(modelName);
+		if (model != null) {
+			return model;
+		}
+
+		for (MModel child : this.mChildrenModels) {
+			MModel found = child.findModelByName(modelName);
+			if (found != null) {
+				return found;
+			}
+		}
+
+		return null;
+	}
+
+	public void applyAnimation(@Nullable MAnimationRequest request) {
+		if (this.activeAnimation != null) {
+			this.activeAnimation.reset();
+			this.activeAnimation = null;
+		}
+
+		if (request == null) {
+			return;
+		}
+
+		MAnimation animation = this.bakedAnimations.computeIfAbsent(
+				request.bakeKey(),
+				(key) -> Optional.ofNullable(MAnimation.bake(request.animationName(), request.entry(), this))
+		).orElse(null);
+
+		if (animation == null) {
+			return;
+		}
+
+		this.activeAnimation = animation;
+		animation.apply(request.ticks());
+	}
+
+	public void clearBakedAnimations() {
+		this.activeAnimation = null;
+		this.bakedAnimations.clear();
 	}
 
 	public MModelCollection findModels(String suffix) {
