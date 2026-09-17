@@ -5,10 +5,14 @@ import net.minecraft.client.renderer.feature.phase.*;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
+//? if >=26.3 {
+import net.minecraft.client.renderer.feature.submit.TranslucentSubmit;
+//?}
+
 @Mixin(SubmitNodeCollection.class)
 public interface SubmitNodeCollectionAccessor {
 
 	@Accessor("translucentModels")
-	TranslucentFeatureRenderPhase getTranslucentModels();
+	/*? if >=26.3 {*/FeatureRenderPhase<? super TranslucentSubmit>/*?} else {*//*TranslucentFeatureRenderPhase*//*?}*/ getTranslucentModels();
 
 }

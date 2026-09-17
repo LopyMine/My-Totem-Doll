@@ -1,7 +1,6 @@
 package net.lopymine.mtd.mixin.yacl.widget;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.*;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.lopymine.mtd.gui.BackgroundRenderer;
 import net.lopymine.mtd.yacl.YACLConfigurationScreen;
 import net.minecraft.client.Minecraft;
@@ -11,6 +10,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
+
+//? if >=26.3 {
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
+//?} else {
+/*import com.mojang.blaze3d.pipeline.RenderPipeline;
+*///?}
 
 @Mixin(EditBox.class)
 public abstract class EditBoxMixin extends AbstractWidget implements Renderable {
@@ -22,7 +27,11 @@ public abstract class EditBoxMixin extends AbstractWidget implements Renderable 
 	@Shadow
 	protected abstract boolean isEditable();
 
-	@WrapOperation(method = "extractWidgetRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V"))
+	//? if >=26.3 {
+	@WrapOperation(method = "extractWidgetRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/renderpearl/api/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V"))
+	//?} else {
+	/*@WrapOperation(method = "extractWidgetRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V"))
+	*///?}
 	private void renderTransparencyWidget(GuiGraphicsExtractor instance, RenderPipeline renderPipeline, Identifier identifier, int x, int y, int width, int height, Operation<Void> original) {
 		if (YACLConfigurationScreen.notOpen(Minecraft.getInstance().gui.screen())) {
 			original.call(instance, renderPipeline, identifier, x, y, width, height);

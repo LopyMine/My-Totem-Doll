@@ -18,7 +18,7 @@ public class ItemGuiElementRenderer extends PictureInPictureRenderer<ItemGuiRend
 	@Override
 	protected void renderToTexture(ItemGuiRenderState state, PoseStack matrices, SubmitNodeCollector collector) {
 		LightningUtils.flat();
-		matrices.mulPose(state.rotation());
+		matrices./*? if >=26.3 {*/rotate/*?} else {*//*mulPose*//*?}*/(state.rotation());
 		float size = state.size();
 		matrices.scale(-size, -size, size);
 		Minecraft.getInstance().getItemModelResolver().updateForTopItem(

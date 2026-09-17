@@ -15,11 +15,18 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 
+//? if >=26.3 {
+import com.llamalad7.mixinextras.sugar.Local;
+import net.minecraft.client.renderer.state.level.PlayerRenderState;
+//?}
+
 @Mixin(ScreenEffectRenderer.class)
 public class ScreenEffectRendererMixin {
 
-	@Shadow
+	//? if <26.3 {
+	/*@Shadow
 	private @Nullable ItemStack itemActivationItem;
+	*///?}
 
 	@WrapOperation(
 			at = @At(
@@ -28,8 +35,11 @@ public class ScreenEffectRendererMixin {
 			),
 			method = "renderItemActivationAnimation"
 	)
-	private void renderFloatingDoll(ItemStackRenderState instance, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, int overlayCoords, int outlineColor, Operation<Void> original) {
-		ItemStack stack = this.itemActivationItem;
+	private void renderFloatingDoll(ItemStackRenderState instance, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, int overlayCoords, int outlineColor, Operation<Void> original/*? if >=26.3 {*/, @Local(argsOnly = true) PlayerRenderState playerRenderState/*?}*/) {
+		ItemStack stack = /*? if >=26.3 {*/null/*?} else {*//*this.itemActivationItem*//*?}*/;
+		if (playerRenderState.itemActivation != null) {
+			stack = playerRenderState.itemActivation.item;
+		}
 		if (!TotemDollRenderer.canSubmit(stack) || stack == null) {
 			original.call(instance, poseStack, submitNodeCollector, lightCoords, overlayCoords, outlineColor);
 			return;

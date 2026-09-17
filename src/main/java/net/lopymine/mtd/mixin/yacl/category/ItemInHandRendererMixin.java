@@ -3,29 +3,86 @@ package net.lopymine.mtd.mixin.yacl.category;
 import com.llamalad7.mixinextras.injector.wrapoperation.*;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
-import com.mojang.blaze3d.vertex.PoseStack;
 import dev.isxander.yacl3.gui.YACLScreen;
-import java.util.function.Consumer;
 import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.yacl.YACLConfigurationScreen;
 import net.lopymine.mtd.yacl.custom.category.rendering.RenderingCategoryTab;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.*;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.ItemInHandRenderer.HandRenderSelection;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.*;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(ItemInHandRenderer.class)
+//? if >=26.3 {
+import net.minecraft.client.renderer.state.level.FirstPersonHandsAndItemsRenderState.HandRenderSelection;
+//?} else {
+/*import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.ItemInHandRenderer.HandRenderSelection;
+import net.minecraft.world.InteractionHand;
+*///?}
+
+//? if >=26.3 {
+@Mixin(FirstPersonHandsAndItems.class)
+//?} else {
+/*@Mixin(ItemInHandRenderer.class)
+*///?}
 public class ItemInHandRendererMixin {
 
+	//? if >=26.3 {
 	@Inject(
+			at = @At("HEAD"),
+			method = "extractRenderState"
+	)
+	private void createBoolean(CallbackInfo ci, @Share("mtd_bl") LocalBooleanRef ref) {
+		myTotemDoll$createBoolean(ref);
+	}
+
+	@WrapOperation(
+			at = @At(
+					value = "INVOKE",
+					target = "Lnet/minecraft/client/player/FirstPersonHandsAndItems;evaluateWhichHandsToRender(Lnet/minecraft/client/player/LocalPlayer;)Lnet/minecraft/client/renderer/state/level/FirstPersonHandsAndItemsRenderState$HandRenderSelection;"
+			),
+			method = "extractRenderState"
+	)
+	private HandRenderSelection swapRenderSelection(LocalPlayer player, Operation<HandRenderSelection> original, @Share("mtd_bl") LocalBooleanRef ref) {
+		if (ref.get()) {
+			return HandRenderSelection.RENDER_BOTH_HANDS;
+		}
+		return original.call(player);
+	}
+
+	@WrapOperation(
+			at = @At(
+					value = "FIELD",
+					target = "Lnet/minecraft/client/player/FirstPersonHandsAndItems;mainHandItem:Lnet/minecraft/world/item/ItemStack;",
+					opcode = Opcodes.GETFIELD
+			),
+			method = "extractRenderState"
+	)
+	private ItemStack swapMainHandStack(FirstPersonHandsAndItems instance, Operation<ItemStack> original, @Share("mtd_bl") LocalBooleanRef ref) {
+		ItemStack stack = original.call(instance);
+		return ref.get() ? myTotemDoll$getDollStack(stack) : stack;
+	}
+
+	@WrapOperation(
+			at = @At(
+					value = "FIELD",
+					target = "Lnet/minecraft/client/player/FirstPersonHandsAndItems;offHandItem:Lnet/minecraft/world/item/ItemStack;",
+					opcode = Opcodes.GETFIELD
+			),
+			method = "extractRenderState"
+	)
+	private ItemStack swapOffHandStack(FirstPersonHandsAndItems instance, Operation<ItemStack> original, @Share("mtd_bl") LocalBooleanRef ref) {
+		ItemStack stack = original.call(instance);
+		return ref.get() ? myTotemDoll$getDollStack(stack) : stack;
+	}
+	//?} else {
+	/*@Inject(
 			at = @At("HEAD"),
 			method = "submitHandsWithItems"
 	)
@@ -70,13 +127,9 @@ public class ItemInHandRendererMixin {
 			method = "submitHandsWithItems"
 	)
 	private void swapRenderingStack(ItemInHandRenderer instance, AbstractClientPlayer playerEntity, float a, float b, InteractionHand hand, float c, ItemStack stack, float d, PoseStack matrixStack, SubmitNodeCollector queue, int i, Operation<Void> original, @Share("mtd_bl") LocalBooleanRef ref) {
-		Consumer<ItemStack> consumer = (itemStack) -> original.call(instance, playerEntity, a, b, hand, c, itemStack, d, matrixStack, queue, i);
-		if (ref.get()) {
-			myTotemDoll$renderDoll(stack, consumer);
-		} else {
-			consumer.accept(stack);
-		}
+		original.call(instance, playerEntity, a, b, hand, c, ref.get() ? myTotemDoll$getDollStack(stack) : stack, d, matrixStack, queue, i);
 	}
+	*///?}
 
 	@Unique
 	private static void myTotemDoll$createBoolean(LocalBooleanRef ref) {
@@ -101,20 +154,18 @@ public class ItemInHandRendererMixin {
 	}
 
 	@Unique
-	private static void myTotemDoll$renderDoll(ItemStack original, Consumer<ItemStack> draw) {
+	private static ItemStack myTotemDoll$getDollStack(ItemStack original) {
 		LocalPlayer player = Minecraft.getInstance().player;
 		if (player == null) {
-			draw.accept(original);
-			return;
+			return original;
 		}
 		if (original.isEmpty() || !MyTotemDollClient.canProcess(original)) {
 			ItemStack totem = Items.TOTEM_OF_UNDYING.getDefaultInstance();
 
 			totem.set(DataComponents.CUSTOM_NAME, player.getName());
 
-			draw.accept(totem);
-			return;
+			return totem;
 		}
-		draw.accept(original);
+		return original;
 	}
 }

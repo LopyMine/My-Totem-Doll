@@ -64,7 +64,7 @@ public class TotemDollRenderer {
 
 		matrices.pushPose();
 		matrices.scale(-i, -i, i);
-		matrices.mulPose(Axis.YP.rotationDegrees(rotation));
+		matrices./*? if >=26.3 {*/rotate/*?} else {*//*mulPose*//*?}*/(Axis.YP.rotationDegrees(rotation));
 		matrices.translate(-0.5F, -1.0F, -0.5F);
 		TotemDollFeatureRenderer.submit(collector, matrices, new TotemDollRenderState(data));
 		matrices.popPose();
@@ -141,9 +141,9 @@ public class TotemDollRenderer {
 
 			double scale = handRenderingConfig.getScale();
 			matrices.scale((float) scale, (float) scale, (float) scale);
-			matrices.mulPose(Axis.XP.rotationDegrees((float) handRenderingConfig.getRotationX()));
-			matrices.mulPose(Axis.YP.rotationDegrees((float) handRenderingConfig.getRotationY() * (leftHanded ? -1 : 1)));
-			matrices.mulPose(Axis.ZP.rotationDegrees((float) handRenderingConfig.getRotationZ() * (leftHanded ? -1 : 1)));
+			matrices./*? if >=26.3 {*/rotate/*?} else {*//*mulPose*//*?}*/(Axis.XP.rotationDegrees((float) handRenderingConfig.getRotationX()));
+			matrices./*? if >=26.3 {*/rotate/*?} else {*//*mulPose*//*?}*/(Axis.YP.rotationDegrees((float) handRenderingConfig.getRotationY() * (leftHanded ? -1 : 1)));
+			matrices./*? if >=26.3 {*/rotate/*?} else {*//*mulPose*//*?}*/(Axis.ZP.rotationDegrees((float) handRenderingConfig.getRotationZ() * (leftHanded ? -1 : 1)));
 
 			matrices.translate(-0.5F, -0.5F, -0.5F);
 		}
@@ -166,7 +166,7 @@ public class TotemDollRenderer {
 
 		if (nickname != null && (nickname.equalsIgnoreCase("dinnerbone") || nickname.equalsIgnoreCase("grumm"))) {
 			matrices.translate(0.5F, 1.0F, 0.5F);
-			matrices.mulPose(Axis.ZP.rotationDegrees(180));
+			matrices./*? if >=26.3 {*/rotate/*?} else {*//*mulPose*//*?}*/(Axis.ZP.rotationDegrees(180));
 			matrices.translate(-0.5F, -1.0F, -0.5F);
 		}
 

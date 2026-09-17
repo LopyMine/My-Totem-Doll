@@ -2,12 +2,18 @@ package net.lopymine.mtd.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.*;
 import com.mojang.blaze3d.platform.NativeImage;
-import com.mojang.blaze3d.systems.CommandEncoder;
-import com.mojang.blaze3d.textures.GpuTexture;
 import net.lopymine.mtd.client.MyTotemDollClient;
 import net.minecraft.client.renderer.texture.SpriteContents;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
+
+//? if >=26.3 {
+import com.mojang.renderpearl.api.commands.CommandEncoder;
+import com.mojang.renderpearl.api.textures.GpuTexture;
+//?} else {
+/*import com.mojang.blaze3d.systems.CommandEncoder;
+import com.mojang.blaze3d.textures.GpuTexture;
+*///?}
 
 @Mixin(SpriteContents.class)
 public class SpriteContentsMixin {
@@ -18,7 +24,11 @@ public class SpriteContentsMixin {
 	@WrapOperation(
 			at = @At(
 					value = "INVOKE",
-					target = "Lcom/mojang/blaze3d/systems/CommandEncoder;writeToTexture(Lcom/mojang/blaze3d/textures/GpuTexture;Lcom/mojang/blaze3d/platform/NativeImage;IIII)V"),
+					//? if >=26.3 {
+					target = "Lcom/mojang/renderpearl/api/commands/CommandEncoder;writeToTexture(Lcom/mojang/renderpearl/api/textures/GpuTexture;Lcom/mojang/blaze3d/platform/NativeImage;IIII)V"),
+					//?} else {
+					/*target = "Lcom/mojang/blaze3d/systems/CommandEncoder;writeToTexture(Lcom/mojang/blaze3d/textures/GpuTexture;Lcom/mojang/blaze3d/platform/NativeImage;IIII)V"),
+					*///?}
 			method = "uploadFirstFrame"
 	)
 	private void validateImageBeforeUpload(CommandEncoder instance, GpuTexture destination, NativeImage source, int mipLevel, int depthOrLayer, int destX, int destY, Operation<Void> original) {
