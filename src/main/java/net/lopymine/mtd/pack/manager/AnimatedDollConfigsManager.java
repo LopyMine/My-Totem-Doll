@@ -3,6 +3,7 @@ package net.lopymine.mtd.pack.manager;
 import com.mojang.serialization.Codec;
 import java.util.*;
 import net.lopymine.mtd.client.MyTotemDollClient;
+import net.lopymine.mtd.config.MyTotemDollConfig;
 import net.lopymine.mtd.config.resourcepack.AnimatedDollConfig;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
@@ -11,7 +12,6 @@ import org.slf4j.Logger;
 public class AnimatedDollConfigsManager extends AbstractConfigsManager<AnimatedDollConfig> {
 
 	private static final Map<Identifier, AnimatedDollConfig> REGISTERED_CONFIGS = new HashMap<>();
-	private static final Map<Identifier, AnimatedDollConfig> CONFIGS_BY_MODEL = new HashMap<>();
 
 	private static final AnimatedDollConfigsManager INSTANCE = new AnimatedDollConfigsManager();
 
@@ -24,8 +24,23 @@ public class AnimatedDollConfigsManager extends AbstractConfigsManager<AnimatedD
 	}
 
 	@Nullable
-	public static AnimatedDollConfig getConfigByModelId(@Nullable Identifier modelId) {
-		return modelId == null ? null : CONFIGS_BY_MODEL.get(modelId);
+	public static AnimatedDollConfig getConfig(@Nullable Identifier configId) {
+		return configId == null ? null : REGISTERED_CONFIGS.get(configId);
+	}
+
+	@Nullable
+	public static Identifier getStandardAnimatedDollId() {
+		Identifier id = MyTotemDollConfig.getInstance().getStandardTotemDollModelValue();
+		return REGISTERED_CONFIGS.containsKey(id) ? id : null;
+	}
+
+	public static Identifier getStandardDollModelId() {
+		Identifier id = MyTotemDollConfig.getInstance().getStandardTotemDollModelValue();
+		AnimatedDollConfig config = REGISTERED_CONFIGS.get(id);
+		if (config == null || config.getStandardModelId() == null) {
+			return id;
+		}
+		return config.getStandardModelId();
 	}
 
 	@Override
@@ -52,17 +67,11 @@ public class AnimatedDollConfigsManager extends AbstractConfigsManager<AnimatedD
 	protected void registerConfig(AnimatedDollConfig config, Identifier id) {
 		config.bind(id);
 		REGISTERED_CONFIGS.put(id, config);
-
-		Identifier modelId = config.getStandardModelId();
-		if (modelId != null) {
-			CONFIGS_BY_MODEL.put(modelId, config);
-		}
 	}
 
 	@Override
 	public void reload() {
 		REGISTERED_CONFIGS.clear();
-		CONFIGS_BY_MODEL.clear();
 		super.reload();
 	}
 }

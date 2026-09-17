@@ -15,11 +15,11 @@ import net.minecraft.resources.Identifier;
 public class TotemDollPreviewTooltipComponent implements ClientTooltipComponent {
 
 	private final TotemDollData data;
-	private final Identifier modelId;
+	private final Identifier displayId;
 
-	public TotemDollPreviewTooltipComponent(TotemDollData data, Identifier modelId) {
+	public TotemDollPreviewTooltipComponent(TotemDollData data, Identifier modelId, Identifier displayId) {
 		this.data    = data;
-		this.modelId = modelId;
+		this.displayId = displayId;
 		this.data.setStandardMModel(modelId);
 	}
 
@@ -39,7 +39,7 @@ public class TotemDollPreviewTooltipComponent implements ClientTooltipComponent 
 		MyTotemDollConfig config = MyTotemDollConfig.getInstance();
 		float sizeOriginal = config.getBetterTagMenuTooltipSize();
 		float size = (sizeOriginal / 1.25F) * config.getTagMenuTooltipModelScale();
-		Component text = Component.nullToEmpty(this.modelId.getFileName());
+		Component text = Component.nullToEmpty(this.displayId.getFileName());
 		int textWidth = textRenderer.width(text);
 
 		int height = this.getHeight(textRenderer);

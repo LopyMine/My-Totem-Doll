@@ -10,12 +10,12 @@ import net.lopymine.mtd.client.MyTotemDollClient;
 import net.lopymine.mtd.config.MyTotemDollConfig;
 import net.lopymine.mtd.config.rendering.*;
 import net.lopymine.mtd.config.totem.TotemDollSkinType;
+import net.lopymine.mtd.doll.animation.*;
 import net.lopymine.mtd.doll.data.*;
 import net.lopymine.mtd.doll.manager.StandardTotemDollManager;
 import net.lopymine.mtd.doll.model.TotemDollModel;
 import net.lopymine.mtd.doll.model.TotemDollModel.Drawer;
 import net.lopymine.mtd.doll.renderer.special.*;
-import net.lopymine.mtd.doll.tick.*;
 import net.lopymine.mtd.extension.*;
 import net.lopymine.mtd.utils.*;
 import net.lopymine.mtd.utils.plugin.TotemDollPlugin;
@@ -60,7 +60,7 @@ public class TotemDollRenderer {
 		float rotation = (currentTime * rotationSpeed) % 360;
 
 		data.getRenderProperties().setRenderContext(renderContext);
-		prepareAnimation(data, renderContext, sourceId);
+		prepareDoll(data, renderContext, sourceId);
 
 		matrices.pushPose();
 		matrices.scale(-i, -i, i);
@@ -76,10 +76,11 @@ public class TotemDollRenderer {
 
 		beforeDollSubmit(renderContext, holdingPlayer, data);
 
+		data.getRenderProperties().setRenderContext(renderContext);
+		prepareDoll(data, renderContext, sourceId);
+
 		matrices.pushPose();
 		renderContext.apply(data.getModelToRender().getMain(), matrices);
-		data.getRenderProperties().setRenderContext(renderContext);
-		prepareAnimation(data, renderContext, sourceId);
 		matrices.translate(-0.5F, -1.0F, -0.5F);
 
 		String nickname = data.getNickname();
@@ -100,8 +101,8 @@ public class TotemDollRenderer {
 		afterDollSubmit();
 	}
 
-	private static void prepareAnimation(TotemDollData data, DollRenderContext renderContext, @Nullable String sourceId) {
-		data.getRenderProperties().setAnimation(TotemDollAnimationTickManager.getInstance().resolve(data, renderContext, sourceId));
+	private static void prepareDoll(TotemDollData data, DollRenderContext renderContext, @Nullable String sourceId) {
+		TotemDollAnimationTickManager.getInstance().prepare(data, renderContext, sourceId);
 	}
 
 	// EXTRACT METHODS
@@ -122,7 +123,7 @@ public class TotemDollRenderer {
 			context.guiRenderState.addPicturesInPictureState(new ItemGuiRenderState(Items.TOTEM_OF_UNDYING.getDefaultInstance(), x, y, width, height, size, Axis.YP.rotationDegrees(rotation), context.scissorStack.peek()));
 		} else {
 			data.getRenderProperties().setRenderContext(renderContext);
-			context.guiRenderState.addPicturesInPictureState(TotemDollGuiRenderState.getPreview(data, TotemDollAnimationKey.sourceOf("preview", x, y), renderContext, x, y, width, height, size, context.scissorStack.peek()));
+			context.guiRenderState.addPicturesInPictureState(TotemDollGuiRenderState.getPreview(data, TotemDollAnimationKey.ui("preview", x, y), renderContext, x, y, width, height, size, context.scissorStack.peek()));
 		}
 	}
 

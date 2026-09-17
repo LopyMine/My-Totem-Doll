@@ -6,11 +6,13 @@ import java.util.*;
 import java.util.Map.Entry;
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.config.MyTotemDollConfig;
+import net.lopymine.mtd.doll.manager.BuiltinDollsManager;
 import net.lopymine.mtd.doll.model.TotemDollModel;
 import net.lopymine.mtd.gui.BackgroundRenderer;
 import net.lopymine.mtd.gui.widget.TotemDollModelPreviewWidget;
 import net.lopymine.mtd.gui.widget.button.*;
 import net.lopymine.mtd.pack.TotemDollModelFinder;
+import net.lopymine.mtd.pack.manager.AnimatedDollConfigsManager;
 import net.lopymine.mtd.utils.DrawUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -96,22 +98,11 @@ public class TotemDollModelSelectionScreen extends Screen {
 		Set<Entry<String, Set<Identifier>>> entries = new HashSet<>(TotemDollModelFinder.getFoundedTotemModels().entrySet());
 		entries.add(Map.entry(MyTotemDoll.MOD_ID, TotemDollModelFinder.getBuiltinTotemModels()));
 
-		for (Entry<String, Set<Identifier>> entry : entries) {
-			for (Identifier id : entry.getValue()) {
-				String pack = entry.getKey();
-				String modelName = getModelName(id.getPath());
+		Set<Entry<String, Set<Identifier>>> animatedEntries = new HashSet<>(TotemDollModelFinder.getFoundedAnimatedTotemModels().entrySet());
+		animatedEntries.add(Map.entry(MyTotemDoll.MOD_ID, BuiltinDollsManager.getAnimatedDollIds()));
 
-				OnPress pressAction = (widget) -> this.setSelectedModel(id, pack, modelName);
-
-				ButtonListEntryWidget button = new ButtonListEntryWidget(Component.nullToEmpty(modelName), pressAction);
-
-				if (id.equals(standardModelId)) {
-					pressAction.onPress(button.getWidget());
-				}
-
-				listWidget.addEntry(button);
-			}
-		}
+		this.addModelEntries(entries, standardModelId, false);
+		this.addModelEntries(animatedEntries, standardModelId, true);
 
 		this.dimensions.clear();
 		this.dimensions.add(this.modelPanelDimension);
@@ -200,11 +191,40 @@ public class TotemDollModelSelectionScreen extends Screen {
 		this.totemDollModelPreviewWidget.extractRenderState(context, mouseX, mouseY, delta);
 	}
 
-	private void setSelectedModel(Identifier modelId, String pack, String modelName) {
+	private void addModelEntries(Set<Entry<String, Set<Identifier>>> entries, @Nullable Identifier standardModelId, boolean animated) {
+		for (Entry<String, Set<Identifier>> entry : entries) {
+			for (Identifier id : entry.getValue()) {
+				if (animated && AnimatedDollConfigsManager.getConfig(id) == null) {
+					continue;
+				}
+
+				String pack = entry.getKey();
+				String modelName = getModelName(id.getPath());
+
+				OnPress pressAction = (widget) -> this.setSelectedModel(id, pack, modelName, animated);
+
+				ButtonListEntryWidget button = new ButtonListEntryWidget(Component.nullToEmpty(modelName), pressAction);
+
+				if (id.equals(standardModelId)) {
+					pressAction.onPress(button.getWidget());
+				}
+
+				this.listWidget.addEntry(button);
+			}
+		}
+	}
+
+	private void setSelectedModel(Identifier modelId, String pack, String modelName, boolean animated) {
 		String packName = MyTotemDoll.MOD_ID.equals(pack) ? MyTotemDoll.MOD_NAME.replace(" ", "") : pack;
 		this.selectedModel     = MyTotemDoll.text("text.nice_id", packName, modelId.getPath());
 		this.selectedModelId   = modelId;
 		this.selectedModelName = Component.nullToEmpty(modelName);
+
+		if (animated) {
+			this.totemDollModelPreviewWidget.updateAnimatedDoll(modelId);
+			return;
+		}
+
 		this.totemDollModelPreviewWidget.updateModel(modelId);
 	}
 

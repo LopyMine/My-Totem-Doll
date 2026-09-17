@@ -2,9 +2,7 @@ package net.lopymine.mtd.client.event;
 
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.atlas.manager.*;
-import net.lopymine.mtd.doll.data.TotemDollData;
-import net.lopymine.mtd.doll.manager.*;
-import net.lopymine.mtd.doll.tick.TotemDollAnimationTickManager;
+import net.lopymine.mtd.doll.animation.TotemDollAnimationTickManager;
 import net.lopymine.mtd.gui.tooltip.combined.*;
 import net.lopymine.mtd.gui.tooltip.info.*;
 import net.lopymine.mtd.gui.tooltip.preview.*;
@@ -27,7 +25,7 @@ public class MyTotemDollEvents {
 		MyTotemDollLoader.registerTooltipComponentFactory(InfoTooltipData.class, (data) -> new InfoTooltipComponent(data.key(), data.color()));
 		MyTotemDollLoader.registerTooltipComponentFactory(LoadingStateTooltipData.class, (data) -> ClientTooltipComponent.create(MyTotemDoll.text("text.status").append(data.state().getText()).getVisualOrderText()));
 		MyTotemDollLoader.registerTooltipComponentFactory(CombinedTooltipData.class, (data) -> new CombinedTooltipComponent(data.list()));
-		MyTotemDollLoader.registerTooltipComponentFactory(TotemDollPreviewTooltipData.class, (data) -> new TotemDollPreviewTooltipComponent(data.data(), data.model()));
+		MyTotemDollLoader.registerTooltipComponentFactory(TotemDollPreviewTooltipData.class, (data) -> new TotemDollPreviewTooltipComponent(data.data(), data.model(), data.displayId()));
 		MyTotemDollLoader.registerTooltipComponentFactory(WrappedTextTooltipData.class, (data) -> new WrappedTextTooltipComponent(data.text()));
 	}
 

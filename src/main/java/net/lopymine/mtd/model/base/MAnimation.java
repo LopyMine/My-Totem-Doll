@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.Map.Entry;
 import lombok.Getter;
 import net.lopymine.mtd.model.bb.BBAnimation.*;
+import net.lopymine.mtd.utils.easing.EasingInterpolation;
 import net.minecraft.client.model.geom.PartPose;
 import org.jetbrains.annotations.*;
 import org.joml.Vector3f;
@@ -68,17 +69,15 @@ public class MAnimation {
 			return;
 		}
 
-		int[] times = new int[compiledMap.size()];
-		Vector3f[] vectors = new Vector3f[compiledMap.size()];
+		MAnimationKeyframe[] bakedKeyframes = new MAnimationKeyframe[compiledMap.size()];
 
 		int index = 0;
 		for (Entry<Integer, BBKeyframeEntry> entry : compiledMap.entrySet()) {
-			times[index]   = entry.getKey();
-			vectors[index] = new Vector3f(entry.getValue().getVector());
+			bakedKeyframes[index] = MAnimationKeyframe.bake(entry.getKey(), entry.getValue());
 			index++;
 		}
 
-		channels.add(new MAnimationChannel(target, times, vectors));
+		channels.add(new MAnimationChannel(target, bakedKeyframes));
 	}
 
 	public void apply(float ticks) {
@@ -170,37 +169,56 @@ public class MAnimation {
 		}
 	}
 
-	public record MAnimationChannel(MAnimationTarget target, int[] times, Vector3f[] vectors) {
+	public record MAnimationChannel(MAnimationTarget target, MAnimationKeyframe[] keyframes) {
 
 		public void apply(MModel part, float ticks, Vector3f transformation) {
-			if (this.times[0] > ticks) {
+			if (this.keyframes[0].time() > ticks) {
 				return;
 			}
 
 			int index = this.findIndex(ticks);
-			Vector3f current = this.vectors[index];
+			MAnimationKeyframe current = this.keyframes[index];
 
-			if (index == this.times.length - 1) {
-				this.target.apply(part, transformation.set(current));
+			if (index == this.keyframes.length - 1) {
+				this.target.apply(part, transformation.set(current.vector()));
 				return;
 			}
 
-			int currentTime = this.times[index];
-			int nextTime = this.times[index + 1];
-			float progress = (ticks - currentTime) / (nextTime - currentTime);
+			MAnimationKeyframe next = this.keyframes[index + 1];
+			float progress = (ticks - current.time()) / (float) (next.time() - current.time());
 
-			this.target.apply(part, transformation.set(current).lerp(this.vectors[index + 1], progress));
+			this.target.apply(part, next.interpolateFrom(current, progress, transformation));
 		}
 
 		private int findIndex(float ticks) {
 			int index = 0;
-			for (int i = 0; i < this.times.length; i++) {
-				if (this.times[i] > ticks) {
+			for (int i = 0; i < this.keyframes.length; i++) {
+				if (this.keyframes[i].time() > ticks) {
 					break;
 				}
 				index = i;
 			}
 			return index;
+		}
+	}
+
+	public record MAnimationKeyframe(int time, @NotNull Vector3f vector, @NotNull EasingInterpolation easing) {
+
+		public static MAnimationKeyframe bake(int time, @NotNull BBKeyframeEntry entry) {
+			EasingInterpolation easing = entry.getEasing();
+			return new MAnimationKeyframe(
+					time,
+					new Vector3f(entry.getVector()),
+					easing == null ? EasingInterpolation.LINEAR_INTERPOLATION : easing
+			);
+		}
+
+		public Vector3f interpolateFrom(@NotNull MAnimationKeyframe previous, float progress, @NotNull Vector3f transformation) {
+			return transformation.set(
+					(float) this.easing.getInterpolated(previous.vector.x, this.vector.x, progress),
+					(float) this.easing.getInterpolated(previous.vector.y, this.vector.y, progress),
+					(float) this.easing.getInterpolated(previous.vector.z, this.vector.z, progress)
+			);
 		}
 	}
 }

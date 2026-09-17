@@ -1,6 +1,5 @@
 package net.lopymine.mtd.gui.widget.tag;
 
-import java.util.Optional;
 import lombok.*;
 import net.lopymine.mtd.config.MyTotemDollConfig;
 import net.lopymine.mtd.doll.data.TotemDollData;
@@ -22,6 +21,8 @@ public class CustomModelTagButtonWidget extends TagButtonWidget {
 
 	@Nullable
 	private final Identifier model;
+	@Nullable
+	private final Identifier displayId;
 	private TotemDollData data;
 	@Nullable
 	private TotemDollData tooltipData;
@@ -29,7 +30,9 @@ public class CustomModelTagButtonWidget extends TagButtonWidget {
 
 	public CustomModelTagButtonWidget(Tag tag, int x, int y, TagPressAction pressAction) {
 		super(tag, x, y, pressAction);
-		this.model = Optional.ofNullable(TagsManager.getCustomModelIdsTags().get(tag.getTag())).map(CustomModelTag::getModelId).orElse(null);
+		CustomModelTag customModelTag = TagsManager.getCustomModelIdsTags().get(tag.getTag());
+		this.model     = customModelTag == null ? null : customModelTag.getModelId();
+		this.displayId = customModelTag == null ? null : customModelTag.getId();
 		this.data  = StandardTotemDollManager.getStandardDoll().copy();
 	}
 
@@ -42,8 +45,8 @@ public class CustomModelTagButtonWidget extends TagButtonWidget {
 
 	@Override
 	public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
-		if (this.model != null) {
-			this.data.setFrameMModel(this.model);
+		if (this.getTag() instanceof CustomModelTag customModelTag) {
+			customModelTag.process(this.data);
 		}
 		super.extractContents(graphics, mouseX, mouseY, delta);
 		if (!this.tooltipDataActive) {
@@ -69,7 +72,7 @@ public class CustomModelTagButtonWidget extends TagButtonWidget {
 			this.tooltipData.setStandardMModel(this.data.getRenderProperties().getStandardMModel());
 		}
 		this.tooltipDataActive = true;
-		return ClientTooltipComponent.create(new TotemDollPreviewTooltipData(this.tooltipData, this.model));
+		return ClientTooltipComponent.create(new TotemDollPreviewTooltipData(this.tooltipData, this.model, this.displayId == null ? this.model : this.displayId));
 	}
 
 	@Override

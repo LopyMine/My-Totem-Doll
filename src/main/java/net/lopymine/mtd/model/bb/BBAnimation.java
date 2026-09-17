@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import lombok.*;
 import net.lopymine.mtd.config.other.vector.Vec3f;
 import net.lopymine.mtd.utils.CodecUtils;
+import net.lopymine.mtd.utils.easing.EasingInterpolation;
 import static com.mojang.serialization.Codec.*;
 import static com.mojang.serialization.codecs.RecordCodecBuilder.create;
 import static net.lopymine.mtd.utils.CodecUtils.option;
@@ -104,11 +105,11 @@ public class BBAnimation {
 
 		public static final Codec<BBKeyframeEntry> CODEC = create((instance) -> instance.group(
 				option("vector", new Vec3f(), Vec3f.CODEC, BBKeyframeEntry::getVector),
-				option("easing", "", STRING, BBKeyframeEntry::getEasing)
+				option("easing", EasingInterpolation.LINEAR_INTERPOLATION, EasingInterpolation.CODEC, BBKeyframeEntry::getEasing)
 		).apply(instance, BBKeyframeEntry::new));
 
 		private Vec3f vector;
-		private String easing;
+		private EasingInterpolation easing;
 
 	}
 

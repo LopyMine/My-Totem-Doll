@@ -1,11 +1,11 @@
-package net.lopymine.mtd.doll.tick;
+package net.lopymine.mtd.doll.animation;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.*;
 import net.lopymine.mtd.config.resourcepack.AnimatedDollConfig;
 import net.lopymine.mtd.config.resourcepack.AnimatedDollConfig.AnimationReference;
-import net.lopymine.mtd.doll.data.TotemDollData;
+import net.lopymine.mtd.doll.data.*;
 import net.lopymine.mtd.doll.renderer.DollRenderContext;
 import net.lopymine.mtd.model.base.*;
 import net.lopymine.mtd.model.bb.BBAnimation;
@@ -13,6 +13,7 @@ import net.lopymine.mtd.model.bb.BBAnimation.BBAnimationEntry;
 import net.lopymine.mtd.model.bb.manager.BlockBenchAnimationsManager;
 import net.lopymine.mtd.pack.manager.AnimatedDollConfigsManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.*;
 
 @Getter
@@ -50,15 +51,25 @@ public class TotemDollAnimationTickManager {
 		return client.getDeltaTracker().getGameTimeDeltaPartialTick(false);
 	}
 
-	@Nullable
-	public MAnimationRequest resolve(@NotNull TotemDollData data, @NotNull DollRenderContext renderContext, @Nullable String sourceId) {
-		MModel main = data.getModelToRender().getMain();
+	public void prepare(@NotNull TotemDollData data, @NotNull DollRenderContext renderContext, @Nullable String sourceId) {
+		TotemDollRenderProperties properties = data.getRenderProperties();
+		properties.setAnimation(null);
 
-		AnimatedDollConfig config = AnimatedDollConfigsManager.getConfigByModelId(main.getLocation());
+		AnimatedDollConfig config = AnimatedDollConfigsManager.getConfig(properties.getAnimatedConfigId());
 		if (config == null) {
-			return null;
+			return;
 		}
 
+		Identifier modelId = config.getModelId(renderContext);
+		if (modelId != null) {
+			data.setFrameMModel(modelId);
+		}
+
+		properties.setAnimation(this.resolve(config, renderContext, sourceId));
+	}
+
+	@Nullable
+	public MAnimationRequest resolve(@NotNull AnimatedDollConfig config, @NotNull DollRenderContext renderContext, @Nullable String sourceId) {
 		AnimationReference reference = config.getAnimationReference(renderContext);
 		if (reference == null) {
 			return null;
@@ -74,7 +85,7 @@ public class TotemDollAnimationTickManager {
 			return null;
 		}
 
-		TotemDollAnimationKey key = TotemDollAnimationKey.of(sourceId == null ? TotemDollAnimationKey.sourceOf(renderContext) : sourceId, renderContext, reference.bakeKey());
+		TotemDollAnimationKey key = TotemDollAnimationKey.of(sourceId == null ? TotemDollAnimationKey.context(renderContext) : sourceId, renderContext, reference.bakeKey());
 
 		return new MAnimationRequest(reference.bakeKey(), reference.name(), entry, this.getAnimationTicks(key, entry));
 	}

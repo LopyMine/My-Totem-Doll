@@ -2,11 +2,13 @@ package net.lopymine.mtd.gui.widget;
 
 import lombok.*;
 import net.lopymine.mtd.MyTotemDoll;
+import net.lopymine.mtd.config.resourcepack.AnimatedDollConfig;
 import net.lopymine.mtd.doll.data.TotemDollData;
 import net.lopymine.mtd.doll.manager.StandardTotemDollManager;
 import net.lopymine.mtd.doll.renderer.TotemDollRenderer;
 import net.lopymine.mtd.model.base.MModel;
 import net.lopymine.mtd.model.bb.manager.BlockBenchModelManager;
+import net.lopymine.mtd.pack.manager.AnimatedDollConfigsManager;
 import net.lopymine.mtd.utils.DrawUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
@@ -15,6 +17,7 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
+import org.jetbrains.annotations.Nullable;
 
 @Getter
 @Setter
@@ -25,6 +28,8 @@ public class TotemDollModelPreviewWidget extends AbstractWidget {
 	private TotemDollData data;
 
 	private boolean loading;
+	@Nullable
+	private Identifier animatedConfigId;
 	private int failedLoadingStatusCode = 0;
 
 	public TotemDollModelPreviewWidget(int x, int y, float size) {
@@ -52,10 +57,24 @@ public class TotemDollModelPreviewWidget extends AbstractWidget {
 	}
 
 	protected void renderPreview(GuiGraphicsExtractor context) {
-		TotemDollRenderer.extractPreview(context, this.getX(), this.getY(), (int) this.getSize(), (int) this.getSize(), this.getSize() / 1.5F, this.getData().refreshAndApplyRenderProperties());
+		TotemDollData previewData = this.getData().refreshAndApplyRenderProperties();
+		previewData.getRenderProperties().setAnimatedConfigId(this.animatedConfigId);
+		TotemDollRenderer.extractPreview(context, this.getX(), this.getY(), (int) this.getSize(), (int) this.getSize(), this.getSize() / 1.5F, previewData);
+	}
+
+	public void updateAnimatedDoll(Identifier configId) {
+		AnimatedDollConfig config = AnimatedDollConfigsManager.getConfig(configId);
+		if (config == null || config.getStandardModelId() == null) {
+			this.failedLoadingStatusCode = 100;
+			this.loading                 = true;
+			return;
+		}
+		this.updateModel(config.getStandardModelId());
+		this.animatedConfigId = configId;
 	}
 
 	public void updateModel(Identifier id) {
+		this.animatedConfigId = null;
 		this.loading                 = true;
 		this.failedLoadingStatusCode = 0;
 		BlockBenchModelManager.getModelAsyncAsResponse(id, (response) -> {

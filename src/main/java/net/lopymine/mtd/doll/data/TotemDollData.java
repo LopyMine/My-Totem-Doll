@@ -1,11 +1,13 @@
 package net.lopymine.mtd.doll.data;
 
-import java.util.Optional;
+import java.util.*;
 import lombok.*;
+import net.lopymine.mtd.config.resourcepack.AnimatedDollConfig;
 import net.lopymine.mtd.doll.model.TotemDollModel;
 import net.lopymine.mtd.doll.renderer.special.TotemDollGuiElementRenderer;
 import net.lopymine.mtd.model.base.MModel;
 import net.lopymine.mtd.model.bb.manager.BlockBenchModelManager;
+import net.lopymine.mtd.pack.manager.AnimatedDollConfigsManager;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.ClientAsset.Texture;
 import net.minecraft.resources.Identifier;
@@ -15,6 +17,8 @@ import org.jetbrains.annotations.*;
 @Getter
 @Setter
 public class TotemDollData {
+
+	private final Map<Identifier, TotemDollModel> cachedFrameModels = new HashMap<>();
 
 	private boolean shouldRecreateStandardModel;
 
@@ -64,23 +68,52 @@ public class TotemDollData {
 		this.renderProperties.consumeFrameMModel(id, this::setFrameMModel);
 	}
 
+	public void setAnimatedDoll(@NotNull Identifier configId) {
+		AnimatedDollConfig config = AnimatedDollConfigsManager.getRegisteredConfigs().get(configId);
+		if (config == null) {
+			return;
+		}
+
+		this.renderProperties.setAnimatedConfigId(configId);
+
+		Identifier modelId = config.getStandardModelId();
+		if (modelId != null) {
+			this.setFrameMModel(modelId);
+		}
+	}
+
 	public void setFrameMModel(@Nullable MModel frameMModel) {
 		this.renderProperties.setFrameMModel(frameMModel);
 	}
 
 	@Nullable
 	private TotemDollModel getFrameModelBasedOnFrameMModel() {
-		if (this.renderProperties.getFrameMModel() != null) {
-			if (this.frameModel == null || !this.frameModel.getMain().equals(this.renderProperties.getFrameMModel())) {
-				return this.frameModel = this.renderProperties.createFrameModel();
-			}
+		MModel frameMModel = this.renderProperties.getFrameMModel();
+		if (frameMModel == null) {
+			return null;
+		}
+
+		if (this.frameModel != null && this.frameModel.getMain().equals(frameMModel)) {
 			return this.frameModel;
 		}
-		return null;
+
+		Identifier location = frameMModel.getLocation();
+		TotemDollModel cachedModel = location == null ? null : this.cachedFrameModels.get(location);
+		if (cachedModel != null && cachedModel.getMain().equals(frameMModel)) {
+			return this.frameModel = cachedModel;
+		}
+
+		TotemDollModel createdModel = this.renderProperties.createFrameModel();
+		if (location != null) {
+			this.cachedFrameModels.put(location, createdModel);
+		}
+
+		return this.frameModel = createdModel;
 	}
 
 	public void clearAllFrameModelsCompletely() {
 		this.clearFrameModel();
+		this.cachedFrameModels.clear();
 		this.renderProperties.clearCachedFrameMModels();
 	}
 

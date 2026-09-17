@@ -4,7 +4,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.*;
 import java.util.function.Supplier;
 import lombok.experimental.ExtensionMethod;
 import net.lopymine.mtd.client.MyTotemDollClient;
-import net.lopymine.mtd.doll.tick.TotemDollAnimationKey;
+import net.lopymine.mtd.doll.animation.TotemDollAnimationKey;
 import net.lopymine.mtd.extension.ItemStackExtension;
 import net.lopymine.mtd.utils.mixin.ItemRenderStateWithStack;
 import net.lopymine.mtd.utils.plugin.TotemDollPlugin;
@@ -64,7 +64,7 @@ public class ItemModelResolverMixin {
 		}
 		if (renderState instanceof ItemRenderStateWithStack itemRenderStateWithStack) {
 			itemRenderStateWithStack.myTotemDoll$setStack(stack);
-			itemRenderStateWithStack.myTotemDoll$setSourceId(context instanceof Entity owner ? TotemDollAnimationKey.sourceOf(owner) : null);
+			itemRenderStateWithStack.myTotemDoll$setSourceId(context instanceof Entity owner ? TotemDollAnimationKey.entity(owner) : null);
 		}
 	}
 

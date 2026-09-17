@@ -2,13 +2,13 @@ package net.lopymine.mtd.pack;
 
 import java.util.*;
 import net.lopymine.mtd.MyTotemDoll;
+import net.lopymine.mtd.doll.manager.BuiltinDollsManager;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.*;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 public class TotemDollModelFinder {
 
-	private static final Set<Identifier> BUILTIN_TOTEM_MODELS = new LinkedHashSet<>();
 	private static final Map<String, Set<Identifier>> FOUNDED_TOTEM_MODELS = new LinkedHashMap<>();
 	private static final Map<String, Set<Identifier>> FOUNDED_ANIMATED_TOTEM_MODELS = new LinkedHashMap<>();
 
@@ -21,7 +21,7 @@ public class TotemDollModelFinder {
 	}
 
 	public static Set<Identifier> getBuiltinTotemModels() {
-		return BUILTIN_TOTEM_MODELS;
+		return BuiltinDollsManager.getModelIds();
 	}
 
 	public static void reload(ResourceManager resourceManager) {

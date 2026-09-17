@@ -23,6 +23,10 @@ public class MyTotemDoll {
 		return id("dolls/%s.bbmodel".formatted(path));
 	}
 
+	public static Identifier getAnimatedDollId(String path) {
+		return id("dolls/animated/%s.json".formatted(path));
+	}
+
 	public static MutableComponent text(String path, Object... args) {
 		return Component.literal(Component.translatable(String.format("%s.%s", MOD_ID, path), args).getString().replace('&', '§'));
 	}

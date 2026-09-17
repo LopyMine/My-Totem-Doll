@@ -3,7 +3,7 @@ package net.lopymine.mtd.pack;
 import java.util.concurrent.*;
 import net.lopymine.mtd.MyTotemDoll;
 import net.lopymine.mtd.atlas.manager.*;
-import net.lopymine.mtd.doll.tick.TotemDollAnimationTickManager;
+import net.lopymine.mtd.doll.animation.TotemDollAnimationTickManager;
 import net.lopymine.mtd.loader.MyTotemDollLoader;
 import net.lopymine.mtd.model.bb.manager.*;
 import net.lopymine.mtd.pack.manager.AnimatedDollConfigsManager;

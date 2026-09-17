@@ -4,8 +4,11 @@ import it.unimi.dsi.fastutil.chars.*;
 import java.util.*;
 import java.util.stream.*;
 import net.lopymine.mtd.MyTotemDoll;
-import net.lopymine.mtd.doll.data.TotemDollData;
+import net.lopymine.mtd.config.resourcepack.AnimatedDollConfig;
+import net.lopymine.mtd.doll.data.*;
+import net.lopymine.mtd.doll.manager.BuiltinDollsManager;
 import net.lopymine.mtd.pack.TotemDollModelFinder;
+import net.lopymine.mtd.pack.manager.AnimatedDollConfigsManager;
 import net.lopymine.mtd.tag.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -61,60 +64,102 @@ public class TagsManager {
 	}
 
 	public static void reloadCustomModelIdsTags() {
-		Collection<Set<Identifier>> values = new ArrayList<>(TotemDollModelFinder.getFoundedTotemModels().values());
-		values.addAll(TotemDollModelFinder.getFoundedTotemModels().values());
 		Set<Character> characters = getRegisteredTags().keySet();
 		TagsGenerator generator = new TagsGenerator();
+		Set<Identifier> registered = new HashSet<>();
 
 		CUSTOM_MODEL_IDS_TAGS.clear();
-		registerBuiltinCustomModels();
-		for (Set<Identifier> value : values) {
-			for (Identifier id : value) {
 
-				Character next = null;
-				while (generator.hasNext()) {
-					Character character = generator.next();
-					if (characters.contains(character)) {
-						continue;
-					}
-					next = character;
-					break;
-				}
+		registerBuiltinDolls(registered);
+		registerFoundedModels(generator, characters, registered);
+		registerAnimatedDolls(generator, characters, registered);
+	}
 
-				if (next == null) {
-					return;
-				}
-
-				CUSTOM_MODEL_IDS_TAGS.put(next.charValue(),
-						CustomModelTag.startBuilder(next, id)
-								.setAction((data) -> data.setFrameMModel(id))
-								.build()
-				);
+	private static void registerBuiltinDolls(Set<Identifier> registered) {
+		for (BuiltinDoll doll : BuiltinDollsManager.getRegisteredDolls()) {
+			boolean success = doll.animated() ? registerAnimatedDoll(doll.tag(), doll.id()) : registerModel(doll.tag(), doll.id());
+			if (success) {
+				registered.add(doll.id());
 			}
 		}
 	}
 
-	private static void registerBuiltinCustomModels() {
-		registerBuiltinCustomModel('j', "2d_doll");
-		registerBuiltinCustomModel('k', "3d_doll");
-		registerBuiltinCustomModel('l', "3d_funko");
-		registerBuiltinCustomModel('m', "gnom");
-		registerBuiltinCustomModel('n', "mini_3d");
-		registerBuiltinCustomModel('o', "parrot");
-		registerBuiltinCustomModel('p', "player_bucket");
-		registerBuiltinCustomModel('q', "pots");
-		registerBuiltinCustomModel('r', "rat");
-		registerBuiltinCustomModel('s', "stairs");
-		registerBuiltinCustomModel('t', "wheelchair");
+	private static void registerFoundedModels(TagsGenerator generator, Set<Character> characters, Set<Identifier> registered) {
+		for (Set<Identifier> modelIds : TotemDollModelFinder.getFoundedTotemModels().values()) {
+			for (Identifier modelId : modelIds) {
+				if (!registered.add(modelId)) {
+					continue;
+				}
+
+				Character next = nextCharacter(generator, characters);
+				if (next == null) {
+					return;
+				}
+
+				registerModel(next, modelId);
+			}
+		}
 	}
 
-	private static void registerBuiltinCustomModel(char ch, String modelName) {
-		Identifier modelId = MyTotemDoll.getDollModelId(modelName);
-		CustomModelTag tag = CustomModelTag.startBuilder(ch, modelId)
-				.setAction((data) -> data.setFrameMModel(modelId))
-				.build();
-		CUSTOM_MODEL_IDS_TAGS.put(ch, tag);
-		TotemDollModelFinder.getBuiltinTotemModels().add(modelId); // todo make it work in proper way
+	private static void registerAnimatedDolls(TagsGenerator generator, Set<Character> characters, Set<Identifier> registered) {
+		List<Identifier> configIds = AnimatedDollConfigsManager.getRegisteredConfigs().keySet().stream().sorted(Comparator.comparing(Identifier::toString)).toList();
+
+		for (Identifier configId : configIds) {
+			if (registered.contains(configId)) {
+				continue;
+			}
+
+			Character next = nextCharacter(generator, characters);
+			if (next == null) {
+				return;
+			}
+
+			if (registerAnimatedDoll(next, configId)) {
+				registered.add(configId);
+			}
+		}
+	}
+
+	private static boolean registerModel(char character, Identifier modelId) {
+		CUSTOM_MODEL_IDS_TAGS.put(character,
+				CustomModelTag.startBuilder(character, modelId)
+						.setAction((data) -> data.setFrameMModel(modelId))
+						.build()
+		);
+		return true;
+	}
+
+	private static boolean registerAnimatedDoll(char character, Identifier configId) {
+		AnimatedDollConfig config = AnimatedDollConfigsManager.getRegisteredConfigs().get(configId);
+		if (config == null) {
+			MyTotemDoll.LOGGER.warn("Skipped animated doll \"{}\", no such config found", configId);
+			return false;
+		}
+
+		Identifier modelId = config.getStandardModelId();
+		if (modelId == null) {
+			MyTotemDoll.LOGGER.warn("Skipped animated doll \"{}\", it has no \"standard_model\"", configId);
+			return false;
+		}
+
+		CUSTOM_MODEL_IDS_TAGS.put(character,
+				CustomModelTag.startAnimatedBuilder(character, configId, modelId)
+						.setAction((data) -> data.setAnimatedDoll(configId))
+						.build()
+		);
+		return true;
+	}
+
+	@Nullable
+	private static Character nextCharacter(TagsGenerator generator, Set<Character> characters) {
+		while (generator.hasNext()) {
+			Character character = generator.next();
+			if (characters.contains(character) || CUSTOM_MODEL_IDS_TAGS.containsKey(character.charValue())) {
+				continue;
+			}
+			return character;
+		}
+		return null;
 	}
 
 	public static void registerPostprocessorTag(Tag tag) {

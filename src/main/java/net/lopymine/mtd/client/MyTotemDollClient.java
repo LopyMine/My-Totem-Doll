@@ -5,6 +5,7 @@ import net.lopymine.mtd.cache.KnownPlayerUUIDsConfigManager;
 import net.lopymine.mtd.client.command.MyTotemDollCommandManager;
 import net.lopymine.mtd.client.event.MyTotemDollEvents;
 import net.lopymine.mtd.config.MyTotemDollConfig;
+import net.lopymine.mtd.doll.manager.BuiltinDollsManager;
 import net.lopymine.mtd.doll.renderer.special.*;
 import net.lopymine.mtd.loader.MyTotemDollLoader;
 import net.lopymine.mtd.pack.MyTotemDollReloadListener;
@@ -30,6 +31,7 @@ public class MyTotemDollClient {
 
 	public static void onInitializeClient() {
 		LOGGER.info("{} Client Initialized", MyTotemDoll.MOD_NAME);
+		BuiltinDollsManager.register();
 		TagsManager.register();
 		TagsSkinProviders.register();
 		MyTotemDollLoader.registerCommands(MyTotemDollCommandManager::register);

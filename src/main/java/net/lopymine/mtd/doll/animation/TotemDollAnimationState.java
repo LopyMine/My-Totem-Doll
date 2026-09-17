@@ -1,4 +1,4 @@
-package net.lopymine.mtd.doll.tick;
+package net.lopymine.mtd.doll.animation;
 
 import lombok.*;
 import org.jetbrains.annotations.NotNull;

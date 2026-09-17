@@ -148,8 +148,14 @@ public class AnimatedDollConfig {
 	@Nullable
 	public AnimationReference getAnimationReference(@NotNull DollRenderContext context) {
 		Definition definition = this.getDefinition(context);
-		if (definition != null && definition.getAnimationReference() != null) {
-			return definition.getAnimationReference();
+
+		if (definition != null) {
+			if (definition.isAnimationDisabled()) {
+				return null;
+			}
+			if (definition.getAnimationReference() != null) {
+				return definition.getAnimationReference();
+			}
 		}
 		return this.standardAnimationReference;
 	}
@@ -187,11 +193,13 @@ public class AnimatedDollConfig {
 	public static class Definition {
 
 		public static final Codec<Definition> CODEC = create((instance) -> instance.group(
-				option("animation", "", STRING, Definition::getAnimation),
-				option("model", "", STRING, Definition::getModel)
+				option("animation", (String) null, STRING, Definition::getAnimation),
+				option("model", (String) null, STRING, Definition::getModel)
 		).apply(instance, Definition::new));
 
+		@Nullable
 		private String animation;
+		@Nullable
 		private String model;
 
 		@Nullable
@@ -199,9 +207,13 @@ public class AnimatedDollConfig {
 		@Nullable
 		private Identifier modelId;
 
-		public Definition(String animation, String model) {
+		public Definition(@Nullable String animation, @Nullable String model) {
 			this.animation = animation;
 			this.model     = model;
+		}
+
+		public boolean isAnimationDisabled() {
+			return this.animation != null && this.animation.isBlank();
 		}
 
 		public static Supplier<Definition> getNewInstance() {

@@ -40,7 +40,7 @@ public class BlockBenchModelManager {
 
 	private static final Map<Identifier, CompletableFuture<Response<MModelFactory>>> LOADED_MODELS = new ConcurrentHashMap<>();
 
-	private static final Set<String> SUPPORTED_MODEL_FORMATS = Set.of("java_block", "free_rotation");
+	private static final Set<String> SUPPORTED_MODEL_FORMATS = Set.of("java_block", "free_rotation", "geckolib_model");
 
 	@Nullable
 	public static MModel getModel(Identifier id) {
@@ -108,7 +108,7 @@ public class BlockBenchModelManager {
 			return Response.empty(statusCode);
 		}
 
-		MModelFactory factory = createMModelFactory(value);
+		MModelFactory factory = createMModelFactory(value, statusCode == 1);
 		return Response.of(statusCode, factory);
 	}
 
@@ -154,7 +154,8 @@ public class BlockBenchModelManager {
 		List<BBCube> cubes = parseCubes(jsonObject);
 		BBModelGroupsAndRootCubes result = parseGroupsAndCubes410(jsonObject);
 
-		return Response.of(0, createFinalBBModel(id, jsonObject, name, meta, result.rootCubes(), result.groups(), resolution, cubes));
+		int statusCode = meta.getModel().equals("geckolib_model") ? 1 : 0;
+		return Response.of(statusCode, createFinalBBModel(id, jsonObject, name, meta, result.rootCubes(), result.groups(), resolution, cubes));
 	}
 
 	@NotNull
@@ -168,7 +169,8 @@ public class BlockBenchModelManager {
 		List<BBCube> cubes = parseCubes(jsonObject);
 		BBModelGroupsAndRootCubes result = parseGroupsAndCubes50(jsonObject);
 
-		return Response.of(0, createFinalBBModel(id, jsonObject, name, meta, result.rootCubes(), result.groups(), resolution, cubes));
+		int statusCode = meta.getModel().equals("geckolib_model") ? 1 : 0;
+		return Response.of(statusCode, createFinalBBModel(id, jsonObject, name, meta, result.rootCubes(), result.groups(), resolution, cubes));
 	}
 
 	private static @NotNull List<BBCube> parseCubes(JsonObject jsonObject) {
@@ -294,7 +296,7 @@ public class BlockBenchModelManager {
 		return new Gson().fromJson(new JsonReader(new InputStreamReader(open)), JsonObject.class);
 	}
 
-	private static MModelFactory createMModelFactory(@NotNull BBModel model) {
+	private static MModelFactory createMModelFactory(@NotNull BBModel model, boolean geckoLibModel) {
 		MModelBuilder builder = MModelBuilder.builder(ModelState.ROOT);
 
 		for (BBGroup group : model.getGroups()) {
@@ -310,7 +312,7 @@ public class BlockBenchModelManager {
 		MyTotemDollAtlasManager.stitchAndUpdate(MyTotemDollAtlasSpriteManager.getSprites(), null);
 
 		return () -> builder
-				.withTransform(PartPose.offset(-16.0F, -8.0F, 0.0F))
+				.withTransform((geckoLibModel ? PartPose.offset(-8.0F, -8.0F, 8.0F) : PartPose.offset(-16.0F, -8.0F, 0.0F)))
 				.build(resolution.getWidth(), resolution.getHeight())
 				.initAfterBuild(model);
 	}

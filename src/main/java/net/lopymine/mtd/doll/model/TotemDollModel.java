@@ -8,10 +8,10 @@ import net.lopymine.mtd.atlas.*;
 import net.lopymine.mtd.atlas.manager.MyTotemDollAtlasManager;
 import net.lopymine.mtd.bruh.BufferConsumer;
 import net.lopymine.mtd.client.MyTotemDollClient;
-import net.lopymine.mtd.config.MyTotemDollConfig;
 import net.lopymine.mtd.doll.data.TotemDollSprites;
 import net.lopymine.mtd.model.base.*;
 import net.lopymine.mtd.model.bb.manager.BlockBenchModelManager;
+import net.lopymine.mtd.pack.manager.AnimatedDollConfigsManager;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.rendertype.*;
 import net.minecraft.resources.Identifier;
@@ -78,7 +78,7 @@ public class TotemDollModel extends Model<Object> {
 	}
 
 	public static MModel createDollModel() {
-		MModel model = BlockBenchModelManager.getModel(MyTotemDollConfig.getInstance().getStandardTotemDollModelValue());
+		MModel model = BlockBenchModelManager.getModel(AnimatedDollConfigsManager.getStandardDollModelId());
 		MModel mmodel = model == null ? BlockBenchModelManager.getModel(THREE_D_MODEL_id) : model;
 		if (mmodel == null) {
 			throw new IllegalArgumentException("Failed to find standard doll model! [TotemDollModel.class]");

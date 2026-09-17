@@ -8,6 +8,7 @@ import net.lopymine.mtd.doll.model.TotemDollModel;
 import net.lopymine.mtd.doll.renderer.DollRenderContext;
 import net.lopymine.mtd.model.base.*;
 import net.lopymine.mtd.model.bb.manager.BlockBenchModelManager;
+import net.lopymine.mtd.pack.manager.AnimatedDollConfigsManager;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.*;
 
@@ -37,17 +38,19 @@ public class TotemDollRenderProperties {
 	@Nullable
 	private TotemDollSprites frameSprites;
 	@Nullable
+	private Identifier animatedConfigId;
+	@Nullable
 	private MAnimationRequest animation;
 
 	@Override
 	public boolean equals(Object o) {
 		if (!(o instanceof TotemDollRenderProperties that)) return false;
-		return this.isSlim() == that.isSlim() && this.getRenderContext() == that.getRenderContext() && Objects.equals(this.getNickname(), that.getNickname()) && Objects.deepEquals(this.getDisabledParts(), that.getDisabledParts()) && Objects.deepEquals(this.getEnabledParts(), that.getEnabledParts()) && Objects.equals(this.getFrameMModel(), that.getFrameMModel()) && Objects.equals(this.getStandardMModel(), that.getStandardMModel());
+		return this.isSlim() == that.isSlim() && this.getRenderContext() == that.getRenderContext() && Objects.equals(this.getAnimatedConfigId(), that.getAnimatedConfigId()) && Objects.equals(this.getNickname(), that.getNickname()) && Objects.deepEquals(this.getDisabledParts(), that.getDisabledParts()) && Objects.deepEquals(this.getEnabledParts(), that.getEnabledParts()) && Objects.equals(this.getFrameMModel(), that.getFrameMModel()) && Objects.equals(this.getStandardMModel(), that.getStandardMModel());
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.isSlim(), this.getRenderContext(), this.getNickname(), Arrays.hashCode(this.getDisabledParts()), Arrays.hashCode(this.getEnabledParts()), this.getFrameMModel(), this.getStandardMModel());
+		return Objects.hash(this.isSlim(), this.getRenderContext(), this.getAnimatedConfigId(), this.getNickname(), Arrays.hashCode(this.getDisabledParts()), Arrays.hashCode(this.getEnabledParts()), this.getFrameMModel(), this.getStandardMModel());
 	}
 
 	public TotemDollModel createStandardModel() {
@@ -112,8 +115,9 @@ public class TotemDollRenderProperties {
 		this.disabledParts   = new String[0];
 		this.slim            = sprites.getArmsType().isSlim();
 		this.frameMModel     = null;
-		this.renderContext   = null;
-		this.animation = null;
+		this.renderContext    = null;
+		this.animatedConfigId = AnimatedDollConfigsManager.getStandardAnimatedDollId();
+		this.animation        = null;
 	}
 
 	public void clearCachedFrameMModels() {
@@ -150,6 +154,7 @@ public class TotemDollRenderProperties {
 		this.setFrameMModel(properties.getFrameMModel());
 		this.setStandardSprites(properties.getStandardSprites());
 		this.setFrameSprites(properties.getFrameSprites());
+		this.setAnimatedConfigId(properties.getAnimatedConfigId());
 		this.setAnimation(properties.getAnimation());
 		return this;
 	}
