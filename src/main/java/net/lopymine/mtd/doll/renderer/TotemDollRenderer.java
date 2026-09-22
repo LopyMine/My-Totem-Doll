@@ -102,6 +102,9 @@ public class TotemDollRenderer {
 	}
 
 	private static void prepareDoll(TotemDollData data, DollRenderContext renderContext, @Nullable String sourceId) {
+		if (!MyTotemDoll.ANIMATIONS_ENABLED) {
+			return;
+		}
 		TotemDollAnimationTickManager.getInstance().prepare(data, renderContext, sourceId);
 	}
 

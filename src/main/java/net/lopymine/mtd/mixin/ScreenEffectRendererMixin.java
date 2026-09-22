@@ -36,10 +36,7 @@ public class ScreenEffectRendererMixin {
 			method = "renderItemActivationAnimation"
 	)
 	private void renderFloatingDoll(ItemStackRenderState instance, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, int overlayCoords, int outlineColor, Operation<Void> original/*? if >=26.3 {*/, @Local(argsOnly = true) PlayerRenderState playerRenderState/*?}*/) {
-		ItemStack stack = /*? if >=26.3 {*/null/*?} else {*//*this.itemActivationItem*//*?}*/;
-		if (playerRenderState.itemActivation != null) {
-			stack = playerRenderState.itemActivation.item;
-		}
+		ItemStack stack = /*? if >=26.3 {*/playerRenderState.itemActivation == null ? null : playerRenderState.itemActivation.item/*?} else {*//*this.itemActivationItem*//*?}*/;
 		if (!TotemDollRenderer.canSubmit(stack) || stack == null) {
 			original.call(instance, poseStack, submitNodeCollector, lightCoords, overlayCoords, outlineColor);
 			return;

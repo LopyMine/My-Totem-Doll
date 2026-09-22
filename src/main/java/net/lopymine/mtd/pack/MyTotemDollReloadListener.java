@@ -35,9 +35,11 @@ public class MyTotemDollReloadListener implements PreparableReloadListener {
 
 	private void reloadStuff(PreparationBarrier synchronizer, ResourceManager resourceManager, Executor prepareExecutor, Executor applyExecutor) {
 		this.reloadAtlas(synchronizer, prepareExecutor, applyExecutor);
-		TotemDollAnimationTickManager.getInstance().clear();
-		BlockBenchAnimationsManager.getInstance().reload();
-		AnimatedDollConfigsManager.getInstance().reload();
+		if (MyTotemDoll.ANIMATIONS_ENABLED) {
+			TotemDollAnimationTickManager.getInstance().clear();
+			BlockBenchAnimationsManager.getInstance().reload();
+			AnimatedDollConfigsManager.getInstance().reload();
+		}
 		BlockBenchModelManager.reload();
 		TotemDollModelFinder.reload(resourceManager);
 		TagsManager.reloadCustomModelIdsTags();

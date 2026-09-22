@@ -35,8 +35,10 @@ public class MyTotemDollEvents {
 			MyTotemDollAtlasManager.close();
 			MyTotemDollAtlasSpriteManager.close();
 		});
-		MyTotemDollLoader.registerClientTick(() -> {
-			TotemDollAnimationTickManager.getInstance().tick();
-		});
+		if (MyTotemDoll.ANIMATIONS_ENABLED) {
+			MyTotemDollLoader.registerClientTick(() -> {
+				TotemDollAnimationTickManager.getInstance().tick();
+			});
+		}
 	}
 }

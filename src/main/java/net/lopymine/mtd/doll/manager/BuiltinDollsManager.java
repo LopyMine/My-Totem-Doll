@@ -25,7 +25,9 @@ public class BuiltinDollsManager {
 		registerModel('s', "stairs");
 		registerModel('t', "wheelchair");
 
-		registerAnimatedDoll('u', "punchy_3d_doll");
+		if (MyTotemDoll.ANIMATIONS_ENABLED) {
+			registerAnimatedDoll('u', "punchy_3d_doll");
+		}
 	}
 
 	public static void registerModel(char tag, String modelName) {

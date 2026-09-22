@@ -48,6 +48,9 @@ public class TotemDollModelFinder {
 		}
 
 		FOUNDED_ANIMATED_TOTEM_MODELS.clear();
+		if (!MyTotemDoll.ANIMATIONS_ENABLED) {
+			return;
+		}
 		for (PackResources pack : list) {
 			String packId = pack.packId().replace("file/", "").replace("mod/", "");
 			if (packId.equals(MyTotemDoll.MOD_ID)) {

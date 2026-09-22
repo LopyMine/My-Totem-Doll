@@ -10,6 +10,7 @@ public class MyTotemDoll {
 	public static final String MOD_ID = /*$ mod_id*/ "my_totem_doll";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);
 	public static final String YACL_DEPEND_VERSION = /*$ yacl*/ "3.9.6+26.3-fabric";
+	public static final boolean ANIMATIONS_ENABLED = false;
 
 	public static Identifier id(String path) {
 		return Identifier.fromNamespaceAndPath(MOD_ID, path);
